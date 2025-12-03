@@ -6,6 +6,9 @@ import { Switch } from "@/components/ui/switch";
 import { Check, Clock, Sparkles, Activity, Zap, ArrowRight } from "lucide-react";
 import { getStoredData, saveStoredData } from "@/lib/data";
 
+// App Logo
+import appLogo from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764746299313.png';
+
 export default function Onboarding() {
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
@@ -90,9 +93,9 @@ export default function Onboarding() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.5 }}
-                            className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6 md:mb-8 shadow-lg shadow-purple-500/20"
+                            className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-black/20 flex items-center justify-center mb-6 md:mb-8 shadow-2xl shadow-purple-500/10 border border-white/5 overflow-hidden"
                         >
-                            <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-white" />
+                            <img src={appLogo} alt="Olfly Logo" className="w-full h-full object-cover" />
                         </motion.div>
 
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1]">
