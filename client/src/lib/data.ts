@@ -7,6 +7,37 @@ import eucalyptusImg from '@assets/generated_images/close-up_of_eucalyptus_leave
 import roseImg from '@assets/generated_images/close-up_of_a_pink_rose.png';
 import avatarImg from '@assets/generated_images/flat_vector_minimalist_user_profile_icon.png';
 
+// New Generated Images
+import cinnamonImg from '@assets/generated_images/cinnamon_sticks_close-up.png';
+import nutmegImg from '@assets/generated_images/nutmeg_seeds_close-up.png';
+import cardamomImg from '@assets/generated_images/cardamom_pods_close-up.png';
+import corianderImg from '@assets/generated_images/coriander_seeds_close-up.png';
+import orangeImg from '@assets/generated_images/orange_slices_close-up.png';
+import grapefruitImg from '@assets/generated_images/grapefruit_slice_close-up.png';
+import limeImg from '@assets/generated_images/lime_slices_close-up.png';
+import bergamotImg from '@assets/generated_images/bergamot_fruit_close-up.png';
+import lavenderImg from '@assets/generated_images/lavender_flowers_close-up.png';
+import jasmineImg from '@assets/generated_images/jasmine_flowers_close-up.png';
+import geraniumImg from '@assets/generated_images/geranium_flowers_close-up.png';
+import ylangYlangImg from '@assets/generated_images/ylang_ylang_flowers_close-up.png';
+import pineImg from '@assets/generated_images/pine_branch_close-up.png';
+import firImg from '@assets/generated_images/fir_branch_close-up.png';
+import cedarwoodImg from '@assets/generated_images/cedarwood_chips_close-up.png';
+import teaTreeImg from '@assets/generated_images/tea_tree_leaves_close-up.png';
+import coffeeImg from '@assets/generated_images/coffee_beans_close-up.png';
+import peppermintImg from '@assets/generated_images/peppermint_leaves_close-up.png';
+import vanillaImg from '@assets/generated_images/vanilla_beans_close-up.png';
+import chocolateImg from '@assets/generated_images/dark_chocolate_close-up.png';
+import garlicImg from '@assets/generated_images/garlic_bulbs_close-up.png';
+import herbsImg from '@assets/generated_images/rosemary_and_basil_close-up.png';
+import onionImg from '@assets/generated_images/caramelized_onions_close-up.png';
+import breadImg from '@assets/generated_images/baked_bread_texture_close-up.png';
+import laundryImg from '@assets/generated_images/laundry_bubbles_close-up.png';
+import shampooImg from '@assets/generated_images/shampoo_bubbles_close-up.png';
+import perfumeImg from '@assets/generated_images/perfume_bottle_close-up.png';
+import lotionImg from '@assets/generated_images/lotion_texture_close-up.png';
+import candleImg from '@assets/generated_images/scented_candle_close-up.png';
+
 export const AVATAR_IMAGE = avatarImg;
 
 export type ScentCategory = 'Spice' | 'Citrus' | 'Floral' | 'Woodsy' | 'Everyday' | 'Functional';
@@ -40,48 +71,48 @@ export const SCENT_CATEGORIES: Record<ScentCategory, string> = {
 export const ALL_SCENTS: Scent[] = [
   // Spice Category
   { id: 'clove', name: 'Clove', category: 'Spice', description: 'Spicy, warm, and aromatic.', color: SCENT_CATEGORIES['Spice'], isDefault: true, image: cloveImg },
-  { id: 'cinnamon', name: 'Cinnamon', category: 'Spice', description: 'Sweet, woody, and spicy.', color: SCENT_CATEGORIES['Spice'], isDefault: false },
-  { id: 'nutmeg', name: 'Nutmeg', category: 'Spice', description: 'Warm, nutty, and sweet.', color: SCENT_CATEGORIES['Spice'], isDefault: false },
-  { id: 'cardamom', name: 'Cardamom', category: 'Spice', description: 'Piney, fruity, and menthol-like.', color: SCENT_CATEGORIES['Spice'], isDefault: false },
-  { id: 'coriander', name: 'Coriander', category: 'Spice', description: 'Fresh, citrusy, and nutty.', color: SCENT_CATEGORIES['Spice'], isDefault: false },
+  { id: 'cinnamon', name: 'Cinnamon', category: 'Spice', description: 'Sweet, woody, and spicy.', color: SCENT_CATEGORIES['Spice'], isDefault: false, image: cinnamonImg },
+  { id: 'nutmeg', name: 'Nutmeg', category: 'Spice', description: 'Warm, nutty, and sweet.', color: SCENT_CATEGORIES['Spice'], isDefault: false, image: nutmegImg },
+  { id: 'cardamom', name: 'Cardamom', category: 'Spice', description: 'Piney, fruity, and menthol-like.', color: SCENT_CATEGORIES['Spice'], isDefault: false, image: cardamomImg },
+  { id: 'coriander', name: 'Coriander', category: 'Spice', description: 'Fresh, citrusy, and nutty.', color: SCENT_CATEGORIES['Spice'], isDefault: false, image: corianderImg },
 
   // Citrus Category
   { id: 'lemon', name: 'Lemon', category: 'Citrus', description: 'Citrusy, sharp, and fresh.', color: SCENT_CATEGORIES['Citrus'], isDefault: true, image: lemonImg },
-  { id: 'orange', name: 'Orange', category: 'Citrus', description: 'Sweet, tangy, and fruity.', color: SCENT_CATEGORIES['Citrus'], isDefault: false },
-  { id: 'grapefruit', name: 'Grapefruit', category: 'Citrus', description: 'Tart, tangy, and bitter.', color: SCENT_CATEGORIES['Citrus'], isDefault: false },
-  { id: 'lime', name: 'Lime', category: 'Citrus', description: 'Zesty, sour, and bright.', color: SCENT_CATEGORIES['Citrus'], isDefault: false },
-  { id: 'bergamot', name: 'Bergamot', category: 'Citrus', description: 'Complex, floral, and spicy citrus.', color: SCENT_CATEGORIES['Citrus'], isDefault: false },
+  { id: 'orange', name: 'Orange', category: 'Citrus', description: 'Sweet, tangy, and fruity.', color: SCENT_CATEGORIES['Citrus'], isDefault: false, image: orangeImg },
+  { id: 'grapefruit', name: 'Grapefruit', category: 'Citrus', description: 'Tart, tangy, and bitter.', color: SCENT_CATEGORIES['Citrus'], isDefault: false, image: grapefruitImg },
+  { id: 'lime', name: 'Lime', category: 'Citrus', description: 'Zesty, sour, and bright.', color: SCENT_CATEGORIES['Citrus'], isDefault: false, image: limeImg },
+  { id: 'bergamot', name: 'Bergamot', category: 'Citrus', description: 'Complex, floral, and spicy citrus.', color: SCENT_CATEGORIES['Citrus'], isDefault: false, image: bergamotImg },
 
   // Floral Category
   { id: 'rose', name: 'Rose', category: 'Floral', description: 'Floral, sweet, and delicate.', color: SCENT_CATEGORIES['Floral'], isDefault: true, image: roseImg },
-  { id: 'lavender', name: 'Lavender', category: 'Floral', description: 'Herbal, floral, and calming.', color: SCENT_CATEGORIES['Floral'], isDefault: false },
-  { id: 'jasmine', name: 'Jasmine', category: 'Floral', description: 'Rich, sweet, and fruity.', color: SCENT_CATEGORIES['Floral'], isDefault: false },
-  { id: 'geranium', name: 'Geranium', category: 'Floral', description: 'Green, rosy, and lemon-like.', color: SCENT_CATEGORIES['Floral'], isDefault: false },
-  { id: 'ylang_ylang', name: 'Ylang Ylang', category: 'Floral', description: 'Deep, rich, and slightly banana-like.', color: SCENT_CATEGORIES['Floral'], isDefault: false },
+  { id: 'lavender', name: 'Lavender', category: 'Floral', description: 'Herbal, floral, and calming.', color: SCENT_CATEGORIES['Floral'], isDefault: false, image: lavenderImg },
+  { id: 'jasmine', name: 'Jasmine', category: 'Floral', description: 'Rich, sweet, and fruity.', color: SCENT_CATEGORIES['Floral'], isDefault: false, image: jasmineImg },
+  { id: 'geranium', name: 'Geranium', category: 'Floral', description: 'Green, rosy, and lemon-like.', color: SCENT_CATEGORIES['Floral'], isDefault: false, image: geraniumImg },
+  { id: 'ylang_ylang', name: 'Ylang Ylang', category: 'Floral', description: 'Deep, rich, and slightly banana-like.', color: SCENT_CATEGORIES['Floral'], isDefault: false, image: ylangYlangImg },
 
   // Woodsy Category
   { id: 'eucalyptus', name: 'Eucalyptus', category: 'Woodsy', description: 'Cool, camphorous, and minty.', color: SCENT_CATEGORIES['Woodsy'], isDefault: true, image: eucalyptusImg },
-  { id: 'pine', name: 'Pine', category: 'Woodsy', description: 'Fresh, resinous, and forest-like.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false },
-  { id: 'fir', name: 'Fir', category: 'Woodsy', description: 'Clean, green, and balsamic.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false },
-  { id: 'cedarwood', name: 'Cedarwood', category: 'Woodsy', description: 'Warm, woody, and balsamic.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false },
-  { id: 'tea_tree', name: 'Tea Tree', category: 'Woodsy', description: 'Medicinal, fresh, and woody.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false },
+  { id: 'pine', name: 'Pine', category: 'Woodsy', description: 'Fresh, resinous, and forest-like.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false, image: pineImg },
+  { id: 'fir', name: 'Fir', category: 'Woodsy', description: 'Clean, green, and balsamic.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false, image: firImg },
+  { id: 'cedarwood', name: 'Cedarwood', category: 'Woodsy', description: 'Warm, woody, and balsamic.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false, image: cedarwoodImg },
+  { id: 'tea_tree', name: 'Tea Tree', category: 'Woodsy', description: 'Medicinal, fresh, and woody.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false, image: teaTreeImg },
 
   // Everyday
-  { id: 'coffee', name: 'Coffee', category: 'Everyday', description: 'Roasted, earthy, and bold.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'peppermint', name: 'Peppermint', category: 'Everyday', description: 'Sharp, cooling, and menthol.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'vanilla', name: 'Vanilla', category: 'Everyday', description: 'Sweet, creamy, and comforting.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'chocolate', name: 'Chocolate', category: 'Everyday', description: 'Rich, sweet, and roasted.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'garlic', name: 'Garlic', category: 'Everyday', description: 'Pungent, spicy, and savory.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'herbs', name: 'Fresh Herbs', category: 'Everyday', description: 'Green, savory (Rosemary/Basil).', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'onion', name: 'Cooked Onion', category: 'Everyday', description: 'Savory, sweet, and sulfurous.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
-  { id: 'bread', name: 'Baked Bread', category: 'Everyday', description: 'Yeasty, warm, and toasty.', color: SCENT_CATEGORIES['Everyday'], isDefault: false },
+  { id: 'coffee', name: 'Coffee', category: 'Everyday', description: 'Roasted, earthy, and bold.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: coffeeImg },
+  { id: 'peppermint', name: 'Peppermint', category: 'Everyday', description: 'Sharp, cooling, and menthol.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: peppermintImg },
+  { id: 'vanilla', name: 'Vanilla', category: 'Everyday', description: 'Sweet, creamy, and comforting.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: vanillaImg },
+  { id: 'chocolate', name: 'Chocolate', category: 'Everyday', description: 'Rich, sweet, and roasted.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: chocolateImg },
+  { id: 'garlic', name: 'Garlic', category: 'Everyday', description: 'Pungent, spicy, and savory.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: garlicImg },
+  { id: 'herbs', name: 'Fresh Herbs', category: 'Everyday', description: 'Green, savory (Rosemary/Basil).', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: herbsImg },
+  { id: 'onion', name: 'Cooked Onion', category: 'Everyday', description: 'Savory, sweet, and sulfurous.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: onionImg },
+  { id: 'bread', name: 'Baked Bread', category: 'Everyday', description: 'Yeasty, warm, and toasty.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: breadImg },
 
   // Functional
-  { id: 'laundry', name: 'Laundry Detergent', category: 'Functional', description: 'Clean, fresh, and soapy.', color: SCENT_CATEGORIES['Functional'], isDefault: false },
-  { id: 'shampoo', name: 'Shampoo/Soap', category: 'Functional', description: 'Clean, floral, or fruity.', color: SCENT_CATEGORIES['Functional'], isDefault: false },
-  { id: 'perfume', name: 'Perfume/Cologne', category: 'Functional', description: 'Complex, alcohol-based, and distinct.', color: SCENT_CATEGORIES['Functional'], isDefault: false },
-  { id: 'lotion', name: 'Lotion/Oil', category: 'Functional', description: 'Creamy, subtle, and moisturizing.', color: SCENT_CATEGORIES['Functional'], isDefault: false },
-  { id: 'candle', name: 'Favorite Candle', category: 'Functional', description: 'Waxy, fragranced, and familiar.', color: SCENT_CATEGORIES['Functional'], isDefault: false },
+  { id: 'laundry', name: 'Laundry Detergent', category: 'Functional', description: 'Clean, fresh, and soapy.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: laundryImg },
+  { id: 'shampoo', name: 'Shampoo/Soap', category: 'Functional', description: 'Clean, floral, or fruity.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: shampooImg },
+  { id: 'perfume', name: 'Perfume/Cologne', category: 'Functional', description: 'Complex, alcohol-based, and distinct.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: perfumeImg },
+  { id: 'lotion', name: 'Lotion/Oil', category: 'Functional', description: 'Creamy, subtle, and moisturizing.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: lotionImg },
+  { id: 'candle', name: 'Favorite Candle', category: 'Functional', description: 'Waxy, fragranced, and familiar.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: candleImg },
 ];
 
 export const SCENT_SETS: ScentSet[] = [
