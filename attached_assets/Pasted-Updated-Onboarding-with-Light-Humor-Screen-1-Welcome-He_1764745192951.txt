@@ -1,0 +1,104 @@
+Updated Onboarding with Light Humor**
+
+Screen 1: Welcome
+
+Header:
+Wake up your super sniffer
+
+Subheader:
+Welcome to Olfi, your gentle guide for smell recovery.
+
+Body text:
+You bring the nose. We bring the timers, the reminders, and the encouragement.
+Together we will help your scent skills make their comeback tour.
+
+Primary button:
+Let’s begin
+
+Humor tone note for Replit:
+Keep the mood supportive and playful, not silly.
+
+Screen 2: What You Will Do
+
+Header:
+Your daily sniff training
+
+Body text:
+Get ready to smell four scents like it is your new morning ritual.
+This is not about perfect sniffing. It is about consistent sniffing.
+Think of it as physical therapy for your nose.
+
+Fun micro copy:
+
+“Twenty seconds per scent. You got this.”
+
+“Your nose is cheering for you already.”
+
+Primary button:
+Next
+
+Screen 3: Set Your Training Times
+
+Header:
+Pick your sniff schedule
+
+Body text:
+Choose the times when you want Olfi to gently tap you on the shoulder and say “Time to sniff things again.”
+
+Fun micro copy:
+
+“Morning sniff or evening sniff. Or both. Your nose decides.”
+
+“Set it and forget it. Olfi will remember for you.”
+
+Screen 4: Build Your Scent Set
+
+Header:
+Classic scents or your own favorites
+
+Body text:
+Start with lemon, rose, clove, and eucalyptus.
+Or add your own familiar scents.
+Your shampoo, your lotion, your favorite candle. If it is safe to sniff, it can join the team.
+
+Fun micro copy:
+
+“Give your scents their moment to shine.”
+
+“Your nose is about to meet some old friends.”
+
+Screen 5: Understand Your Journey
+
+Header:
+Progress is not always obvious
+
+Body text:
+Smell recovery can take time. That is normal.
+Olfi will help you spot small improvements, even the ones you might miss.
+
+Fun micro copy:
+
+“Slow progress is still progress.”
+
+“Your brain is literally rewiring. How cool is that.”
+
+Primary button:
+Start my first session
+
+Screen 6: Final Encouragement
+
+Header:
+Your nose is ready
+
+Body text:
+You have got this. Olfi is with you every day.
+Stay consistent. Stay patient. Sniff bravely.
+
+Fun micro copy:
+
+“Welcome to the Sniff Squad.”
+
+“Let’s begin the great smell comeback.”
+
+Primary button:
+Begin training

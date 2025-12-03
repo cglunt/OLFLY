@@ -15,7 +15,7 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
   const showNav = location !== "/training";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans">
+    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans transform-gpu">
       {/* Global Background Image - Fixed to ensure it covers everything */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-50 max-w-md mx-auto">
          <img src={darkBg} alt="" className="w-full h-full object-cover" />
@@ -24,7 +24,7 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
 
       {/* Custom Background Overlay (for specific pages like Training) */}
       {backgroundOverlay && (
-        <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
+        <div className="absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden">
           {backgroundOverlay}
         </div>
       )}

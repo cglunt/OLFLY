@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Check, Clock, Wind, Activity, Plus, ArrowRight, User, Sparkles, Zap } from "lucide-react";
+import { Check, Clock, Sparkles, Activity, Zap, ArrowRight } from "lucide-react";
 import { getStoredData, saveStoredData } from "@/lib/data";
 
 export default function Onboarding() {
@@ -75,6 +74,7 @@ export default function Onboarding() {
         </div>
 
         <AnimatePresence mode="wait">
+            {/* SCREEN 1: Welcome */}
             {step === 1 && (
                 <motion.div
                     key="step1"
@@ -92,29 +92,22 @@ export default function Onboarding() {
                             transition={{ duration: 0.5 }}
                             className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6 md:mb-8 shadow-lg shadow-purple-500/20"
                         >
-                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-[3px] border-white/20 flex items-center justify-center">
-                                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white" />
-                            </div>
+                            <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-white" />
                         </motion.div>
 
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1]">
-                            Hello,<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Future Self.</span>
+                            Wake up your<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">super sniffer.</span>
                         </h1>
                         
-                        <Block className="mb-6" delay={0.2}>
-                            <div className="flex items-start gap-4">
-                                <div className="p-3 rounded-full bg-purple-500/10 text-purple-400 shrink-0">
-                                    <Sparkles size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg md:text-xl font-bold mb-1">Restore</h3>
-                                    <p className="text-white/60 leading-relaxed text-sm md:text-base">
-                                        A guided journey to rebuild your sense of smell through neuroplasticity.
-                                    </p>
-                                </div>
-                            </div>
-                        </Block>
+                        <div className="space-y-6">
+                             <p className="text-xl font-medium text-white/90">
+                                Welcome to Olfi, your gentle guide for smell recovery.
+                             </p>
+                             <p className="text-white/60 leading-relaxed text-base md:text-lg">
+                                You bring the nose. We bring the timers, the reminders, and the encouragement. Together we will help your scent skills make their comeback tour.
+                             </p>
+                        </div>
                     </div>
                     
                     <div className="mt-auto pb-4 md:pb-0">
@@ -122,12 +115,13 @@ export default function Onboarding() {
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5 transition-all hover:scale-[1.02] active:scale-95"
                         >
-                            Get Started
+                            Let’s begin
                         </Button>
                     </div>
                 </motion.div>
             )}
 
+            {/* SCREEN 2: What You Will Do */}
             {step === 2 && (
                 <motion.div
                     key="step2"
@@ -138,8 +132,16 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-2">Daily<br/>Practice</h2>
-                    <p className="text-white/50 text-base md:text-lg mb-6 md:mb-8">Reconnect nose and brain.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Your daily<br/>sniff training</h2>
+                    
+                    <div className="space-y-6 mb-8">
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            Get ready to smell four scents like it is your new morning ritual.
+                         </p>
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            This is not about perfect sniffing. It is about consistent sniffing. Think of it as physical therapy for your nose.
+                         </p>
+                    </div>
                     
                     <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
                         {[
@@ -165,17 +167,10 @@ export default function Onboarding() {
                     </div>
 
                     <Block className="mt-auto mb-6 bg-gradient-to-r from-purple-900/20 to-pink-900/20 border-purple-500/20">
-                         <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <div className="text-[10px] md:text-xs font-bold text-purple-400 uppercase tracking-wider">Format</div>
-                                <div className="text-lg md:text-xl font-bold">2x Daily</div>
-                            </div>
-                            <div className="w-px h-8 md:h-10 bg-white/10" />
-                            <div className="space-y-1">
-                                <div className="text-[10px] md:text-xs font-bold text-pink-400 uppercase tracking-wider">Duration</div>
-                                <div className="text-lg md:text-xl font-bold">20s / Scent</div>
-                            </div>
-                        </div>
+                         <div className="text-center space-y-2">
+                            <p className="text-lg font-bold text-purple-300">“Twenty seconds per scent. You got this.”</p>
+                            <p className="text-sm text-white/40">Your nose is cheering for you already.</p>
+                         </div>
                     </Block>
 
                     <div className="pb-4 md:pb-0">
@@ -183,12 +178,13 @@ export default function Onboarding() {
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-base md:text-lg font-bold shadow-lg shadow-purple-600/20"
                         >
-                            Continue
+                            Next
                         </Button>
                     </div>
                 </motion.div>
             )}
 
+            {/* SCREEN 3: Set Your Training Times */}
             {step === 3 && (
                 <motion.div
                     key="step3"
@@ -200,8 +196,10 @@ export default function Onboarding() {
                     className="flex-1 flex flex-col"
                 >
                     <div className="mb-6 md:mb-8">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2">Set Your<br/>Rhythm</h2>
-                        <p className="text-white/50 text-base md:text-lg">Consistency creates results.</p>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Pick your<br/>sniff schedule</h2>
+                        <p className="text-white/70 text-lg leading-relaxed">
+                            Choose the times when you want Olfi to gently tap you on the shoulder and say “Time to sniff things again.”
+                        </p>
                     </div>
 
                     <Block className="mb-6 space-y-4 md:space-y-6">
@@ -244,18 +242,23 @@ export default function Onboarding() {
                             </div>
                         )}
                     </Block>
+
+                    <div className="mt-auto mb-6 text-center space-y-2">
+                        <p className="text-white/60 italic">“Morning sniff or evening sniff. Or both. Your nose decides.”</p>
+                    </div>
                     
-                    <div className="mt-auto pb-4 md:pb-0">
+                    <div className="pb-4 md:pb-0">
                          <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
                         >
-                            Set Schedule
+                            Next
                         </Button>
                     </div>
                 </motion.div>
             )}
 
+            {/* SCREEN 4: Build Your Scent Set */}
             {step === 4 && (
                 <motion.div
                     key="step4"
@@ -266,10 +269,18 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-2">Your<br/>Collection</h2>
-                    <p className="text-white/50 text-base md:text-lg mb-6 md:mb-8">Start with the classics.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Classic scents or<br/>your own favorites</h2>
+                    
+                    <div className="space-y-6 mb-8">
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            Start with lemon, rose, clove, and eucalyptus. Or add your own familiar scents.
+                         </p>
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            Your shampoo, your lotion, your favorite candle. If it is safe to sniff, it can join the team.
+                         </p>
+                    </div>
 
-                    <div className="grid grid-cols-1 gap-3 mb-6 md:mb-8">
+                    <div className="grid grid-cols-1 gap-3 mb-6">
                         {[
                             { name: "Classic Kit", items: "Clove, Lemon, Eucalyptus, Rose", active: true },
                             { name: "Custom Kit", items: "Create your own set", active: false },
@@ -291,28 +302,22 @@ export default function Onboarding() {
                         ))}
                     </div>
                     
-                    <div className="grid grid-cols-4 gap-2 mb-6 md:mb-8">
-                         {[
-                            "bg-orange-500",
-                            "bg-yellow-500",
-                            "bg-teal-500",
-                            "bg-pink-500"
-                        ].map((color, i) => (
-                            <div key={i} className={`aspect-square rounded-2xl ${color} opacity-80`} />
-                        ))}
+                    <div className="mt-auto mb-6 bg-purple-500/10 rounded-2xl p-4 text-center border border-purple-500/20">
+                        <p className="text-purple-300 font-bold">“Give your scents their moment to shine.”</p>
                     </div>
 
-                    <div className="mt-auto pb-4 md:pb-0">
+                    <div className="pb-4 md:pb-0">
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-base md:text-lg font-bold shadow-lg shadow-purple-600/20"
                         >
-                            Confirm
+                            Next
                         </Button>
                     </div>
                 </motion.div>
             )}
 
+            {/* SCREEN 5: Understand Your Journey */}
             {step === 5 && (
                 <motion.div
                     key="step5"
@@ -323,47 +328,27 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Progress<br/>Takes Time</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Progress is not<br/>always obvious</h2>
                     
-                    <Block className="flex-1 mb-6 relative overflow-hidden flex flex-col min-h-[300px]">
+                    <div className="space-y-6 mb-8">
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            Smell recovery can take time. That is normal.
+                         </p>
+                         <p className="text-white/70 text-lg leading-relaxed">
+                            Olfi will help you spot small improvements, even the ones you might miss.
+                         </p>
+                    </div>
+                    
+                    <Block className="flex-1 mb-6 relative overflow-hidden flex flex-col min-h-[240px]">
                          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
                          
-                         <div className="relative z-10 flex-1 flex flex-col justify-between">
-                             <div className="space-y-4 md:space-y-6">
-                                <div className="flex gap-3 md:gap-4 items-center">
-                                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
-                                        <Activity size={20} className="md:w-6 md:h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-base md:text-lg">Track Intensity</h4>
-                                        <p className="text-white/50 text-xs md:text-sm">Log strength & clarity daily</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-3 md:gap-4 items-center">
-                                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-pink-500/20 flex items-center justify-center text-pink-400 shrink-0">
-                                        <Zap size={20} className="md:w-6 md:h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-base md:text-lg">Build Streak</h4>
-                                        <p className="text-white/50 text-xs md:text-sm">Consistency is key</p>
-                                    </div>
-                                </div>
+                         <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center space-y-6">
+                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                <Activity size={32} className="text-white" />
                              </div>
-
-                             {/* Abstract Graph */}
-                             <div className="h-24 md:h-32 w-full mt-6 md:mt-8 relative">
-                                 <div className="absolute bottom-0 left-0 right-0 h-full flex items-end gap-2 opacity-50">
-                                     {[20, 40, 35, 50, 45, 60, 75, 70, 90].map((h, i) => (
-                                         <div key={i} className="flex-1 bg-purple-500 rounded-t-md" style={{ height: `${h}%` }} />
-                                     ))}
-                                 </div>
-                                 {/* Overlay Line */}
-                                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                                     <path d="M0,120 Q40,100 80,80 T160,60 T240,40 T320,10" fill="none" stroke="#d946ef" strokeWidth="4" strokeLinecap="round" className="drop-shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
-                                     <circle cx="320" cy="10" r="6" fill="#d946ef" className="drop-shadow-[0_0_10px_rgba(217,70,239,0.8)]" />
-                                     <rect x="280" y="-25" width="80" height="28" rx="8" fill="white" />
-                                     <text x="320" y="-8" textAnchor="middle" fill="black" fontSize="12" fontWeight="bold">Goal</text>
-                                 </svg>
+                             <div>
+                                 <h3 className="text-xl font-bold text-white mb-2">“Slow progress is still progress.”</h3>
+                                 <p className="text-white/50 text-sm">Your brain is literally rewiring.<br/>How cool is that.</p>
                              </div>
                          </div>
                     </Block>
@@ -373,12 +358,13 @@ export default function Onboarding() {
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
                         >
-                            Understood
+                            Start my first session
                         </Button>
                     </div>
                 </motion.div>
             )}
 
+            {/* SCREEN 6: Final Encouragement */}
              {step === 6 && (
                 <motion.div
                     key="step6"
@@ -393,16 +379,28 @@ export default function Onboarding() {
                         <div className="inline-flex items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-[0_0_50px_rgba(168,85,247,0.4)] mb-6 md:mb-8">
                             <Check size={40} className="md:w-12 md:h-12 text-white" strokeWidth={4} />
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-3 md:mb-4">You are<br/>Ready.</h2>
-                        <p className="text-white/50 text-lg md:text-xl">Let's begin your journey.</p>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6">Your nose<br/>is ready.</h2>
+                        <div className="space-y-4 max-w-xs mx-auto">
+                            <p className="text-white/80 text-lg">
+                                You have got this. Olfi is with you every day.
+                            </p>
+                            <p className="text-white/60 text-base">
+                                Stay consistent. Stay patient. Sniff bravely.
+                            </p>
+                        </div>
                     </div>
                     
-                    <div className="mt-auto w-full space-y-4 pb-4 md:pb-0">
+                    <div className="mt-auto w-full space-y-6 pb-4 md:pb-0">
+                        <div className="text-center">
+                            <p className="text-purple-400 font-bold text-lg mb-2">“Welcome to the Sniff Squad.”</p>
+                            <p className="text-white/40 text-sm">Let’s begin the great smell comeback.</p>
+                        </div>
+                        
                         <Button 
                             onClick={completeOnboarding}
                             className="w-full h-16 md:h-20 rounded-[2.5rem] bg-white text-black hover:bg-white/90 text-lg md:text-xl font-bold shadow-xl shadow-white/10 transition-transform hover:scale-[1.02]"
                         >
-                            Start First Session
+                            Begin training
                         </Button>
                     </div>
                 </motion.div>
