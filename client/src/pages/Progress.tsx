@@ -38,16 +38,16 @@ export default function Progress() {
         <header className="flex justify-between items-end">
           <div>
              <h1 className="text-3xl font-heading font-bold text-white">Overview</h1>
-             <p className="text-[#B9AEE2]">Weekly Analysis</p>
+             <p className="text-white/70">Weekly Analysis</p>
           </div>
-          <div className="bg-[#2B215B] px-4 py-2 rounded-xl text-sm font-medium text-white flex items-center gap-2">
-             <span className="w-2 h-2 rounded-full bg-[#DF37FF]"></span>
+          <div className="bg-[#3b1645] px-4 py-2 rounded-xl text-sm font-medium text-white flex items-center gap-2">
+             <span className="w-2 h-2 rounded-full bg-[#ac41c3]"></span>
              Last 7 Days
           </div>
         </header>
 
         {/* Sleep Analytics Style Card */}
-        <Card className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] border-none shadow-md shadow-black/40 relative overflow-hidden rounded-2xl">
+        <Card className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] border-none shadow-md shadow-black/40 relative overflow-hidden rounded-2xl">
            <CardContent className="p-6 relative z-10 flex justify-between items-center">
               <div className="space-y-2">
                  <h3 className="text-white font-bold text-xl leading-tight max-w-[140px]">You almost reached a perfect streak</h3>
@@ -70,28 +70,28 @@ export default function Progress() {
         {/* Chart Section */}
         <div className="space-y-4">
            <div className="flex items-center justify-between px-2">
-              <div className="bg-[#2B215B] px-3 py-1 rounded-lg text-xs font-medium text-white">
+              <div className="bg-[#3b1645] px-3 py-1 rounded-lg text-xs font-medium text-white">
                  Avg Intensity
               </div>
            </div>
 
-           <div className="h-[250px] w-full relative bg-[#2B215B] rounded-2xl p-4 shadow-md">
+           <div className="h-[250px] w-full relative bg-[#3b1645] rounded-2xl p-4 shadow-md">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={displayData}>
                   <defs>
                     <linearGradient id="colorIntensity" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#DF37FF" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#DF37FF" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#ac41c3" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#ac41c3" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <Tooltip 
-                    contentStyle={{backgroundColor: '#1A0F35', borderRadius: '12px', border: 'none', color: 'white'}}
-                    itemStyle={{color: '#DF37FF'}}
+                    contentStyle={{backgroundColor: '#0c0c1d', borderRadius: '12px', border: 'none', color: 'white'}}
+                    itemStyle={{color: '#ac41c3'}}
                   />
                   <Area 
                     type="monotone" 
                     dataKey="intensity" 
-                    stroke="#DF37FF" 
+                    stroke="#ac41c3" 
                     strokeWidth={3}
                     fillOpacity={1} 
                     fill="url(#colorIntensity)" 
@@ -101,31 +101,31 @@ export default function Progress() {
               
               {/* Selected Point Indicator (Fake) */}
               <div className="absolute top-[30%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none">
-                 <div className="bg-white text-[#1A0F35] text-xs font-bold px-3 py-1.5 rounded-full mb-2 shadow-lg">
+                 <div className="bg-white text-[#0c0c1d] text-xs font-bold px-3 py-1.5 rounded-full mb-2 shadow-lg">
                     7.5 Intense
                  </div>
-                 <div className="w-4 h-4 bg-white border-4 border-[#DF37FF] rounded-full shadow-[0_0_15px_#DF37FF]"></div>
+                 <div className="w-4 h-4 bg-white border-4 border-[#ac41c3] rounded-full shadow-[0_0_15px_#ac41c3]"></div>
               </div>
            </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
-           <div className="bg-[#2B215B] rounded-2xl p-5 flex flex-col gap-3 shadow-md">
-              <div className="w-10 h-10 rounded-full bg-[#231A4A] flex items-center justify-center text-[#A259FF]">
+           <div className="bg-[#3b1645] rounded-2xl p-5 flex flex-col gap-3 shadow-md">
+              <div className="w-10 h-10 rounded-full bg-[#0c0c1d] flex items-center justify-center text-[#db2faa]">
                  <Moon size={20} />
               </div>
               <div>
-                 <p className="text-[#B9AEE2] text-xs font-medium uppercase tracking-wide">Total Sessions</p>
+                 <p className="text-white/70 text-xs font-medium uppercase tracking-wide">Total Sessions</p>
                  <p className="text-2xl font-bold text-white">{data.logs.length}</p>
               </div>
            </div>
-           <div className="bg-[#2B215B] rounded-2xl p-5 flex flex-col gap-3 shadow-md">
-              <div className="w-10 h-10 rounded-full bg-[#231A4A] flex items-center justify-center text-[#DF37FF]">
+           <div className="bg-[#3b1645] rounded-2xl p-5 flex flex-col gap-3 shadow-md">
+              <div className="w-10 h-10 rounded-full bg-[#0c0c1d] flex items-center justify-center text-[#ac41c3]">
                  <Zap size={20} />
               </div>
               <div>
-                 <p className="text-[#B9AEE2] text-xs font-medium uppercase tracking-wide">Active Streak</p>
+                 <p className="text-white/70 text-xs font-medium uppercase tracking-wide">Active Streak</p>
                  <p className="text-2xl font-bold text-white">{data.settings.streak}</p>
               </div>
            </div>

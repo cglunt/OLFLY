@@ -49,17 +49,17 @@ export default function Onboarding() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay, duration: 0.4, ease: "easeOut" }}
-        className={`bg-[#1A1A2E] rounded-[2rem] p-6 border border-white/5 shadow-xl ${className}`}
+        className={`bg-[#3b1645] rounded-[2rem] p-6 border border-white/5 shadow-xl ${className}`}
     >
         {children}
     </motion.div>
   );
 
   return (
-    <div className="min-h-screen w-full bg-[#0B0618] text-white flex flex-col font-sans selection:bg-purple-500/30 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[#0c0c1d] text-white flex flex-col font-sans selection:bg-[#ac41c3]/30 relative overflow-hidden">
       {/* Fix Option 3: Absolute Overlay for Background */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/10 via-[#0B0618] to-[#0B0618]" />
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#6d45d2]/10 via-[#0c0c1d] to-[#0c0c1d]" />
       </div>
       
       {/* Content Wrapper - Fix Option 2: Ensure parent containers do not shrink */}
@@ -104,7 +104,7 @@ export default function Onboarding() {
 
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1] text-center">
                             Wake up your<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">super sniffer.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">super sniffer.</span>
                         </h1>
                         
                         <div className="space-y-6">
@@ -162,7 +162,7 @@ export default function Onboarding() {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="bg-[#1A1A2E] aspect-square rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-5 flex flex-col justify-between border border-white/5 relative overflow-hidden group"
+                                className="bg-[#3b1645] aspect-square rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-5 flex flex-col justify-between border border-white/5 relative overflow-hidden group"
                             >
                                 <div className={`absolute top-0 right-0 w-20 h-20 md:w-24 md:h-24 ${scent.color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`} />
                                 <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full ${scent.color} flex items-center justify-center text-black font-bold shadow-lg text-sm md:text-base`}>
@@ -173,9 +173,9 @@ export default function Onboarding() {
                         ))}
                     </div>
 
-                    <Block className="mt-auto mb-6 bg-gradient-to-r from-purple-900/20 to-pink-900/20 border-purple-500/20">
+                    <Block className="mt-auto mb-6 bg-gradient-to-r from-[#6d45d2]/20 to-[#db2faa]/20 border-[#ac41c3]/20">
                          <div className="text-center space-y-2">
-                            <p className="text-lg font-bold text-purple-300">“Twenty seconds per scent. You got this.”</p>
+                            <p className="text-lg font-bold text-[#ac41c3]">“Twenty seconds per scent. You got this.”</p>
                             <p className="text-sm text-white/40">Your nose is cheering for you already.</p>
                          </div>
                     </Block>
@@ -183,7 +183,7 @@ export default function Onboarding() {
                     <div className="pb-4 md:pb-0">
                         <Button 
                             onClick={nextStep}
-                            className="w-full h-14 md:h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-base md:text-lg font-bold shadow-lg shadow-purple-600/20"
+                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
                         >
                             Next
                         </Button>
@@ -212,7 +212,7 @@ export default function Onboarding() {
                     <Block className="mb-6 space-y-4 md:space-y-6">
                          <div className="flex items-center justify-between">
                             <span className="text-lg md:text-xl font-bold">Reminders</span>
-                            <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} className="data-[state=checked]:bg-purple-500" />
+                            <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} className="data-[state=checked]:bg-[#ac41c3]" />
                         </div>
                         
                         {remindersEnabled && (
@@ -234,7 +234,7 @@ export default function Onboarding() {
                                 
                                 <div className="bg-black/20 rounded-2xl p-3 md:p-4 flex items-center justify-between border border-white/5">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-purple-500/10 rounded-xl text-purple-500">
+                                        <div className="p-2 bg-[#ac41c3]/10 rounded-xl text-[#ac41c3]">
                                             <Clock size={18} className="md:w-5 md:h-5" />
                                         </div>
                                         <span className="font-medium text-white/80 text-sm md:text-base">Evening</span>
@@ -294,14 +294,14 @@ export default function Onboarding() {
                         ].map((kit, i) => (
                              <motion.div 
                                 key={i}
-                                className={`p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border transition-all flex items-center justify-between ${kit.active ? 'bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-500/50' : 'bg-[#1A1A2E] border-white/5 opacity-50'}`}
+                                className={`p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border transition-all flex items-center justify-between ${kit.active ? 'bg-gradient-to-br from-[#6d45d2]/40 to-[#db2faa]/40 border-[#ac41c3]/50' : 'bg-[#3b1645] border-white/5 opacity-50'}`}
                             >
                                 <div>
                                     <h3 className="text-lg md:text-xl font-bold mb-1">{kit.name}</h3>
                                     <p className="text-xs md:text-sm text-white/60">{kit.items}</p>
                                 </div>
                                 {kit.active && (
-                                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-purple-500 flex items-center justify-center text-white">
+                                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#ac41c3] flex items-center justify-center text-white">
                                         <Check size={14} className="md:w-4 md:h-4" strokeWidth={3} />
                                     </div>
                                 )}
@@ -309,14 +309,14 @@ export default function Onboarding() {
                         ))}
                     </div>
                     
-                    <div className="mt-auto mb-6 bg-purple-500/10 rounded-2xl p-4 text-center border border-purple-500/20">
-                        <p className="text-purple-300 font-bold">“Give your scents their moment to shine.”</p>
+                    <div className="mt-auto mb-6 bg-[#ac41c3]/10 rounded-2xl p-4 text-center border border-[#ac41c3]/20">
+                        <p className="text-[#ac41c3] font-bold">“Give your scents their moment to shine.”</p>
                     </div>
 
                     <div className="pb-4 md:pb-0">
                         <Button 
                             onClick={nextStep}
-                            className="w-full h-14 md:h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-base md:text-lg font-bold shadow-lg shadow-purple-600/20"
+                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
                         >
                             Next
                         </Button>
@@ -347,10 +347,10 @@ export default function Onboarding() {
                     </div>
                     
                     <Block className="flex-1 mb-6 relative overflow-hidden flex flex-col min-h-[240px]">
-                         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+                         <div className="absolute top-0 right-0 w-64 h-64 bg-[#ac41c3]/10 rounded-full blur-3xl -mr-10 -mt-10" />
                          
                          <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center space-y-6">
-                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
                                 <Activity size={32} className="text-white" />
                              </div>
                              <div>
@@ -399,7 +399,7 @@ export default function Onboarding() {
                     
                     <div className="mt-auto w-full space-y-6 pb-4 md:pb-0">
                         <div className="text-center">
-                            <p className="text-purple-400 font-bold text-lg mb-2">“Welcome to the Sniff Squad.”</p>
+                            <p className="text-[#ac41c3] font-bold text-lg mb-2">“Welcome to the Sniff Squad.”</p>
                             <p className="text-white/40 text-sm">Let’s begin the great smell comeback.</p>
                         </div>
                         

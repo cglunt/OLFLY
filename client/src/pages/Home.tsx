@@ -32,7 +32,7 @@ export default function Home() {
              <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-12 h-12">
                 <Bell className="w-6 h-6" strokeWidth={1.5} />
              </Button>
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#DF37FF] shadow-md shadow-black/40">
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#ac41c3] shadow-md shadow-black/40">
               <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
             </div>
           </div>
@@ -42,7 +42,7 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
+          className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
           onClick={() => setLocation("/training")}
         >
           <div className="relative z-10">
@@ -90,35 +90,35 @@ export default function Home() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
              <h2 className="text-xl font-bold text-white">Top Routines</h2>
-             <span className="text-sm text-[#A259FF] font-medium cursor-pointer hover:text-[#DF37FF]">See All</span>
+             <span className="text-sm text-[#db2faa] font-medium cursor-pointer hover:text-[#ac41c3]">See All</span>
           </div>
           
           <div className="space-y-4">
             {/* Routine Card 1 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="bg-[#2B215B] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#322766] transition-colors"
+              className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
             >
-              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#DF37FF] to-[#A259FF] flex items-center justify-center text-white shadow-sm shrink-0">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center text-white shadow-sm shrink-0">
                 <Play size={20} className="ml-0.5" fill="currentColor" />
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-white text-lg">Morning Reset</h3>
-                <p className="text-sm text-[#B9AEE2]">Lemon & Eucalyptus • 5 Min</p>
+                <p className="text-sm text-white/70">Lemon & Eucalyptus • 5 Min</p>
               </div>
             </motion.div>
 
             {/* Routine Card 2 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="bg-[#2B215B] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#322766] transition-colors"
+              className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
             >
-              <div className="h-12 w-12 rounded-full bg-[#231A4A] flex items-center justify-center text-[#A259FF] shrink-0">
+              <div className="h-12 w-12 rounded-full bg-[#3b1645] flex items-center justify-center text-[#db2faa] shrink-0 border border-white/5">
                 <Moon size={20} fill="currentColor" />
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-white text-lg">Evening Calm</h3>
-                <p className="text-sm text-[#B9AEE2]">Lavender & Rose • 10 Min</p>
+                <p className="text-sm text-white/70">Lavender & Rose • 10 Min</p>
               </div>
             </motion.div>
           </div>
@@ -129,34 +129,34 @@ export default function Home() {
            <h2 className="text-xl font-bold text-white">Discover</h2>
            <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
               <div 
-                className="min-w-[220px] h-[140px] bg-[#2B215B] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#322766] transition-colors cursor-pointer shadow-md shadow-black/40"
+                className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40"
                 onClick={() => setLocation("/article/restoring-smell")}
               >
-                <div className="p-2 bg-[#231A4A] w-fit rounded-xl">
-                    <FileText size={20} className="text-[#DF37FF]" />
+                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
+                    <FileText size={20} className="text-[#ac41c3]" />
                 </div>
                 <div>
-                    <p className="text-xs text-[#B9AEE2] mb-1 uppercase tracking-wide">Essential Read</p>
+                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Essential Read</p>
                     <h4 className="font-bold text-white text-base leading-tight">Restoring Your Smell</h4>
                 </div>
               </div>
 
-              <div className="min-w-[220px] h-[140px] bg-[#2B215B] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#322766] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
-                <div className="p-2 bg-[#231A4A] w-fit rounded-xl">
+              <div className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
+                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
                     <Zap size={20} className="text-yellow-500" />
                 </div>
                 <div>
-                    <p className="text-xs text-[#B9AEE2] mb-1 uppercase tracking-wide">Quick Tip</p>
+                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Quick Tip</p>
                     <h4 className="font-bold text-white text-base leading-tight">Safety First</h4>
                 </div>
               </div>
 
-              <div className="min-w-[220px] h-[140px] bg-[#2B215B] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#322766] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
-                <div className="p-2 bg-[#231A4A] w-fit rounded-xl">
+              <div className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
+                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
                     <Activity size={20} className="text-green-500" />
                 </div>
                 <div>
-                    <p className="text-xs text-[#B9AEE2] mb-1 uppercase tracking-wide">Science</p>
+                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Science</p>
                     <h4 className="font-bold text-white text-base leading-tight">How Neurons Heal</h4>
                 </div>
               </div>

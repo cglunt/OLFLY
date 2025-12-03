@@ -118,10 +118,10 @@ export default function Training() {
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
   return (
-    <div className="relative min-h-screen w-screen overflow-hidden bg-[#0B0618]">
+    <div className="relative min-h-screen w-screen overflow-hidden bg-[#0c0c1d]">
       {/* Background Gradient / Image Overlay */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <div className="absolute inset-0 bg-[#0B0618] z-10" />
+        <div className="absolute inset-0 bg-[#0c0c1d] z-10" />
         {phase === "smell" && (
              <img 
                 src={activeScent.image} 
@@ -149,26 +149,26 @@ export default function Training() {
                   <HelpCircle className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-[#2B215B] border-white/10 text-white max-w-[90vw] md:max-w-md rounded-[2rem]">
+              <DialogContent className="bg-[#3b1645] border-white/10 text-white max-w-[90vw] md:max-w-md rounded-[2rem]">
                  <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-white">How to Sniff</DialogTitle>
-                    <DialogDescription className="text-[#B9AEE2]">Follow this technique for best results.</DialogDescription>
+                    <DialogDescription className="text-white/70">Follow this technique for best results.</DialogDescription>
                  </DialogHeader>
                  <div className="space-y-4 py-4">
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">1</div>
-                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Bring the scent within an inch of your nose. Do not touch your nose.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold shrink-0">1</div>
+                        <p className="text-sm leading-relaxed text-white/70">Bring the scent within an inch of your nose. Do not touch your nose.</p>
                     </div>
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">2</div>
-                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Take <strong>slow, natural sniffs</strong> for about 15-20 seconds. Avoid aggressive sniffing.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold shrink-0">2</div>
+                        <p className="text-sm leading-relaxed text-white/70">Take <strong>slow, natural sniffs</strong> for about 15-20 seconds. Avoid aggressive sniffing.</p>
                     </div>
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">3</div>
-                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Actively try to <strong>recall the smell</strong> and form a mental connection.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold shrink-0">3</div>
+                        <p className="text-sm leading-relaxed text-white/70">Actively try to <strong>recall the smell</strong> and form a mental connection.</p>
                     </div>
                  </div>
-                 <Button className="w-full rounded-xl h-12 bg-white text-[#1A0F35] hover:bg-white/90 font-bold" onClick={() => setShowHelp(false)}>
+                 <Button className="w-full rounded-xl h-12 bg-white text-[#0c0c1d] hover:bg-white/90 font-bold" onClick={() => setShowHelp(false)}>
                     Got it
                  </Button>
               </DialogContent>
@@ -181,7 +181,7 @@ export default function Training() {
            {/* Image / Avatar Circle */}
            <div className="relative">
                {phase === "intro" || phase === "outro" ? (
-                  <div className="w-48 h-48 rounded-full border-4 border-[#2B215B] shadow-xl overflow-hidden bg-[#2B215B] p-1">
+                  <div className="w-48 h-48 rounded-full border-4 border-[#3b1645] shadow-xl overflow-hidden bg-[#3b1645] p-1">
                      <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
                         <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
                      </div>
@@ -198,7 +198,7 @@ export default function Training() {
                               cx="150"
                               cy="150"
                               r={130}
-                              stroke="#DF37FF" 
+                              stroke="#ac41c3" 
                               strokeWidth="4"
                               fill="none"
                               strokeDasharray={2 * Math.PI * 130}
@@ -213,7 +213,7 @@ export default function Training() {
                         key={activeScent.id}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#1A0F35] shadow-2xl z-10 bg-white"
+                        className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#0c0c1d] shadow-2xl z-10 bg-white"
                        >
                         <img src={activeScent.image} className="w-full h-full object-cover" />
                        </motion.div>
@@ -228,7 +228,7 @@ export default function Training() {
                 phase === "outro" ? "Completed" : 
                 activeScent.name}
              </h1>
-             <p className="text-xl text-[#B9AEE2] font-medium tracking-wide">
+             <p className="text-xl text-white/70 font-medium tracking-wide">
                {phase === "intro" ? "Ready to start?" : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
@@ -239,10 +239,10 @@ export default function Training() {
 
            {/* Phase Specific Controls */}
            {phase === "rate" && (
-              <div className="w-full bg-[#2B215B] p-6 rounded-2xl shadow-md animate-in slide-in-from-bottom-5 fade-in">
+              <div className="w-full bg-[#3b1645] p-6 rounded-2xl shadow-md animate-in slide-in-from-bottom-5 fade-in">
                 <div className="flex justify-between items-center mb-6">
                     <label className="text-white text-sm font-bold tracking-wider uppercase">Intensity</label>
-                    <span className="text-3xl font-bold text-[#DF37FF]">{currentRating}/10</span>
+                    <span className="text-3xl font-bold text-[#ac41c3]">{currentRating}/10</span>
                 </div>
                 <Slider 
                     defaultValue={[5]} 
@@ -252,7 +252,7 @@ export default function Training() {
                     onValueChange={(val) => setCurrentRating(val[0])}
                     className="py-2 mb-8"
                 />
-                <Button size="lg" className="w-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating}>
+                <Button size="lg" className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating}>
                   Submit Rating
                 </Button>
               </div>
@@ -261,7 +261,7 @@ export default function Training() {
            {/* Timer Controls */}
            {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                <div className="flex items-center gap-8 mt-4">
-                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#2B215B] text-[#B9AEE2] hover:text-white hover:bg-[#322766]" onClick={() => {
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
@@ -271,13 +271,13 @@ export default function Training() {
                  
                  <Button 
                    size="icon" 
-                   className="h-24 w-24 rounded-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:scale-105 transition-all shadow-lg shadow-purple-500/20"
+                   className="h-24 w-24 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:scale-105 transition-all shadow-lg shadow-[#ac41c3]/20"
                    onClick={toggleTimer}
                  >
                    {isActive ? <Pause className="h-10 w-10 fill-current" /> : <Play className="h-10 w-10 fill-current pl-1" />}
                  </Button>
 
-                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#2B215B] text-[#B9AEE2] hover:text-white hover:bg-[#322766]" onClick={() => {
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
                     setIsActive(false);
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
@@ -289,13 +289,13 @@ export default function Training() {
            )}
 
            {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession}>
                  Start Training
                </Button>
            )}
            
            {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/")}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/")}>
                  Finish Session
                </Button>
            )}
