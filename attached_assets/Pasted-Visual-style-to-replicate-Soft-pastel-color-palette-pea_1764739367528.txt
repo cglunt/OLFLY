@@ -1,0 +1,160 @@
+Visual style to replicate
+
+Soft, pastel color palette (peach, mint green, soft beige, muted sage)
+
+Rounded card shapes with generous padding
+
+Clean type with large section headers
+
+Flat illustrations or soft line icons
+
+Minimal visual noise
+
+Light background with colorful section cards
+
+Simple player style for timers
+
+Bottom navigation similar to a wellness or meditation app
+
+Pages and Components to Build
+Home Page
+
+Header with a small illustrated avatar on the right
+
+Section headline: “Start your practice”
+
+Four scent training cards, each styled like the “Energy alignment” card in the example
+
+Resource list in soft rectangular cards
+
+Daily affirmation at the bottom
+
+Calm color theme
+
+Guided Smell Session Screen
+
+Large circular timer graphic at top
+
+A centered illustration representing the scent session
+
+Title: “Clove Session” or selected scent
+
+Subtext such as “Twenty seconds per scent”
+
+Player controls similar to example
+
+Heart icon for marking favorites
+
+Countdown animation
+
+After each scent, a five minute rest timer in the same UI
+
+Custom Scent Library Page
+
+Grid of rounded cards
+
+Each card has:
+
+Scent name
+
+Small icon or color block
+
+Intensity rating displayed visually
+
+“Add new scent” button that opens a modal
+
+Upload photo field
+
+Notes field
+
+Save to local storage
+
+Progress Tracking Page
+
+Line chart styled in soft pastel colors
+
+Intensity sliders
+
+Symptom log entries presented in clean rounded cards
+
+Button to export progress
+
+A recovery arc illustration with a calming color scheme
+
+Education Module Page
+
+Infographic block with simple illustrated neural pathways
+
+Short text lessons
+
+Links to scientific studies
+
+Safety guidance card with a pale background style
+
+Smell Tests Page
+
+Rounded quiz cards
+
+Single slider question: “How well could you smell lemon today”
+
+Save results to local storage
+
+Feedback screen with reassurance message
+
+Recovery Timeline Page
+
+Soft curved timeline graphic
+
+Milestone markers
+
+Calm descriptive text
+
+Normalization copy to reassure the user
+
+Calming UX Elements
+
+Breathing circle animation using Tailwind transitions
+
+Smooth fade transitions between screens
+
+Gentle color gradients
+
+Optional audio guidance placeholder
+
+Technical Instructions
+
+Use React Router for navigation
+
+Use TailwindCSS for layout and styling
+
+Use Chart.js or Recharts for simple charts
+
+Use local storage for saving logs and settings
+
+Structure files into components folder: Timer, ScentCard, Slider, ChartBlock, QuizCard, BreathingAnimation
+
+Color Palette (for Tailwind config or manual classes)
+
+Soft peach: #F5D7C4
+
+Warm beige: #F9F4ED
+
+Sage green: #AFCBB7
+
+Deep mint: #8AC1A2
+
+Soft charcoal text: #3C3C3C
+
+Accent green: #72B48C
+
+Typography
+
+Large friendly headers
+
+Plenty of white space
+
+Soft rounded sans serif fonts such as Inter or Nunito
+
+Goal
+
+Generate a working prototype with the core screens and UI structure that visually matches the light, soft, illustrated style of the reference wellness app. Include placeholder illustrations, animations, and text so that the interface feels complete even before content is fully added.

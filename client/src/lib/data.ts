@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
-// Removed unused zustand import
 
-import cloveImg from '@assets/generated_images/close-up_of_dried_cloves.png';
-import lemonImg from '@assets/generated_images/close-up_of_fresh_lemon.png';
-import eucalyptusImg from '@assets/generated_images/close-up_of_eucalyptus_leaves.png';
-import roseImg from '@assets/generated_images/close-up_of_a_pink_rose.png';
+// New Pastel Assets
+import cloveImg from '@assets/generated_images/pastel_flat_illustration_of_clove.png';
+import lemonImg from '@assets/generated_images/pastel_flat_illustration_of_lemon.png';
+import eucalyptusImg from '@assets/generated_images/pastel_flat_illustration_of_eucalyptus.png';
+import roseImg from '@assets/generated_images/pastel_flat_illustration_of_rose.png';
+import avatarImg from '@assets/generated_images/pastel_flat_illustration_of_a_friendly_avatar.png';
+
+export const AVATAR_IMAGE = avatarImg;
 
 export type Scent = {
   id: string;
   name: string;
   image: string;
   description: string;
+  color: string; // Tailwind class for background
   isDefault: boolean;
 };
 
@@ -20,6 +24,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Clove',
     image: cloveImg,
     description: 'Spicy, warm, and aromatic.',
+    color: 'bg-orange-100',
     isDefault: true,
   },
   {
@@ -27,6 +32,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Lemon',
     image: lemonImg,
     description: 'Citrusy, sharp, and fresh.',
+    color: 'bg-yellow-100',
     isDefault: true,
   },
   {
@@ -34,6 +40,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Eucalyptus',
     image: eucalyptusImg,
     description: 'Cool, camphorous, and minty.',
+    color: 'bg-green-100',
     isDefault: true,
   },
   {
@@ -41,6 +48,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Rose',
     image: roseImg,
     description: 'Floral, sweet, and delicate.',
+    color: 'bg-pink-100',
     isDefault: true,
   },
 ];
@@ -59,7 +67,7 @@ export type UserSettings = {
 };
 
 // Simple local storage wrapper
-const STORAGE_KEY = 'scentpath_data_v1';
+const STORAGE_KEY = 'scentpath_data_v2';
 
 export const getStoredData = () => {
   const stored = localStorage.getItem(STORAGE_KEY);

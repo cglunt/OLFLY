@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { getStoredData, saveStoredData } from "@/lib/data";
+import { getStoredData, AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, CheckCircle2, Calendar, Trophy } from "lucide-react";
+import { Play, Video, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
-  const [data, setData] = useState(getStoredData());
+  const [data] = useState(getStoredData());
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState("Good Morning");
 
@@ -20,113 +19,121 @@ export default function Home() {
     else setGreeting("Good Evening");
   }, []);
 
-  const isSessionCompletedToday = () => {
-    const today = new Date().toISOString().split('T')[0];
-    return data.logs.some((log: any) => log.date.startsWith(today));
-  };
-
-  const completedToday = isSessionCompletedToday();
-
   return (
     <Layout>
       <div className="p-6 space-y-8">
-        {/* Header */}
-        <header className="space-y-1">
-          <p className="text-muted-foreground font-medium">{greeting},</p>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Ready to smell?</h1>
+        {/* Header with Avatar */}
+        <header className="flex justify-between items-center">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-heading font-bold text-foreground">Start your<br />practice</h1>
+          </div>
+          <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+            <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
+          </div>
         </header>
 
-        {/* Streak Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/20 border-none shadow-sm">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-muted-foreground">Current Streak</p>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-primary">{data.settings.streak}</span>
-                  <span className="text-muted-foreground">days</span>
-                </div>
-              </div>
-              <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-sm text-amber-400">
-                <Trophy size={24} fill="currentColor" />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Daily Status */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Today's Progress</h2>
-            <span className="text-xs font-medium px-2 py-1 bg-secondary rounded-full text-secondary-foreground">
-              {completedToday ? "Completed" : "Pending"}
-            </span>
-          </div>
-
-          {completedToday ? (
-            <Card className="bg-green-50 border-green-100 dark:bg-green-900/20 dark:border-green-800">
-              <CardContent className="p-6 text-center space-y-3">
-                <div className="mx-auto h-12 w-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
-                  <CheckCircle2 size={24} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-green-800 dark:text-green-300">Great job!</h3>
-                  <p className="text-sm text-green-600/80 dark:text-green-400/80">You've completed your daily training.</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="border-dashed border-2 border-muted-foreground/20 shadow-none">
-              <CardContent className="p-6 text-center space-y-4">
-                <p className="text-muted-foreground text-sm">
-                  Consistent practice is key to recovery.
-                </p>
-                <Button 
-                  size="lg" 
-                  className="w-full rounded-full text-lg h-14 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
-                  onClick={() => setLocation("/training")}
-                >
-                  <Play className="mr-2 h-5 w-5" fill="currentColor" />
-                  Start Session
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+        {/* Filter Tabs (Visual only for now) */}
+        <div className="flex gap-6 text-sm font-medium text-muted-foreground overflow-x-auto scrollbar-hide pb-2">
+          <span className="text-primary border-b-2 border-primary pb-1 cursor-pointer whitespace-nowrap">Balance</span>
+          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Calm & relaxing</span>
+          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Focus</span>
+          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Anxiety</span>
         </div>
 
-        {/* Daily Affirmation */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-secondary/50 rounded-2xl p-6 text-center relative overflow-hidden"
-        >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-          <p className="italic text-muted-foreground font-medium leading-relaxed">
-            "Every small step is progress. Trust your body's ability to heal and reconnect."
-          </p>
-        </motion.div>
+        {/* Horizontal Session Cards */}
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
+          {/* Main Training Card */}
+          <motion.div 
+            whileTap={{ scale: 0.98 }}
+            className="min-w-[280px] h-[180px] bg-[#F5D7C4] rounded-[2rem] relative overflow-hidden cursor-pointer shadow-sm"
+            onClick={() => setLocation("/training")}
+          >
+            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
+              <div>
+                <h3 className="font-heading text-2xl font-bold text-[#3C3C3C]">Daily<br/>Scent Training</h3>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[#3C3C3C]/70">
+                <span>4 Scents</span>
+                <span>•</span>
+                <span>5 Min</span>
+              </div>
+            </div>
+            {/* Decorative Illustration */}
+            <div className="absolute right-[-20px] bottom-[-20px] w-40 h-40 opacity-90">
+              <img src={data.scents[0].image} className="w-full h-full object-contain mix-blend-multiply" alt="decoration" />
+            </div>
+          </motion.div>
 
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card className="bg-card/50">
-            <CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-              <Calendar className="h-5 w-5 text-muted-foreground" />
-              <span className="text-2xl font-bold text-foreground">{data.logs.length}</span>
-              <span className="text-xs text-muted-foreground">Total Sessions</span>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/50">
-            <CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-              <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
-              <span className="text-2xl font-bold text-foreground">4</span>
-              <span className="text-xs text-muted-foreground">Active Scents</span>
-            </CardContent>
-          </Card>
+          {/* Secondary Card */}
+          <motion.div 
+            whileTap={{ scale: 0.98 }}
+            className="min-w-[280px] h-[180px] bg-[#8AC1A2] rounded-[2rem] relative overflow-hidden cursor-pointer shadow-sm"
+            onClick={() => setLocation("/training")}
+          >
+            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
+              <div>
+                <h3 className="font-heading text-2xl font-bold text-white">Quick<br/>Reset</h3>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-white/80">
+                <span>1 Scent</span>
+                <span>•</span>
+                <span>1 Min</span>
+              </div>
+            </div>
+            <div className="absolute right-[-10px] bottom-[-10px] w-36 h-36 opacity-80">
+               <img src={data.scents[2].image} className="w-full h-full object-contain mix-blend-soft-light" alt="decoration" />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Resources Section */}
+        <div className="space-y-4">
+          <h2 className="font-heading text-xl font-bold text-foreground">Resources</h2>
+          
+          <div className="grid gap-4">
+            {/* Resource Card 1 */}
+            <Card className="border-none shadow-sm bg-white hover:bg-secondary/20 transition-colors cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-4">
+                <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600 shrink-0">
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-foreground">Mind & Body Connection</h4>
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                    Understanding how olfactory nerves regenerate through neuroplasticity.
+                  </p>
+                </div>
+                <div className="ml-auto">
+                  <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">READ</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Resource Card 2 */}
+            <Card className="border-none shadow-sm bg-white hover:bg-secondary/20 transition-colors cursor-pointer">
+              <CardContent className="p-4 flex items-center gap-4">
+                <div className="h-12 w-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
+                  <Video size={20} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-foreground">Power of Mantra</h4>
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                    Using positive affirmations to boost your recovery process.
+                  </p>
+                </div>
+                <div className="ml-auto">
+                  <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-2 py-1 rounded-full">WATCH</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Daily Affirmation Footer */}
+        <div className="bg-[#F9F4ED] p-6 rounded-3xl text-center">
+          <p className="font-heading text-lg font-medium text-foreground italic">
+            "I am healing a little more every day."
+          </p>
         </div>
       </div>
     </Layout>
