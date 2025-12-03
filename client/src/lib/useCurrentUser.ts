@@ -1,49 +1,55 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser, getUser, updateUser } from "./api";
+import { createUser, getUser, updateUser, setUserScents } from "./api";
 import type { User, InsertUser } from "@shared/schema";
 
 const USER_ID_KEY = "olfly_user_id";
 
-// Get or create a user ID (stored in localStorage for this demo)
-function getUserId(): string {
-  let id = localStorage.getItem(USER_ID_KEY);
-  if (!id) {
-    // Will be set after creating user
-    id = "pending";
-  }
-  return id;
+function getStoredUserId(): string | null {
+  return localStorage.getItem(USER_ID_KEY);
 }
 
-function setUserId(id: string) {
+function setStoredUserId(id: string) {
   localStorage.setItem(USER_ID_KEY, id);
 }
 
 export function useCurrentUser() {
   const queryClient = useQueryClient();
-  const userId = getUserId();
+  const storedUserId = getStoredUserId();
 
-  const { data: user, isLoading, error } = useQuery({
-    queryKey: ["user", userId],
-    queryFn: async () => {
-      if (userId === "pending") {
-        // Create a new user
-        const newUser = await createUser({
-          name: "Sherman",
-          hasOnboarded: false,
-          remindersEnabled: true,
-          streak: 0,
-        });
-        setUserId(newUser.id);
-        
-        // Set default scents for new user
-        const { setUserScents } = await import("./api");
-        await setUserScents(newUser.id, ['clove', 'lemon', 'eucalyptus', 'rose']);
-        
-        return newUser;
+  const { data: user, isLoading, error, refetch } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async (): Promise<User> => {
+      // Check if we have a stored user ID
+      const userId = getStoredUserId();
+      
+      if (userId) {
+        // Fetch existing user
+        try {
+          return await getUser(userId);
+        } catch (e) {
+          // User doesn't exist, clear storage and create new one
+          localStorage.removeItem(USER_ID_KEY);
+        }
       }
-      return getUser(userId);
+      
+      // Create a new user
+      const newUser = await createUser({
+        name: "Sherman",
+        hasOnboarded: false,
+        remindersEnabled: true,
+        streak: 0,
+      });
+      
+      // Set default scents for new user
+      await setUserScents(newUser.id, ['clove', 'lemon', 'eucalyptus', 'rose']);
+      
+      // Store user ID
+      setStoredUserId(newUser.id);
+      
+      return newUser;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
   });
 
   const updateUserMutation = useMutation({
@@ -52,7 +58,7 @@ export function useCurrentUser() {
       return updateUser(user.id, updates);
     },
     onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["user", updatedUser.id], updatedUser);
+      queryClient.setQueryData(["currentUser"], updatedUser);
     },
   });
 
@@ -62,5 +68,6 @@ export function useCurrentUser() {
     error,
     updateUser: updateUserMutation.mutate,
     updateUserAsync: updateUserMutation.mutateAsync,
+    refetch,
   };
 }

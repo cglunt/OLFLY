@@ -10,7 +10,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import onboardingIllustration from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747155862.png';
 
 export default function Onboarding() {
-  const { user, updateUser } = useCurrentUser();
+  const { user, updateUser, isLoading } = useCurrentUser();
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [morningTime, setMorningTime] = useState("08:00");
@@ -31,6 +31,15 @@ export default function Onboarding() {
     
     setLocation("/");
   };
+
+  // Show loading while user is being created/fetched
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <p className="text-white/70">Loading...</p>
+      </div>
+    );
+  }
 
   const variants = {
     enter: { x: 20, opacity: 0 },
