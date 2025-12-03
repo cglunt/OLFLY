@@ -7,9 +7,9 @@ export default function Article() {
   const [, setLocation] = useLocation();
   
   return (
-    <div className="min-h-screen bg-[#1A0F35] text-white font-sans">
+    <div className="min-h-screen bg-[#0B0618] text-white font-sans">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A0F35]/80 backdrop-blur-md border-b border-white/5 p-4 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0B0618]/80 backdrop-blur-md border-b border-white/5 p-4 flex items-center justify-between">
         <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white">
            <ChevronLeft className="h-6 w-6" />
         </Button>

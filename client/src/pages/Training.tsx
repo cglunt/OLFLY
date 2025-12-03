@@ -118,10 +118,10 @@ export default function Training() {
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
   return (
-    <div className="relative min-h-screen w-screen overflow-hidden bg-[#1A0F35]">
+    <div className="relative min-h-screen w-screen overflow-hidden bg-[#0B0618]">
       {/* Background Gradient / Image Overlay */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <div className="absolute inset-0 bg-[#1A0F35] z-10" />
+        <div className="absolute inset-0 bg-[#0B0618] z-10" />
         {phase === "smell" && (
              <img 
                 src={activeScent.image} 

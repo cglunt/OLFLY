@@ -12,9 +12,9 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
   const showNav = location !== "/training";
 
   return (
-    <div className="min-h-screen w-full bg-[#1A0F35] text-white flex flex-col max-w-md mx-auto shadow-none overflow-hidden relative font-sans">
+    <div className="min-h-screen w-full bg-[#0B0618] text-white flex flex-col max-w-md mx-auto shadow-none overflow-hidden relative font-sans">
       {/* Flat Background - No Images */}
-      <div className="absolute inset-0 z-0 w-full h-full bg-[#1A0F35] pointer-events-none" />
+      <div className="absolute inset-0 z-0 w-full h-full bg-[#0B0618] pointer-events-none" />
 
       {/* Custom Background Overlay */}
       {backgroundOverlay && (
@@ -45,7 +45,7 @@ function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#1A0F35]/80 backdrop-blur-xl z-50 max-w-md mx-auto py-4 flex justify-around items-center border-t border-white/5">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#0B0618]/80 backdrop-blur-xl z-50 max-w-md mx-auto py-4 flex justify-around items-center border-t border-white/5">
       {navItems.map((item) => {
         const isActive = location === item.path;
         return (

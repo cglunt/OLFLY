@@ -56,10 +56,10 @@ export default function Onboarding() {
   );
 
   return (
-    <div className="min-h-screen w-full bg-[#05050A] text-white flex flex-col font-sans selection:bg-purple-500/30 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[#0B0618] text-white flex flex-col font-sans selection:bg-purple-500/30 relative overflow-hidden">
       {/* Fix Option 3: Absolute Overlay for Background */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-[#05050A] to-[#05050A]" />
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/10 via-[#0B0618] to-[#0B0618]" />
       </div>
       
       {/* Content Wrapper - Fix Option 2: Ensure parent containers do not shrink */}
@@ -99,12 +99,8 @@ export default function Onboarding() {
                             transition={{ duration: 0.5 }}
                             className="w-64 h-64 md:w-72 md:h-72 mx-auto mb-8"
                         >
-                            <img src={onboardingIllustration} alt="Olfly Illustration" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]" />
+                            <img src={onboardingIllustration} alt="Olfly Illustration" className="w-full h-full object-contain" />
                         </motion.div>
-
-                        <div className="mb-6 flex justify-center">
-                            <img src={appLogo} alt="Olfly Logo" className="h-12 object-contain" />
-                        </div>
 
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1] text-center">
                             Wake up your<br />
@@ -387,8 +383,8 @@ export default function Onboarding() {
                     className="flex-1 flex flex-col justify-center py-8"
                 >
                     <div className="text-center mb-8 md:mb-12">
-                        <div className="inline-flex items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-[0_0_50px_rgba(168,85,247,0.4)] mb-6 md:mb-8">
-                            <Check size={40} className="md:w-12 md:h-12 text-white" strokeWidth={4} />
+                        <div className="flex justify-center mb-8">
+                            <img src={appLogo} alt="Olfly Logo" className="h-20 md:h-24 object-contain" />
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold mb-6">Your nose<br/>is ready.</h2>
                         <div className="space-y-4 max-w-xs mx-auto">
