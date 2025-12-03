@@ -167,34 +167,44 @@ export default function Training() {
       )}
 
       {phase === "smell" && (
-        <div className="h-full flex flex-col p-6 relative overflow-hidden">
-           <div className="absolute top-0 left-0 w-full h-2 bg-secondary">
-            <div className="h-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
+        <div className="h-full flex flex-col relative overflow-hidden">
+           {/* Progress Bar */}
+           <div className="absolute top-0 left-0 w-full h-1 bg-white/20 z-50">
+            <div className="h-full bg-white transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8 relative z-10">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
-              <img 
+          {/* Full Screen Background Image */}
+          <div className="absolute inset-0 z-0">
+             <img 
                 src={activeScent.image} 
                 alt={activeScent.name} 
-                className="w-64 h-64 object-cover rounded-3xl shadow-2xl animate-in zoom-in duration-700"
+                className="w-full h-full object-cover animate-in fade-in duration-1000 scale-105"
               />
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-6 py-2 rounded-full shadow-lg z-20 border border-border">
-                 <span className="font-mono text-xl font-bold text-primary">{formatTime(timeLeft)}</span>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-4">
-              <h2 className="text-3xl font-bold">{activeScent.name}</h2>
-              <p className="text-muted-foreground">Focus gently on the scent...</p>
-            </div>
+             {/* Gradient Overlays for readability */}
+             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
           </div>
 
-          <div className="mt-auto pt-6">
-            <Button variant="outline" className="w-full rounded-full" onClick={() => { setIsActive(false); setPhase("rate"); }}>
-              Skip Timer
-            </Button>
+          {/* Content Overlay */}
+          <div className="relative z-10 flex flex-col h-full p-6 text-white">
+            
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-2">
+               <h2 className="text-5xl font-bold tracking-tight drop-shadow-md">{activeScent.name}</h2>
+               <p className="text-white/90 text-lg font-medium drop-shadow-sm">Focus gently on the scent...</p>
+               
+               <div className="py-12">
+                 <span className="font-mono text-7xl font-bold tracking-widest drop-shadow-xl">{formatTime(timeLeft)}</span>
+               </div>
+            </div>
+
+            <div className="mt-auto pb-8">
+              <Button 
+                variant="secondary" 
+                className="w-full rounded-full h-14 text-lg bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 border shadow-xl transition-all active:scale-95" 
+                onClick={() => { setIsActive(false); setPhase("rate"); }}
+              >
+                Skip Timer
+              </Button>
+            </div>
           </div>
         </div>
       )}
