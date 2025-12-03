@@ -29,7 +29,10 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
         </div>
       )}
       
-      <main className="flex-1 flex flex-col overflow-y-auto pb-24 scrollbar-hide relative z-10">
+      <main className={cn(
+        "flex-1 flex flex-col overflow-y-auto scrollbar-hide relative z-10",
+        showNav ? "pb-24" : "pb-0"
+      )}>
         {children}
       </main>
       {showNav && <BottomNav />}
