@@ -14,29 +14,35 @@ function setStoredUserId(id: string) {
 
 async function getOrCreateUser(): Promise<User> {
   const storedId = getStoredUserId();
+  console.log("[useCurrentUser] Starting getOrCreateUser, storedId:", storedId);
   
   if (storedId) {
     try {
-      return await getUser(storedId);
+      const existingUser = await getUser(storedId);
+      console.log("[useCurrentUser] Found existing user:", existingUser);
+      return existingUser;
     } catch (e) {
-      // User not found, clear and create new
+      console.log("[useCurrentUser] User not found, clearing storage");
       localStorage.removeItem(USER_ID_KEY);
     }
   }
   
-  // Create new user
+  console.log("[useCurrentUser] Creating new user");
   const newUser = await createUser({
     name: "Sherman",
     hasOnboarded: false,
     remindersEnabled: true,
     streak: 0,
   });
+  console.log("[useCurrentUser] Created user:", newUser);
   
   // Set default scents
   await setUserScents(newUser.id, ['clove', 'lemon', 'eucalyptus', 'rose']);
+  console.log("[useCurrentUser] Set default scents");
   
   // Store user ID
   setStoredUserId(newUser.id);
+  console.log("[useCurrentUser] Stored user ID, returning user");
   
   return newUser;
 }
@@ -44,12 +50,14 @@ async function getOrCreateUser(): Promise<User> {
 export function useCurrentUser() {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, error } = useQuery({
+  const { data: user, isLoading, error, status, fetchStatus } = useQuery({
     queryKey: ["currentUser"],
     queryFn: getOrCreateUser,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
+  
+  console.log("[useCurrentUser] Hook state:", { user: user?.id, isLoading, error, status, fetchStatus });
 
   const updateUserMutation = useMutation({
     mutationFn: (updates: Partial<InsertUser>) => {
