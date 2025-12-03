@@ -1,18 +1,36 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getStoredData, saveStoredData, ALL_SCENTS, Scent, ScentCategory } from "@/lib/data";
-import { Search, Play, Check } from "lucide-react";
+import { ALL_SCENTS, Scent } from "@/lib/data";
+import { Search, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getUserScents, setUserScents } from "@/lib/api";
 
 export default function Library() {
-  const [data, setData] = useState(getStoredData());
+  const { user } = useCurrentUser();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const activeScentIds = data.activeScentIds || ['clove', 'lemon', 'eucalyptus', 'rose'];
+  // Fetch user's active scents
+  const { data: userScents = [] } = useQuery({
+    queryKey: ["userScents", user?.id],
+    queryFn: () => getUserScents(user!.id),
+    enabled: !!user,
+  });
+
+  const activeScentIds = userScents.map(s => s.scentId);
+
+  // Mutation to update scents
+  const updateScentsMutation = useMutation({
+    mutationFn: (scentIds: string[]) => setUserScents(user!.id, scentIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userScents", user?.id] });
+    },
+  });
 
   // Get unique categories
   const categories = ["All", ...Array.from(new Set(ALL_SCENTS.map(s => s.category)))];
@@ -24,17 +42,24 @@ export default function Library() {
   });
 
   const toggleScentActive = (id: string) => {
-      let newActiveIds = [...activeScentIds];
-      if (newActiveIds.includes(id)) {
-          newActiveIds = newActiveIds.filter(sid => sid !== id);
-      } else {
-          newActiveIds.push(id);
-      }
-      
-      const newData = { ...data, activeScentIds: newActiveIds };
-      saveStoredData(newData);
-      setData(newData);
+    let newActiveIds = [...activeScentIds];
+    if (newActiveIds.includes(id)) {
+      newActiveIds = newActiveIds.filter(sid => sid !== id);
+    } else {
+      newActiveIds.push(id);
+    }
+    updateScentsMutation.mutate(newActiveIds);
   };
+
+  if (!user) {
+    return (
+      <Layout>
+        <div className="p-6 flex items-center justify-center min-h-[50vh]">
+          <p className="text-white/70">Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -50,6 +75,7 @@ export default function Library() {
                 className="pl-12 bg-[#3b1645] border-transparent focus:border-[#ac41c3] h-14 rounded-2xl text-white placeholder:text-white/50 shadow-md"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="input-search-scents"
             />
           </div>
 
@@ -65,6 +91,7 @@ export default function Library() {
                             ? "bg-[#ac41c3] text-white shadow-md" 
                             : "bg-[#3b1645] text-white/70 hover:bg-[#4a1c57] hover:text-white"
                     )}
+                    data-testid={`button-category-${cat.toLowerCase()}`}
                 >
                     {cat}
                 </button>
@@ -92,6 +119,7 @@ export default function Library() {
                         ? "bg-[#3b1645] border border-[#ac41c3]/50" 
                         : "bg-[#3b1645] border border-transparent hover:bg-[#4a1c57]"
                 )}
+                data-testid={`card-scent-${scent.id}`}
               >
                 {/* Gradient Circle with Icon */}
                 <div className={cn(
@@ -102,14 +130,16 @@ export default function Library() {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                   <h3 className="font-bold text-white text-lg truncate">{scent.name}</h3>
+                   <h3 className="font-bold text-white text-lg truncate" data-testid={`text-scent-name-${scent.id}`}>{scent.name}</h3>
                    <p className="text-sm text-white/70 truncate">{scent.description}</p>
                 </div>
 
                 <div className={cn(
                     "h-8 w-8 rounded-full flex items-center justify-center transition-colors border",
                     isActive ? "bg-[#ac41c3] border-[#ac41c3] text-white" : "bg-transparent border-white/30 text-transparent"
-                )}>
+                )}
+                data-testid={`icon-check-${scent.id}`}
+                >
                    <Check size={16} strokeWidth={4} />
                 </div>
               </div>

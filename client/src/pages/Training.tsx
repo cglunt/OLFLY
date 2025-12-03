@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { getStoredData, saveStoredData, DEFAULT_SCENTS, AVATAR_IMAGE } from "@/lib/data";
+import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation } from "wouter";
-import { ArrowLeft, Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -13,13 +12,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose
 } from "@/components/ui/dialog";
+import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getUserScents, createSession } from "@/lib/api";
 
 type Phase = "intro" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
 export default function Training() {
-  const [data, setData] = useState(getStoredData());
+  const { user, updateUserAsync } = useCurrentUser();
+  const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   
   const [phase, setPhase] = useState<Phase>("intro");
@@ -30,12 +32,26 @@ export default function Training() {
   const [currentRating, setCurrentRating] = useState(5);
   const [ratings, setRatings] = useState<Record<string, number>>({});
 
-  // Filter scents to only include active ones for the session
-  const sessionScents = data.scents.filter(s => data.activeScentIds.includes(s.id));
-  const activeScent = sessionScents[currentScentIndex] || DEFAULT_SCENTS[0];
+  // Fetch user's active scents
+  const { data: userScents = [] } = useQuery({
+    queryKey: ["userScents", user?.id],
+    queryFn: () => getUserScents(user!.id),
+    enabled: !!user,
+  });
+
+  const activeScentIds = userScents.map(s => s.scentId);
+  const sessionScents = ALL_SCENTS.filter((s: Scent) => activeScentIds.includes(s.id));
+  const activeScent = sessionScents[currentScentIndex] || ALL_SCENTS.find((s: Scent) => s.id === 'clove');
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? 20 : phase === "rest" ? 10 : 0;
+
+  const createSessionMutation = useMutation({
+    mutationFn: createSession,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sessions", user?.id] });
+    },
+  });
 
   // Timer Logic
   useEffect(() => {
@@ -79,7 +95,7 @@ export default function Training() {
   };
 
   const submitRating = () => {
-    const newRatings = { ...ratings, [activeScent.id]: currentRating };
+    const newRatings = { ...ratings, [activeScent!.id]: currentRating };
     setRatings(newRatings);
     
     if (currentScentIndex < sessionScents.length - 1) {
@@ -93,39 +109,47 @@ export default function Training() {
     }
   };
 
-  const completeSession = (finalRatings: Record<string, number>) => {
+  const completeSession = async (finalRatings: Record<string, number>) => {
+    if (!user) return;
+
     setPhase("outro");
-    const newLog = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      completed: true,
-      scentRatings: finalRatings
-    };
     
-    const newData = {
-      ...data,
-      logs: [newLog, ...data.logs],
-      settings: {
-        ...data.settings,
-        streak: data.settings.streak + 1,
-        lastSessionDate: new Date().toISOString()
-      }
-    };
-    saveStoredData(newData);
-    setData(newData);
+    // Save session to backend
+    await createSessionMutation.mutateAsync({
+      userId: user.id,
+      completed: true,
+      scentRatings: finalRatings,
+    });
+
+    // Update user streak
+    const today = new Date().toISOString().split('T')[0];
+    const lastSessionDate = user.lastSessionDate ? new Date(user.lastSessionDate).toISOString().split('T')[0] : null;
+    
+    let newStreak = user.streak;
+    if (!lastSessionDate || lastSessionDate !== today) {
+      newStreak = user.streak + 1;
+    }
+
+    await updateUserAsync({
+      streak: newStreak,
+      lastSessionDate: new Date() as any,
+    });
   };
 
-  // Calculate circle progress
-  const radius = 120;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
+  if (!user || sessionScents.length === 0) {
+    return (
+      <div className="relative min-h-screen w-screen overflow-hidden bg-[#0c0c1d] flex items-center justify-center">
+        <p className="text-white/70">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen w-screen overflow-hidden bg-[#0c0c1d]">
       {/* Background Gradient / Image Overlay */}
       <div className="absolute inset-0 w-full h-full z-0">
         <div className="absolute inset-0 bg-[#0c0c1d] z-10" />
-        {phase === "smell" && (
+        {phase === "smell" && activeScent?.image && (
              <img 
                 src={activeScent.image} 
                 className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000 grayscale mix-blend-overlay" 
@@ -139,7 +163,7 @@ export default function Training() {
         
         {/* Header */}
         <header className="w-full flex justify-between items-center mt-2">
-           <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white">
+           <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white" data-testid="button-back">
              <ChevronLeft className="h-6 w-6" />
            </Button>
            <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
@@ -148,7 +172,7 @@ export default function Training() {
            
            <Dialog open={showHelp} onOpenChange={setShowHelp}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full" data-testid="button-help">
                   <HelpCircle className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
@@ -212,31 +236,34 @@ export default function Training() {
                           </svg>
                        )}
 
+                       {activeScent && (
                        <motion.div 
                         key={activeScent.id}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#0c0c1d] shadow-2xl z-10 bg-white"
                        >
-                        <img src={activeScent.image} className="w-full h-full object-cover" />
+                        {activeScent.image && <img src={activeScent.image} className="w-full h-full object-cover" />}
                        </motion.div>
+                       )}
                   </div>
                )}
            </div>
 
            {/* Text Info */}
            <div className="text-center space-y-3">
-             <h1 className="text-4xl font-bold text-white tracking-tight">
+             <h1 className="text-4xl font-bold text-white tracking-tight" data-testid="text-phase-title">
                {phase === "intro" ? "Daily Practice" : 
                 phase === "outro" ? "Completed" : 
-                activeScent.name}
+                activeScent?.name || ""}
              </h1>
-             <p className="text-xl text-white/70 font-medium tracking-wide">
+             <p className="text-xl text-white/70 font-medium tracking-wide" data-testid="text-phase-subtitle">
                {phase === "intro" ? "Ready to start?" : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
                 phase === "rest" ? "Rest & Reset" : 
-                formatTime(timeLeft)}
+                phase === "rate" ? formatTime(timeLeft) :
+                phase === "outro" ? "Great work!" : ""}
              </p>
            </div>
 
@@ -245,7 +272,7 @@ export default function Training() {
               <div className="w-full bg-[#3b1645] p-6 rounded-2xl shadow-md animate-in slide-in-from-bottom-5 fade-in">
                 <div className="flex justify-between items-center mb-6">
                     <label className="text-white text-sm font-bold tracking-wider uppercase">Intensity</label>
-                    <span className="text-3xl font-bold text-[#ac41c3]">{currentRating}/10</span>
+                    <span className="text-3xl font-bold text-[#ac41c3]" data-testid="text-rating">{currentRating}/10</span>
                 </div>
                 <Slider 
                     defaultValue={[5]} 
@@ -254,8 +281,9 @@ export default function Training() {
                     value={[currentRating]} 
                     onValueChange={(val) => setCurrentRating(val[0])}
                     className="py-2 mb-8"
+                    data-testid="slider-rating"
                 />
-                <Button size="lg" className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating}>
+                <Button size="lg" className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating} data-testid="button-submit-rating">
                   Submit Rating
                 </Button>
               </div>
@@ -268,7 +296,7 @@ export default function Training() {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
-                 }}>
+                 }} data-testid="button-restart">
                    <RotateCcw className="h-6 w-6" />
                  </Button>
                  
@@ -276,6 +304,7 @@ export default function Training() {
                    size="icon" 
                    className="h-24 w-24 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:scale-105 transition-all shadow-lg shadow-[#ac41c3]/20"
                    onClick={toggleTimer}
+                   data-testid="button-play-pause"
                  >
                    {isActive ? <Pause className="h-10 w-10 fill-current" /> : <Play className="h-10 w-10 fill-current pl-1" />}
                  </Button>
@@ -285,20 +314,20 @@ export default function Training() {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
-                 }}>
+                 }} data-testid="button-skip">
                    <SkipForward className="h-6 w-6" />
                  </Button>
                </div>
            )}
 
            {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession} data-testid="button-start-training">
                  Start Training
                </Button>
            )}
            
            {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/")}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/")} data-testid="button-finish-session">
                  Finish Session
                </Button>
            )}
