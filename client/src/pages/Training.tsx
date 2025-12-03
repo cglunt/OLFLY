@@ -30,7 +30,10 @@ export default function Training() {
   const [currentRating, setCurrentRating] = useState(5);
   const [ratings, setRatings] = useState<Record<string, number>>({});
 
-  const activeScent = data.scents[currentScentIndex] || DEFAULT_SCENTS[0];
+  // Filter scents to only include active ones for the session
+  const sessionScents = data.scents.filter(s => data.activeScentIds.includes(s.id));
+  const activeScent = sessionScents[currentScentIndex] || DEFAULT_SCENTS[0];
+  
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? 20 : phase === "rest" ? 10 : 0;
 
@@ -79,7 +82,7 @@ export default function Training() {
     const newRatings = { ...ratings, [activeScent.id]: currentRating };
     setRatings(newRatings);
     
-    if (currentScentIndex < data.scents.length - 1) {
+    if (currentScentIndex < sessionScents.length - 1) {
       setCurrentScentIndex(prev => prev + 1);
       setPhase("rest");
       setTimeLeft(10);
