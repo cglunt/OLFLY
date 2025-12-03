@@ -32,15 +32,6 @@ export default function Onboarding() {
     setLocation("/");
   };
 
-  // Show loading while user is being created/fetched
-  if (isLoading) {
-    return (
-      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
-        <p className="text-white/70">Loading...</p>
-      </div>
-    );
-  }
-
   const variants = {
     enter: { x: 20, opacity: 0 },
     center: { x: 0, opacity: 1 },
