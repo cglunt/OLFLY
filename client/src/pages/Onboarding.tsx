@@ -7,7 +7,8 @@ import { Check, Clock, Sparkles, Activity, Zap, ArrowRight } from "lucide-react"
 import { getStoredData, saveStoredData } from "@/lib/data";
 
 // App Logo
-import appLogo from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764746299313.png';
+import appLogo from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747163301.png';
+import onboardingIllustration from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747155862.png';
 
 export default function Onboarding() {
   const [, setLocation] = useLocation();
@@ -96,12 +97,16 @@ export default function Onboarding() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.5 }}
-                            className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-black/20 flex items-center justify-center mb-6 md:mb-8 shadow-2xl shadow-purple-500/10 border border-white/5 overflow-hidden"
+                            className="w-64 h-64 md:w-72 md:h-72 mx-auto mb-8"
                         >
-                            <img src={appLogo} alt="Olfly Logo" className="w-full h-full object-cover" />
+                            <img src={onboardingIllustration} alt="Olfly Illustration" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]" />
                         </motion.div>
 
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1]">
+                        <div className="mb-6 flex justify-center">
+                            <img src={appLogo} alt="Olfly Logo" className="h-12 object-contain" />
+                        </div>
+
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1] text-center">
                             Wake up your<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">super sniffer.</span>
                         </h1>

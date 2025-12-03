@@ -37,6 +37,9 @@ import shampooImg from '@assets/generated_images/shampoo_bubbles_close-up.png';
 import perfumeImg from '@assets/generated_images/perfume_bottle_close-up.png';
 import lotionImg from '@assets/generated_images/lotion_texture_close-up.png';
 import candleImg from '@assets/generated_images/scented_candle_close-up.png';
+import greenTeaImg from '@assets/generated_images/green_tea_close-up.png';
+import thymeImg from '@assets/generated_images/thyme_sprigs_close-up.png';
+import sandalwoodImg from '@assets/generated_images/sandalwood_chips_close-up.png';
 
 export const AVATAR_IMAGE = avatarImg;
 
@@ -113,6 +116,11 @@ export const ALL_SCENTS: Scent[] = [
   { id: 'perfume', name: 'Perfume/Cologne', category: 'Functional', description: 'Complex, alcohol-based, and distinct.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: perfumeImg },
   { id: 'lotion', name: 'Lotion/Oil', category: 'Functional', description: 'Creamy, subtle, and moisturizing.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: lotionImg },
   { id: 'candle', name: 'Favorite Candle', category: 'Functional', description: 'Waxy, fragranced, and familiar.', color: SCENT_CATEGORIES['Functional'], isDefault: false, image: candleImg },
+  
+  // Missing Set Scents
+  { id: 'green_tea', name: 'Green Tea', category: 'Everyday', description: 'Earthy, grassy, and fresh.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: greenTeaImg },
+  { id: 'thyme', name: 'Thyme', category: 'Everyday', description: 'Herbal, woody, and earthy.', color: SCENT_CATEGORIES['Everyday'], isDefault: false, image: thymeImg },
+  { id: 'sandalwood', name: 'Sandalwood', category: 'Woodsy', description: 'Rich, woody, and warm.', color: SCENT_CATEGORIES['Woodsy'], isDefault: false, image: sandalwoodImg },
 ];
 
 export const SCENT_SETS: ScentSet[] = [
