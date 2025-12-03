@@ -132,17 +132,38 @@ export default function Home() {
         <div className="space-y-3 md:space-y-4">
            <h2 className="font-heading text-lg md:text-xl font-bold text-white">Discover</h2>
            <div className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4 md:-mx-6 md:px-6">
-              {[1,2,3].map((_, i) => (
-                 <div key={i} className="min-w-[180px] md:min-w-[200px] h-[110px] md:h-[120px] bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5">
-                    <div className="p-2 bg-white/5 w-fit rounded-xl">
-                       <FileText size={16} className="md:w-[18px] md:h-[18px] text-accent" />
-                    </div>
-                    <div>
-                       <p className="text-[10px] md:text-xs text-muted-foreground mb-1">Article</p>
-                       <h4 className="font-bold text-white text-xs md:text-sm">The Science of Smell</h4>
-                    </div>
-                 </div>
-              ))}
+              <div 
+                className="min-w-[180px] md:min-w-[200px] h-[110px] md:h-[120px] bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5"
+                onClick={() => setLocation("/article/restoring-smell")}
+              >
+                <div className="p-2 bg-white/5 w-fit rounded-xl">
+                    <FileText size={16} className="md:w-[18px] md:h-[18px] text-accent" />
+                </div>
+                <div>
+                    <p className="text-[10px] md:text-xs text-muted-foreground mb-1">Essential Read</p>
+                    <h4 className="font-bold text-white text-xs md:text-sm">Restoring Your Smell</h4>
+                </div>
+              </div>
+
+              <div className="min-w-[180px] md:min-w-[200px] h-[110px] md:h-[120px] bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5 opacity-50">
+                <div className="p-2 bg-white/5 w-fit rounded-xl">
+                    <Zap size={16} className="md:w-[18px] md:h-[18px] text-yellow-500" />
+                </div>
+                <div>
+                    <p className="text-[10px] md:text-xs text-muted-foreground mb-1">Quick Tip</p>
+                    <h4 className="font-bold text-white text-xs md:text-sm">Safety First</h4>
+                </div>
+              </div>
+
+              <div className="min-w-[180px] md:min-w-[200px] h-[110px] md:h-[120px] bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5 opacity-50">
+                <div className="p-2 bg-white/5 w-fit rounded-xl">
+                    <Activity size={16} className="md:w-[18px] md:h-[18px] text-green-500" />
+                </div>
+                <div>
+                    <p className="text-[10px] md:text-xs text-muted-foreground mb-1">Science</p>
+                    <h4 className="font-bold text-white text-xs md:text-sm">How Neurons Heal</h4>
+                </div>
+              </div>
            </div>
         </div>
 

@@ -3,9 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { getStoredData, saveStoredData, DEFAULT_SCENTS, AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { ArrowLeft, Play, Pause, SkipForward, Heart, ChevronLeft, RotateCcw } from "lucide-react";
+import { ArrowLeft, Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "@/components/ui/dialog";
 
 type Phase = "intro" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
@@ -14,6 +23,7 @@ export default function Training() {
   const [, setLocation] = useLocation();
   
   const [phase, setPhase] = useState<Phase>("intro");
+  const [showHelp, setShowHelp] = useState(false);
   const [currentScentIndex, setCurrentScentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -132,9 +142,37 @@ export default function Training() {
            <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
              {phase === 'intro' ? 'Start' : 'Session'}
            </h2>
-           <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
-             <Heart className="h-6 w-6" />
-           </Button>
+           
+           <Dialog open={showHelp} onOpenChange={setShowHelp}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
+                  <HelpCircle className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-[#1A1A2E] border-white/10 text-white max-w-[90vw] md:max-w-md rounded-[2rem]">
+                 <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">How to Sniff</DialogTitle>
+                    <DialogDescription className="text-white/60">Follow this technique for best results.</DialogDescription>
+                 </DialogHeader>
+                 <div className="space-y-4 py-4">
+                    <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">1</div>
+                        <p className="text-sm leading-relaxed">Bring the scent within an inch of your nose. Do not touch your nose.</p>
+                    </div>
+                    <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">2</div>
+                        <p className="text-sm leading-relaxed">Take <strong>slow, natural sniffs</strong> for about 15-20 seconds. Avoid aggressive sniffing.</p>
+                    </div>
+                    <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">3</div>
+                        <p className="text-sm leading-relaxed">Actively try to <strong>recall the smell</strong> and form a mental connection.</p>
+                    </div>
+                 </div>
+                 <Button className="w-full rounded-full h-12 bg-white text-black hover:bg-white/90 font-bold" onClick={() => setShowHelp(false)}>
+                    Got it
+                 </Button>
+              </DialogContent>
+           </Dialog>
         </header>
 
         {/* Central Content */}

@@ -10,6 +10,7 @@ import Library from "@/pages/Library";
 import Progress from "@/pages/Progress";
 import Learn from "@/pages/Learn";
 import Onboarding from "@/pages/Onboarding";
+import Article from "@/pages/Article";
 import { getStoredData } from "@/lib/data";
 import { useEffect } from "react";
 
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/library" component={Library} />
       <Route path="/progress" component={Progress} />
       <Route path="/learn" component={Learn} />
+      <Route path="/article/restoring-smell" component={Article} />
       <Route component={NotFound} />
     </Switch>
   );
