@@ -21,18 +21,18 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="p-6 space-y-8">
+      <div className="p-4 md:p-6 space-y-6 md:space-y-8">
         {/* Header with Avatar */}
         <header className="flex justify-between items-center pt-2">
           <div className="space-y-1">
-            <p className="text-muted-foreground text-lg font-medium">{greeting},</p>
-            <h1 className="text-4xl font-heading font-bold text-white tracking-tight">Sherman</h1>
+            <p className="text-muted-foreground text-base md:text-lg font-medium">{greeting},</p>
+            <h1 className="text-3xl md:text-4xl font-heading font-bold text-white tracking-tight">Sherman</h1>
           </div>
-          <div className="flex gap-4 items-center">
-             <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10">
-                <Bell className="w-6 h-6" />
+          <div className="flex gap-3 md:gap-4 items-center">
+             <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-10 h-10 md:w-12 md:h-12">
+                <Bell className="w-5 h-5 md:w-6 md:h-6" />
              </Button>
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-primary shadow-lg shadow-primary/20">
+            <div className="h-10 w-10 md:h-12 md:w-12 rounded-full overflow-hidden border-2 border-primary shadow-lg shadow-primary/20">
               <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
             </div>
           </div>
@@ -42,45 +42,45 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full bg-gradient-primary rounded-[2rem] p-6 text-white shadow-lg shadow-primary/20 relative overflow-hidden cursor-pointer"
+          className="w-full bg-gradient-primary rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-6 text-white shadow-lg shadow-primary/20 relative overflow-hidden cursor-pointer"
           onClick={() => setLocation("/training")}
         >
           <div className="relative z-10">
-             <div className="flex justify-between items-start mb-6">
+             <div className="flex justify-between items-start mb-4 md:mb-6">
                <div>
-                 <span className="text-white/80 text-sm font-medium">Daily Goal</span>
-                 <h2 className="text-2xl font-bold mt-1">Scent Training</h2>
-                 <p className="text-white/90 text-sm">20 Min</p>
+                 <span className="text-white/80 text-xs md:text-sm font-medium">Daily Goal</span>
+                 <h2 className="text-xl md:text-2xl font-bold mt-1">Scent Training</h2>
+                 <p className="text-white/90 text-xs md:text-sm">20 Min</p>
                </div>
-               <div className="w-16 h-16 relative">
+               <div className="w-14 h-14 md:w-16 md:h-16 relative">
                   {/* Simple circular progress */}
-                  <svg className="w-full h-full -rotate-90">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
                     <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" strokeWidth="4" fill="none" />
                     <circle cx="32" cy="32" r="28" stroke="white" strokeWidth="4" fill="none" strokeDasharray="175" strokeDashoffset="45" strokeLinecap="round" />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">
+                  <div className="absolute inset-0 flex items-center justify-center font-bold text-xs md:text-sm">
                     72%
                   </div>
                </div>
              </div>
              
-             <div className="flex gap-4 pt-2 border-t border-white/20">
+             <div className="flex gap-4 pt-3 md:pt-2 border-t border-white/20">
                 <div className="flex items-center gap-2">
                    <div className="p-1.5 bg-white/20 rounded-full">
-                      <Zap size={14} fill="currentColor" />
+                      <Zap size={12} className="md:w-3.5 md:h-3.5" fill="currentColor" />
                    </div>
                    <div>
                       <p className="text-[10px] text-white/70">Streak</p>
-                      <p className="text-sm font-bold">{data.settings.streak} Days</p>
+                      <p className="text-xs md:text-sm font-bold">{data.settings.streak} Days</p>
                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                    <div className="p-1.5 bg-white/20 rounded-full">
-                      <Activity size={14} />
+                      <Activity size={12} className="md:w-3.5 md:h-3.5" />
                    </div>
                    <div>
                       <p className="text-[10px] text-white/70">Progress</p>
-                      <p className="text-sm font-bold">+3.5%</p>
+                      <p className="text-xs md:text-sm font-bold">+3.5%</p>
                    </div>
                 </div>
              </div>
@@ -91,55 +91,55 @@ export default function Home() {
         </motion.div>
 
         {/* Top Routines Section */}
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           <div className="flex justify-between items-center">
-             <h2 className="font-heading text-xl font-bold text-white">Top Routines</h2>
-             <span className="text-sm text-primary font-medium cursor-pointer hover:text-primary/80">See All</span>
+             <h2 className="font-heading text-lg md:text-xl font-bold text-white">Top Routines</h2>
+             <span className="text-xs md:text-sm text-primary font-medium cursor-pointer hover:text-primary/80">See All</span>
           </div>
           
           <div className="space-y-3">
             {/* Routine Card 1 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="bg-secondary rounded-[1.5rem] p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors"
+              className="bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-3 md:p-4 flex items-center gap-3 md:gap-4 cursor-pointer hover:bg-white/5 transition-colors"
             >
-              <div className="h-12 w-12 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-md shadow-primary/30">
-                <Play size={20} fill="currentColor" className="ml-1" />
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-md shadow-primary/30 shrink-0">
+                <Play size={18} className="md:w-5 md:h-5 ml-0.5" fill="currentColor" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white">Morning Reset</h3>
-                <p className="text-xs text-muted-foreground">Lemon & Eucalyptus • 5 Min</p>
+                <h3 className="font-bold text-white text-sm md:text-base">Morning Reset</h3>
+                <p className="text-[10px] md:text-xs text-muted-foreground">Lemon & Eucalyptus • 5 Min</p>
               </div>
             </motion.div>
 
             {/* Routine Card 2 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="bg-secondary rounded-[1.5rem] p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors"
+              className="bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-3 md:p-4 flex items-center gap-3 md:gap-4 cursor-pointer hover:bg-white/5 transition-colors"
             >
-              <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center text-primary">
-                <Moon size={20} fill="currentColor" />
+              <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/10 flex items-center justify-center text-primary shrink-0">
+                <Moon size={18} className="md:w-5 md:h-5" fill="currentColor" />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white">Evening Calm</h3>
-                <p className="text-xs text-muted-foreground">Lavender & Rose • 10 Min</p>
+                <h3 className="font-bold text-white text-sm md:text-base">Evening Calm</h3>
+                <p className="text-[10px] md:text-xs text-muted-foreground">Lavender & Rose • 10 Min</p>
               </div>
             </motion.div>
           </div>
         </div>
 
         {/* Resources Horizontal Scroll */}
-        <div className="space-y-4">
-           <h2 className="font-heading text-xl font-bold text-white">Discover</h2>
-           <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
+        <div className="space-y-3 md:space-y-4">
+           <h2 className="font-heading text-lg md:text-xl font-bold text-white">Discover</h2>
+           <div className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4 md:-mx-6 md:px-6">
               {[1,2,3].map((_, i) => (
-                 <div key={i} className="min-w-[200px] h-[120px] bg-secondary rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5">
+                 <div key={i} className="min-w-[180px] md:min-w-[200px] h-[110px] md:h-[120px] bg-secondary rounded-[1.25rem] md:rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5">
                     <div className="p-2 bg-white/5 w-fit rounded-xl">
-                       <FileText size={18} className="text-accent" />
+                       <FileText size={16} className="md:w-[18px] md:h-[18px] text-accent" />
                     </div>
                     <div>
-                       <p className="text-xs text-muted-foreground mb-1">Article</p>
-                       <h4 className="font-bold text-white text-sm">The Science of Smell</h4>
+                       <p className="text-[10px] md:text-xs text-muted-foreground mb-1">Article</p>
+                       <h4 className="font-bold text-white text-xs md:text-sm">The Science of Smell</h4>
                     </div>
                  </div>
               ))}
