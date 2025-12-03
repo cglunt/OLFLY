@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils";
 // New dark background image import
 import darkBg from '@assets/generated_images/dark_abstract_gradient_waves_background.png';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  backgroundOverlay?: React.ReactNode;
+}
+
+export default function Layout({ children, backgroundOverlay }: LayoutProps) {
   const [location] = useLocation();
   const showNav = location !== "/training";
 
@@ -16,6 +21,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
          <img src={darkBg} alt="" className="w-full h-full object-cover" />
          <div className="absolute inset-0 bg-background/80" /> {/* Tint */}
       </div>
+
+      {/* Custom Background Overlay (for specific pages like Training) */}
+      {backgroundOverlay && (
+        <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
+          {backgroundOverlay}
+        </div>
+      )}
       
       <main className="flex-1 flex flex-col overflow-y-auto pb-24 scrollbar-hide relative z-10">
         {children}

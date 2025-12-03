@@ -108,20 +108,19 @@ export default function Training() {
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
-  return (
-    <Layout>
-      {/* Full Screen Background Image Overlay - Fixed Positioning */}
-      {phase === "smell" && (
-        <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
-           <img 
-             src={activeScent.image} 
-             className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
-             alt="Background Scent"
-           />
-           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80" />
-        </div>
-      )}
+  const overlay = phase === "smell" ? (
+    <>
+       <img 
+         src={activeScent.image} 
+         className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
+         alt="Background Scent"
+       />
+       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80" />
+    </>
+  ) : null;
 
+  return (
+    <Layout backgroundOverlay={overlay}>
       <div className="h-full flex flex-col bg-transparent relative overflow-hidden">
         {/* Background Glows */}
         <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
