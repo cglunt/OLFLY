@@ -11,19 +11,30 @@ import Progress from "@/pages/Progress";
 import Learn from "@/pages/Learn";
 import Onboarding from "@/pages/Onboarding";
 import Article from "@/pages/Article";
-import { getStoredData } from "@/lib/data";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useEffect } from "react";
 
 function Router() {
   const [location, setLocation] = useLocation();
+  const { user, isLoading } = useCurrentUser();
 
   useEffect(() => {
-      const data = getStoredData();
-      // Redirect to onboarding if not completed
-      if (!data.settings.hasOnboarded && location !== "/onboarding") {
-          setLocation("/onboarding");
-      }
-  }, [location, setLocation]);
+    if (isLoading) return;
+    
+    // Redirect to onboarding if not completed
+    if (user && !user.hasOnboarded && location !== "/onboarding") {
+      setLocation("/onboarding");
+    }
+  }, [location, setLocation, user, isLoading]);
+
+  // Show loading state while user is being fetched
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <p className="text-white/70">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <Switch>

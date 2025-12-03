@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Check, Clock, Sparkles, Activity, Zap, ArrowRight } from "lucide-react";
-import { getStoredData, saveStoredData } from "@/lib/data";
 import { Logo } from "@/components/Logo";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
-// App Logo
 import onboardingIllustration from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747155862.png';
 
 export default function Onboarding() {
+  const { user, updateUser } = useCurrentUser();
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [morningTime, setMorningTime] = useState("08:00");
@@ -19,21 +19,16 @@ export default function Onboarding() {
 
   const nextStep = () => setStep(s => s + 1);
   
-  const completeOnboarding = () => {
-    const data = getStoredData();
-    const newData = {
-      ...data,
-      settings: {
-        ...data.settings,
-        hasOnboarded: true,
-        reminders: {
-            enabled: remindersEnabled,
-            morning: morningTime,
-            evening: eveningTime
-        }
-      }
-    };
-    saveStoredData(newData);
+  const completeOnboarding = async () => {
+    if (!user) return;
+    
+    updateUser({
+      hasOnboarded: true,
+      remindersEnabled: remindersEnabled,
+      morningTime: morningTime,
+      eveningTime: eveningTime,
+    });
+    
     setLocation("/");
   };
 
