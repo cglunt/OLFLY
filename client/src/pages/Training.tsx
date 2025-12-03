@@ -112,17 +112,17 @@ export default function Training() {
     <Layout>
       {/* Full Screen Background Image Overlay */}
       {phase === "smell" && (
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
            <img 
              src={activeScent.image} 
-             className="w-full h-full object-cover opacity-30 mix-blend-overlay animate-in fade-in duration-1000" 
+             className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
              alt="Background Scent"
            />
-           <div className="absolute inset-0 bg-background/60" />
+           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/80" />
         </div>
       )}
 
-      <div className="h-full flex flex-col bg-background relative overflow-hidden">
+      <div className="h-full flex flex-col bg-transparent relative overflow-hidden">
         {/* Background Glows */}
         <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
 
