@@ -41,7 +41,11 @@ export default function Training() {
 
   const activeScentIds = userScents.map(s => s.scentId);
   const sessionScents = ALL_SCENTS.filter((s: Scent) => activeScentIds.includes(s.id));
-  const activeScent = sessionScents[currentScentIndex] || ALL_SCENTS.find((s: Scent) => s.id === 'clove');
+  
+  // Default scents for users with no selections
+  const defaultScents = ALL_SCENTS.filter((s: Scent) => ['clove', 'lemon', 'eucalyptus', 'rose'].includes(s.id));
+  const trainingScents = sessionScents.length > 0 ? sessionScents : defaultScents;
+  const activeScent = trainingScents[currentScentIndex] || trainingScents[0];
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? 20 : phase === "rest" ? 10 : 0;
@@ -95,10 +99,10 @@ export default function Training() {
   };
 
   const submitRating = () => {
-    const newRatings = { ...ratings, [activeScent!.id]: currentRating };
+    const newRatings = { ...ratings, [activeScent.id]: currentRating };
     setRatings(newRatings);
     
-    if (currentScentIndex < sessionScents.length - 1) {
+    if (currentScentIndex < trainingScents.length - 1) {
       setCurrentScentIndex(prev => prev + 1);
       setPhase("rest");
       setTimeLeft(10);
@@ -136,7 +140,8 @@ export default function Training() {
     });
   };
 
-  if (!user || sessionScents.length === 0) {
+  // Show loading state while fetching user
+  if (!user) {
     return (
       <div className="relative min-h-screen w-screen overflow-hidden bg-[#0c0c1d] flex items-center justify-center">
         <p className="text-white/70">Loading...</p>
