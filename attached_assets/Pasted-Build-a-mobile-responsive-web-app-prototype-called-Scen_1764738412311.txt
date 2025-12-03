@@ -1,0 +1,164 @@
+Build a mobile responsive web app prototype called ScentPath that supports people recovering their sense of smell. Use React, Vite, TailwindCSS, and simple local storage for data persistence. Create the following structure, routes, and components.
+
+Overall Requirements
+
+Clean, calming visual style using soft greens, warm neutrals, and rounded corners.
+
+Mobile first layout with simple navigation tabs at the bottom: Home, Training, Library, Progress, Learn.
+
+Use local storage to save user logs, scent entries, progress, and quiz answers.
+
+Include timers, sliders, charts, and simple animations.
+
+Build placeholder logic for audio guidance and smart alarm integration.
+
+Favor simple, clear components over complexity.
+
+Pages and Features to Build
+1. Home Page
+
+Welcome message
+
+Daily reminders status
+
+Quick start button for Guided Smell Session
+
+Streak count
+
+Motivational affirmation that changes daily
+
+2. Guided Smell Sessions (Training Page)
+
+Create a step by step experience:
+
+Preloaded scents
+
+Clove
+
+Lemon
+
+Eucalyptus
+
+Rose
+
+With options to choose alternates from the user’s scent library.
+
+Training flow
+
+Soft visual focus prompt on each scent
+
+Twenty second timer per scent
+
+Five minute rest timer between scents
+
+Optional audio instruction toggle
+
+Breathing guidance animation before starting
+
+Log completion automatically after session
+
+3. Custom Scent Library
+
+Components needed:
+
+List view of user added scents
+
+“Add new scent” modal with name, optional photo upload, notes, and starting intensity
+
+Intensity rating slider (0 to 10)
+
+Detail page showing progress of intensity over time
+
+Ability to assign added scents as substitutes in Guided Sessions
+
+4. Twice a Day Routine Automation
+
+Settings page for customizing reminder times
+
+Toggle morning and evening reminders
+
+Simple habit streak system connected to Training session completion
+
+Placeholder smart alarm integration method
+
+Visual indicator if a session has been completed today
+
+5. Progress Tracking Page
+
+Include:
+
+Daily log list
+
+Intensity sliders for each scent
+
+Symptom journaling data
+
+Simple line chart showing intensity improvement over time
+
+Button to export all logs as JSON or CSV for clinicians
+
+6. Education Module (Learn Page)
+
+Add:
+
+One short text lesson explaining how olfactory retraining works
+
+A simple infographic diagram showing neural pathway recovery
+
+Links to scientific studies as external placeholders
+
+Safety guidance for essential oil use
+
+7. Symptom Journaling Component
+
+Log changes in smell, taste, congestion, headaches
+
+Quick tap sliders for severity
+
+Optional notes field
+
+Connected to the Progress Tracking dashboard
+
+8. Smell Tests
+
+Simple multiple choice quiz to test scent recall
+
+Quick check in question: “How well could you smell lemon today” with slider
+
+Saved results displayed in Progress charts
+
+9. Recovery Timeline View
+
+Visual chart showing typical recovery arcs
+
+User can compare their timeline to normal ranges
+
+Reassuring language that slow improvement is normal
+
+10. Calming UX Enhancements
+
+Soft animated breathing circle before sessions
+
+Gentle color palette
+
+Simple affirmations after completing a session
+
+Smooth transitions between screens
+
+Compatibility for adding smart alarm triggers later
+
+Technical Instructions for Replit
+
+Use React with functional components and hooks
+
+Use Tailwind for styling
+
+Use React Router for navigation
+
+Use local storage or IndexedDB for all saved data
+
+Build chart components using a lightweight library like Chart.js
+
+Create modular components for timers, sliders, scent cards, quiz cards, and infographic blocks
+
+Generate all pages, components, and sample placeholder content so I can interact with the prototype immediately. Use clean and organized file structure.
