@@ -1,0 +1,114 @@
+Olfi Smell Restoration
+
+Onboarding Flow**
+
+Screen 1: Welcome
+
+Header:
+Welcome to Olfi
+
+Subheader:
+A gentle path to rebuilding your sense of smell.
+
+Illustration suggestion:
+A soft pastel drawing of a person breathing calmly with light scent waves rising. Use mint green, warm beige, and peach tones.
+
+Body text:
+Olfi guides you through short daily scent sessions that support your smell recovery. Most people begin to notice gradual changes with consistent practice.
+
+Primary button:
+Get Started
+
+Secondary link:
+How Olfi Works
+
+Footer affirmation:
+Small steps create meaningful progress.
+
+Screen 2: What You Will Do
+
+Header:
+Your daily practice
+
+Illustration:
+Four scent icons in soft round cards labeled Lemon, Rose, Clove, Eucalyptus.
+
+Body text:
+You will smell four scents in short timed sessions. These simple routines help reconnect your nose and your brain.
+
+Key points:
+
+Twenty seconds per scent
+
+Two sessions each day
+
+Calm guidance from start to finish
+
+Track progress and symptoms over time
+
+Primary button:
+Next
+
+Screen 3: Set Your Training Times
+
+Header:
+Your daily rhythm
+
+Illustration:
+Minimal clock graphic in muted green tones.
+
+Body text:
+Morning and evening reminders help you stay consistent. You can adjust your schedule at any time.
+
+Controls:
+
+Morning reminder time picker
+
+Evening reminder time picker
+
+Toggle on or off
+
+Primary button:
+Continue
+
+Screen 4: Build Your Scent Set
+
+Header:
+Customize your scents
+
+Illustration:
+Small grid of rounded scent cards.
+
+Body text:
+Use the four classic scents or add your own familiar smells. Personal scents can help strengthen sensory pathways.
+
+Primary button:
+Add My Scents
+
+Secondary option:
+Skip for now
+
+Screen 5: Understand Your Journey
+
+Header:
+Recovery takes time
+
+Illustration:
+Soft curved path with gentle milestone dots.
+
+Body text:
+Most people recover gradually. Olfi provides tools that help you notice small improvements and understand your progress.
+
+Primary button:
+Start My First Session
+
+Screen 6: Final Encouragement
+
+Header:
+You are ready
+
+Body text:
+Stay consistent, trust the process, and let Olfi guide your restoration. Your first session begins whenever you are ready.
+
+Primary button:
+Begin Training

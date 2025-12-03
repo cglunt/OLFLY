@@ -64,10 +64,16 @@ export type UserSettings = {
   streak: number;
   lastSessionDate: string | null;
   name: string;
+  hasOnboarded: boolean;
+  reminders?: {
+      enabled: boolean;
+      morning: string;
+      evening: string;
+  };
 };
 
 // Simple local storage wrapper
-const STORAGE_KEY = 'scentpath_data_v3';
+const STORAGE_KEY = 'scentpath_data_v4'; // Incrementing version to reset data for onboarding test
 
 export const getStoredData = () => {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -79,6 +85,7 @@ export const getStoredData = () => {
         streak: 0,
         lastSessionDate: null,
         name: 'Guest',
+        hasOnboarded: false, 
       } as UserSettings,
     };
   }
