@@ -118,14 +118,14 @@ export default function Training() {
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
   return (
-    <div className="relative min-h-screen w-screen overflow-hidden bg-[#05050A]">
+    <div className="relative min-h-screen w-screen overflow-hidden bg-[#1A0F35]">
       {/* Background Gradient / Image Overlay */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 to-[#05050A] z-10" />
+        <div className="absolute inset-0 bg-[#1A0F35] z-10" />
         {phase === "smell" && (
              <img 
                 src={activeScent.image} 
-                className="w-full h-full object-cover opacity-30 animate-in fade-in duration-1000" 
+                className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000 grayscale mix-blend-overlay" 
                 alt="Background Scent"
              />
         )}
@@ -149,26 +149,26 @@ export default function Training() {
                   <HelpCircle className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-[#1A1A2E] border-white/10 text-white max-w-[90vw] md:max-w-md rounded-[2rem]">
+              <DialogContent className="bg-[#2B215B] border-white/10 text-white max-w-[90vw] md:max-w-md rounded-[2rem]">
                  <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">How to Sniff</DialogTitle>
-                    <DialogDescription className="text-white/60">Follow this technique for best results.</DialogDescription>
+                    <DialogTitle className="text-xl font-bold text-white">How to Sniff</DialogTitle>
+                    <DialogDescription className="text-[#B9AEE2]">Follow this technique for best results.</DialogDescription>
                  </DialogHeader>
                  <div className="space-y-4 py-4">
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">1</div>
-                        <p className="text-sm leading-relaxed">Bring the scent within an inch of your nose. Do not touch your nose.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">1</div>
+                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Bring the scent within an inch of your nose. Do not touch your nose.</p>
                     </div>
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">2</div>
-                        <p className="text-sm leading-relaxed">Take <strong>slow, natural sniffs</strong> for about 15-20 seconds. Avoid aggressive sniffing.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">2</div>
+                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Take <strong>slow, natural sniffs</strong> for about 15-20 seconds. Avoid aggressive sniffing.</p>
                     </div>
                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold shrink-0">3</div>
-                        <p className="text-sm leading-relaxed">Actively try to <strong>recall the smell</strong> and form a mental connection.</p>
+                        <div className="w-8 h-8 rounded-full bg-[#DF37FF]/20 text-[#DF37FF] flex items-center justify-center font-bold shrink-0">3</div>
+                        <p className="text-sm leading-relaxed text-[#B9AEE2]">Actively try to <strong>recall the smell</strong> and form a mental connection.</p>
                     </div>
                  </div>
-                 <Button className="w-full rounded-full h-12 bg-white text-black hover:bg-white/90 font-bold" onClick={() => setShowHelp(false)}>
+                 <Button className="w-full rounded-xl h-12 bg-white text-[#1A0F35] hover:bg-white/90 font-bold" onClick={() => setShowHelp(false)}>
                     Got it
                  </Button>
               </DialogContent>
@@ -181,7 +181,7 @@ export default function Training() {
            {/* Image / Avatar Circle */}
            <div className="relative">
                {phase === "intro" || phase === "outro" ? (
-                  <div className="w-40 h-40 rounded-full border-4 border-white/10 shadow-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-pink-600 p-1">
+                  <div className="w-48 h-48 rounded-full border-4 border-[#2B215B] shadow-xl overflow-hidden bg-[#2B215B] p-1">
                      <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
                         <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
                      </div>
@@ -192,19 +192,19 @@ export default function Training() {
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                           <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 300 300">
                             {/* Track */}
-                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="8" fill="none" />
+                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="4" fill="none" />
                             {/* Progress */}
                             <circle
                               cx="150"
                               cy="150"
                               r={130}
-                              stroke="#d946ef" // Fuchsia-500
-                              strokeWidth="8"
+                              stroke="#DF37FF" 
+                              strokeWidth="4"
                               fill="none"
                               strokeDasharray={2 * Math.PI * 130}
                               strokeDashoffset={2 * Math.PI * 130 - ((totalDuration - timeLeft) / totalDuration) * (2 * Math.PI * 130)}
                               strokeLinecap="round"
-                              className="transition-all duration-1000 ease-linear drop-shadow-[0_0_15px_rgba(217,70,239,0.6)]"
+                              className="transition-all duration-1000 ease-linear"
                             />
                           </svg>
                        )}
@@ -213,7 +213,7 @@ export default function Training() {
                         key={activeScent.id}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10"
+                        className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#1A0F35] shadow-2xl z-10 bg-white"
                        >
                         <img src={activeScent.image} className="w-full h-full object-cover" />
                        </motion.div>
@@ -222,13 +222,13 @@ export default function Training() {
            </div>
 
            {/* Text Info */}
-           <div className="text-center space-y-2">
+           <div className="text-center space-y-3">
              <h1 className="text-4xl font-bold text-white tracking-tight">
                {phase === "intro" ? "Daily Practice" : 
                 phase === "outro" ? "Completed" : 
                 activeScent.name}
              </h1>
-             <p className="text-lg text-white/60 font-medium tracking-wide">
+             <p className="text-xl text-[#B9AEE2] font-medium tracking-wide">
                {phase === "intro" ? "Ready to start?" : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
@@ -239,10 +239,10 @@ export default function Training() {
 
            {/* Phase Specific Controls */}
            {phase === "rate" && (
-              <div className="w-full bg-purple-950/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 animate-in slide-in-from-bottom-5 fade-in">
-                <div className="flex justify-between items-center mb-4">
-                    <label className="text-white/80 text-xs font-bold tracking-wider uppercase">Intensity</label>
-                    <span className="text-2xl font-bold text-purple-300">{currentRating}/10</span>
+              <div className="w-full bg-[#2B215B] p-6 rounded-2xl shadow-md animate-in slide-in-from-bottom-5 fade-in">
+                <div className="flex justify-between items-center mb-6">
+                    <label className="text-white text-sm font-bold tracking-wider uppercase">Intensity</label>
+                    <span className="text-3xl font-bold text-[#DF37FF]">{currentRating}/10</span>
                 </div>
                 <Slider 
                     defaultValue={[5]} 
@@ -250,9 +250,9 @@ export default function Training() {
                     step={1} 
                     value={[currentRating]} 
                     onValueChange={(val) => setCurrentRating(val[0])}
-                    className="py-2 mb-6"
+                    className="py-2 mb-8"
                 />
-                <Button size="lg" className="w-full bg-white text-black hover:bg-white/90 rounded-full h-12 font-bold" onClick={submitRating}>
+                <Button size="lg" className="w-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating}>
                   Submit Rating
                 </Button>
               </div>
@@ -261,41 +261,41 @@ export default function Training() {
            {/* Timer Controls */}
            {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                <div className="flex items-center gap-8 mt-4">
-                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white/10 text-white hover:bg-white/20" onClick={() => {
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#2B215B] text-[#B9AEE2] hover:text-white hover:bg-[#322766]" onClick={() => {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
                  }}>
-                   <RotateCcw className="h-5 w-5" />
+                   <RotateCcw className="h-6 w-6" />
                  </Button>
                  
                  <Button 
                    size="icon" 
-                   className="h-20 w-20 rounded-full bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:scale-105 transition-all"
+                   className="h-24 w-24 rounded-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:scale-105 transition-all shadow-lg shadow-purple-500/20"
                    onClick={toggleTimer}
                  >
-                   {isActive ? <Pause className="h-8 w-8 fill-current" /> : <Play className="h-8 w-8 fill-current pl-1" />}
+                   {isActive ? <Pause className="h-10 w-10 fill-current" /> : <Play className="h-10 w-10 fill-current pl-1" />}
                  </Button>
 
-                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white/10 text-white hover:bg-white/20" onClick={() => {
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#2B215B] text-[#B9AEE2] hover:text-white hover:bg-[#322766]" onClick={() => {
                     setIsActive(false);
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
                  }}>
-                   <SkipForward className="h-5 w-5" />
+                   <SkipForward className="h-6 w-6" />
                  </Button>
                </div>
            )}
 
            {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-full h-16 text-lg font-bold bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/30 mt-4" onClick={startSession}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession}>
                  Start Training
                </Button>
            )}
            
            {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-full h-16 text-lg font-bold bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/30 mt-4" onClick={() => setLocation("/")}>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/")}>
                  Finish Session
                </Button>
            )}

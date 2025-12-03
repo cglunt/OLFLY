@@ -1,0 +1,188 @@
+Restyle Entire App for Olfly in Deep Purple Flat UI
+
+Convert the full app to the Olfly brand using a clean deep purple flat UI. Use React, Vite, and TailwindCSS. Remove all wave textures, heavy gradients, and layered visuals. Replace them with a polished, modern, minimal dashboard style consistent across all screens.
+
+Brand Identity for Replit
+
+Use this for all components:
+
+Brand Name: Olfly
+Tagline: Calm sensory retraining for restoring your sense of smell.
+
+Style:
+
+Soft, modern, calm
+
+Clean flat surfaces
+
+Deep purple base
+
+Single bold accent gradient
+
+Spacious layouts
+
+Color System
+
+Use the following:
+
+Primary Deep Purples
+
+Base darkest: #1A0F35
+
+Surface card: #2B215B
+
+Muted surface: #231A4A
+
+Accent Gradient
+
+Pink violet: #DF37FF
+
+Soft purple: #A259FF
+
+Text
+
+Pure white: #FFFFFF
+
+Lavender gray: #B9AEE2
+
+Global Layout Rules
+
+Apply to every screen:
+
+className="min-h-screen bg-[#1A0F35] text-white"
+
+
+Use large padding values (p-6 and up)
+
+Increase spacing between elements
+
+Use rounded-2xl for all cards
+
+Use shadow-md shadow-black/40 for subtle depth
+
+Use outline icons with thin strokes
+
+Navigation Bar
+
+Rebuild to match modern flat UI.
+
+className="fixed bottom-0 w-full bg-[#1A0F35]/60 backdrop-blur-xl py-4 flex justify-around items-center"
+
+
+Icons should be outline style
+
+Active icon uses the accent gradient
+
+Button Style
+
+All primary buttons use:
+
+className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] text-white rounded-xl py-3 px-6 font-semibold"
+
+
+Secondary buttons use:
+
+className="bg-[#2B215B] text-[#B9AEE2] rounded-xl py-3 px-6"
+
+Card Style
+
+Replace all existing cards with:
+
+<div className="bg-[#2B215B] rounded-2xl p-5 shadow-md shadow-black/40">
+
+
+Use:
+
+White for titles
+
+Lavender text for details
+
+Home Screen Updates
+
+Rebuild in a modern dashboard layout:
+
+Greeting: “Good Evening, Sherman” in pure white
+
+Profile icon and bell icon should be outline
+
+At the top, include a large gradient goal card
+
+Two top routines in flat purple cards with large rounded media buttons
+
+Discover section styled as horizontal scroll with flat purple cards
+
+Remove wave backgrounds
+
+Session Screen Updates
+
+Use minimalism:
+
+Deep purple background with a very light gradient only
+
+Circular scent image in a white frame
+
+Large scent name in white
+
+Countdown timer in lavender
+
+Intensity slider in a flat purple card
+
+Submit button uses accent gradient
+
+Library, Progress, Learn Screens
+
+Apply the same flat purple styling:
+
+Deep purple base
+
+Flat matte cards
+
+Large section headers
+
+Clean typography
+
+More breathing room between elements
+
+Typography
+
+Headers: text-3xl font-bold text-white
+
+Subheaders: text-xl font-semibold text-white
+
+Body: text-base text-[#B9AEE2] leading-relaxed
+
+Micro Interactions
+
+Use:
+
+Smooth fade animations
+
+Light hover scale
+
+Soft opacity transitions
+
+Avoid:
+
+Glowing animations
+
+Complex motion
+
+Excessive shadows
+
+Update all branding strings
+
+Anywhere that previously said OLO, Olfi, or other names, replace with:
+
+Olfly
+
+Tagline options for components:
+
+“Wake up your super sniffer.”
+
+“Your guided path to smell recovery.”
+
+“Small steps bring your senses back.”
+
+Goal for Replit
+
+Produce updated component code and Tailwind classes so the entire experience looks cohesive, flat, modern, and built around the Olfly identity. Maintain consistency across screens, cards, icons, spacing, and colors.
