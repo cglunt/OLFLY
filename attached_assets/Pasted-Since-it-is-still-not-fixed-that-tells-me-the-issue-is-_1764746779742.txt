@@ -1,0 +1,83 @@
+Since it is still not fixed, that tells me the issue is not the gradient itself but the layout structure around your Session screen. The extra negative space usually comes from one of these:
+
+The page container is not full height
+
+The parent route container has padding or fixed height
+
+The session component is sitting inside a card or div that is centered instead of stretched
+
+The overlay element is not set to absolute or is missing inset zero
+
+Tailwind is not applying because of className conflicts
+
+Here is the exact fix that works in 99 percent of cases for full screen gradient apps.
+
+Please try this full code block for your Session screen. You can copy and paste into Replit.
+
+Working Full Screen Session Layout (Tailwind)
+export default function Session() {
+  return (
+    <div className="relative min-h-screen w-screen overflow-hidden bg-gradient-to-b from-purple-900 to-purple-700">
+      
+      {/* Wave or Overlay */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900 to-purple-800 opacity-80"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-between min-h-screen py-10">
+        
+        <header className="text-center text-white mt-4">
+          <h2 className="text-sm tracking-wider opacity-80">Session</h2>
+        </header>
+
+        <div className="flex flex-col items-center">
+          <img
+            src="/clove.jpg"
+            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+          />
+
+          <h1 className="text-white text-3xl font-semibold mt-6">Clove</h1>
+
+          <p className="text-gray-200 text-sm mt-2">0:18</p>
+
+          <div className="mt-12 bg-purple-950 bg-opacity-40 backdrop-blur-md p-6 rounded-2xl w-80">
+            <label className="block text-gray-200 text-xs mb-2 tracking-wider">
+              INTENSITY
+            </label>
+
+            <input
+              type="range"
+              min="0"
+              max="10"
+              className="w-full accent-purple-300"
+            />
+
+            <button className="mt-6 w-full bg-white text-black rounded-full py-3 font-semibold">
+              Submit Rating
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6"></div>
+      </div>
+    </div>
+  );
+}
+
+Important Notes That Fix the Gap
+1. min-h-screen and w-screen on the outermost div
+
+This forces the entire component to fill the full viewport vertically and horizontally.
+
+2. absolute inset-0 on your overlay
+
+This anchors your gradient or wave so it fully covers the screen.
+
+3. relative z-10 for the content
+
+This ensures it sits above the gradient overlay.
+
+4. flex flex-col justify-between min-h-screen inside the content wrapper
+
+This prevents the content from shrinking and causing negative space.

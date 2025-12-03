@@ -108,7 +108,7 @@ export default function Onboarding() {
                         
                         <div className="space-y-6">
                              <p className="text-xl font-medium text-white/90">
-                                Welcome to Olfi, your gentle guide for smell recovery.
+                                Welcome to Olfly, your gentle guide for smell recovery.
                              </p>
                              <p className="text-white/60 leading-relaxed text-base md:text-lg">
                                 You bring the nose. We bring the timers, the reminders, and the encouragement. Together we will help your scent skills make their comeback tour.
@@ -204,7 +204,7 @@ export default function Onboarding() {
                     <div className="mb-6 md:mb-8">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Pick your<br/>sniff schedule</h2>
                         <p className="text-white/70 text-lg leading-relaxed">
-                            Choose the times when you want Olfi to gently tap you on the shoulder and say “Time to sniff things again.”
+                            Choose the times when you want Olfly to gently tap you on the shoulder and say “Time to sniff things again.”
                         </p>
                     </div>
 
@@ -341,7 +341,7 @@ export default function Onboarding() {
                             Smell recovery can take time. That is normal.
                          </p>
                          <p className="text-white/70 text-lg leading-relaxed">
-                            Olfi will help you spot small improvements, even the ones you might miss.
+                            Olfly will help you spot small improvements, even the ones you might miss.
                          </p>
                     </div>
                     
@@ -388,7 +388,7 @@ export default function Onboarding() {
                         <h2 className="text-4xl md:text-5xl font-bold mb-6">Your nose<br/>is ready.</h2>
                         <div className="space-y-4 max-w-xs mx-auto">
                             <p className="text-white/80 text-lg">
-                                You have got this. Olfi is with you every day.
+                                You have got this. Olfly is with you every day.
                             </p>
                             <p className="text-white/60 text-base">
                                 Stay consistent. Stay patient. Sniff bravely.

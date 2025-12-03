@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { getStoredData, saveStoredData, DEFAULT_SCENTS, AVATAR_IMAGE } from "@/lib/data";
@@ -108,180 +107,167 @@ export default function Training() {
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
-  const overlay = phase === "smell" ? (
-    <div className="absolute inset-0 w-full h-full z-0">
-       <img 
-         src={activeScent.image} 
-         className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
-         alt="Background Scent"
-       />
-       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80" />
-    </div>
-  ) : null;
-
   return (
-    <Layout backgroundOverlay={overlay}>
-      <div className="h-full flex flex-col bg-transparent relative overflow-hidden">
-        {/* Background Glows */}
-        <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+    <div className="relative min-h-screen w-screen overflow-hidden bg-[#05050A]">
+      {/* Background Gradient / Image Overlay */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 to-[#05050A] z-10" />
+        {phase === "smell" && (
+             <img 
+                src={activeScent.image} 
+                className="w-full h-full object-cover opacity-30 animate-in fade-in duration-1000" 
+                alt="Background Scent"
+             />
+        )}
+      </div>
 
-        <div className="absolute bottom-[-20%] right-[-20%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
-
-        {/* Top Header */}
-        <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20">
+      {/* Main Content Container */}
+      <div className="relative z-10 flex flex-col items-center justify-between min-h-screen py-10 px-6">
+        
+        {/* Header */}
+        <header className="w-full flex justify-between items-center mt-2">
            <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white">
              <ChevronLeft className="h-6 w-6" />
            </Button>
-           <h2 className="text-sm font-bold tracking-widest uppercase text-muted-foreground">
+           <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
              {phase === 'intro' ? 'Start' : 'Session'}
            </h2>
            <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
              <Heart className="h-6 w-6" />
            </Button>
-        </div>
+        </header>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8 md:space-y-12 mt-8 relative z-10 min-h-[600px]">
+        {/* Central Content */}
+        <div className="flex flex-col items-center w-full max-w-md flex-1 justify-center gap-8">
           
-          {/* Central Progress Circle - Cyberpunk Style */}
-          <div className="relative w-[260px] h-[260px] md:w-[300px] md:h-[300px] flex items-center justify-center shrink-0">
-            {/* Static Background Ring */}
-            {(phase === "breathe" || phase === "smell" || phase === "rest") && (
-              <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 300 300">
-                <circle
-                  cx="150"
-                  cy="150"
-                  r={radius}
-                  stroke="hsl(var(--secondary))"
-                  strokeWidth="12"
-                  fill="transparent"
-                  strokeLinecap="round"
-                />
-                {/* Gradient Active Ring */}
-                <defs>
-                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="hsl(280, 80%, 60%)" />
-                    <stop offset="100%" stopColor="hsl(320, 90%, 60%)" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx="150"
-                  cy="150"
-                  r={radius}
-                  stroke="url(#progressGradient)"
-                  strokeWidth="12"
-                  fill="transparent"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  strokeLinecap="round"
-                  className="transition-all duration-1000 ease-linear drop-shadow-[0_0_10px_rgba(200,50,255,0.5)]"
-                />
-              </svg>
-            )}
-
-            {/* Inner Content */}
-            <div className="text-center z-10 flex flex-col items-center justify-center gap-4">
+           {/* Image / Avatar Circle */}
+           <div className="relative">
                {phase === "intro" || phase === "outro" ? (
-                  <div className="w-36 h-36 md:w-40 md:h-40 rounded-full bg-gradient-primary p-1 shadow-lg shadow-primary/30 animate-in zoom-in duration-700">
-                    <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                       <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-80" />
-                    </div>
+                  <div className="w-40 h-40 rounded-full border-4 border-white/10 shadow-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-pink-600 p-1">
+                     <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
+                        <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
+                     </div>
                   </div>
                ) : (
-                  <motion.div 
-                    key={activeScent.id}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="w-36 h-36 md:w-40 md:h-40 relative rounded-full overflow-hidden shadow-2xl shadow-primary/20"
-                  >
-                    <img src={activeScent.image} className="w-full h-full object-cover" />
-                  </motion.div>
-               )}
-            </div>
-          </div>
+                  <div className="relative w-[280px] h-[280px] flex items-center justify-center">
+                       {/* Progress Ring */}
+                       {(phase === "breathe" || phase === "smell" || phase === "rest") && (
+                          <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 300 300">
+                            {/* Track */}
+                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="8" fill="none" />
+                            {/* Progress */}
+                            <circle
+                              cx="150"
+                              cy="150"
+                              r={130}
+                              stroke="#d946ef" // Fuchsia-500
+                              strokeWidth="8"
+                              fill="none"
+                              strokeDasharray={2 * Math.PI * 130}
+                              strokeDashoffset={2 * Math.PI * 130 - ((totalDuration - timeLeft) / totalDuration) * (2 * Math.PI * 130)}
+                              strokeLinecap="round"
+                              className="transition-all duration-1000 ease-linear drop-shadow-[0_0_15px_rgba(217,70,239,0.6)]"
+                            />
+                          </svg>
+                       )}
 
-          {/* Text Info */}
-          <div className="text-center space-y-1">
-             <h1 className="text-3xl md:text-4xl font-heading font-bold text-white tracking-tight">
+                       <motion.div 
+                        key={activeScent.id}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10"
+                       >
+                        <img src={activeScent.image} className="w-full h-full object-cover" />
+                       </motion.div>
+                  </div>
+               )}
+           </div>
+
+           {/* Text Info */}
+           <div className="text-center space-y-2">
+             <h1 className="text-4xl font-bold text-white tracking-tight">
                {phase === "intro" ? "Daily Practice" : 
                 phase === "outro" ? "Completed" : 
                 activeScent.name}
              </h1>
-             <p className="text-base md:text-lg text-muted-foreground font-medium">
+             <p className="text-lg text-white/60 font-medium tracking-wide">
                {phase === "intro" ? "Ready to start?" : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
                 phase === "rest" ? "Rest & Reset" : 
                 formatTime(timeLeft)}
              </p>
-          </div>
+           </div>
 
-          {/* Controls */}
-          <div className="w-full max-w-xs pb-6">
-             {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-full h-14 md:h-16 text-base md:text-lg bg-gradient-primary hover:opacity-90 shadow-lg shadow-primary/40 border-none text-white" onClick={startSession}>
-                 Start Training
-               </Button>
-             )}
-
-             {(phase === "breathe" || phase === "smell" || phase === "rest") && (
-               <div className="flex items-center justify-center gap-6 md:gap-8">
-                 <Button variant="ghost" size="icon" className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-secondary text-muted-foreground hover:text-white hover:bg-white/10" onClick={() => {
-                    if (phase === 'breathe') startSmellPhase();
-                    else if (phase === 'smell') setPhase('rate');
-                    else if (phase === 'rest') startSmellPhase();
-                 }}>
-                   <RotateCcw className="h-5 w-5 md:h-6 md:w-6" />
-                 </Button>
-                 
-                 <Button 
-                   size="icon" 
-                   className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-[0_0_30px_rgba(200,50,255,0.4)] bg-gradient-primary text-white hover:scale-105 transition-all border-4 border-background"
-                   onClick={toggleTimer}
-                 >
-                   {isActive ? <Pause className="h-6 w-6 md:h-8 md:w-8 fill-current" /> : <Play className="h-6 w-6 md:h-8 md:w-8 fill-current pl-1" />}
-                 </Button>
-
-                 <Button variant="ghost" size="icon" className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-secondary text-muted-foreground hover:text-white hover:bg-white/10" onClick={() => {
-                    setIsActive(false);
-                    if (phase === 'breathe') startSmellPhase();
-                    else if (phase === 'smell') setPhase('rate');
-                    else if (phase === 'rest') startSmellPhase();
-                 }}>
-                   <SkipForward className="h-5 w-5 md:h-6 md:w-6" />
-                 </Button>
-               </div>
-             )}
-
-             {phase === "rate" && (
-               <div className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-10 fade-in duration-500 bg-secondary/50 p-5 md:p-6 rounded-3xl border border-white/5">
-                  <div className="flex justify-between items-center px-2">
-                    <span className="text-xs font-bold text-muted-foreground uppercase">Intensity</span>
-                    <span className="text-xl md:text-2xl font-bold text-primary">{currentRating}/10</span>
-                  </div>
-                 <Slider 
+           {/* Phase Specific Controls */}
+           {phase === "rate" && (
+              <div className="w-full bg-purple-950/40 backdrop-blur-md p-6 rounded-2xl border border-white/10 animate-in slide-in-from-bottom-5 fade-in">
+                <div className="flex justify-between items-center mb-4">
+                    <label className="text-white/80 text-xs font-bold tracking-wider uppercase">Intensity</label>
+                    <span className="text-2xl font-bold text-purple-300">{currentRating}/10</span>
+                </div>
+                <Slider 
                     defaultValue={[5]} 
                     max={10} 
                     step={1} 
                     value={[currentRating]} 
                     onValueChange={(val) => setCurrentRating(val[0])}
-                    className="py-2"
-                  />
-                  <Button size="lg" className="w-full rounded-full h-14 bg-white text-background hover:bg-white/90 font-bold text-base md:text-lg" onClick={submitRating}>
-                    Submit Rating
-                  </Button>
-               </div>
-             )}
+                    className="py-2 mb-6"
+                />
+                <Button size="lg" className="w-full bg-white text-black hover:bg-white/90 rounded-full h-12 font-bold" onClick={submitRating}>
+                  Submit Rating
+                </Button>
+              </div>
+           )}
 
-             {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-full h-14 md:h-16 text-base md:text-lg bg-gradient-primary text-white shadow-lg shadow-primary/30" onClick={() => setLocation("/")}>
-                 Finish
+           {/* Timer Controls */}
+           {(phase === "breathe" || phase === "smell" || phase === "rest") && (
+               <div className="flex items-center gap-8 mt-4">
+                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white/10 text-white hover:bg-white/20" onClick={() => {
+                    if (phase === 'breathe') startSmellPhase();
+                    else if (phase === 'smell') setPhase('rate');
+                    else if (phase === 'rest') startSmellPhase();
+                 }}>
+                   <RotateCcw className="h-5 w-5" />
+                 </Button>
+                 
+                 <Button 
+                   size="icon" 
+                   className="h-20 w-20 rounded-full bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:scale-105 transition-all"
+                   onClick={toggleTimer}
+                 >
+                   {isActive ? <Pause className="h-8 w-8 fill-current" /> : <Play className="h-8 w-8 fill-current pl-1" />}
+                 </Button>
+
+                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white/10 text-white hover:bg-white/20" onClick={() => {
+                    setIsActive(false);
+                    if (phase === 'breathe') startSmellPhase();
+                    else if (phase === 'smell') setPhase('rate');
+                    else if (phase === 'rest') startSmellPhase();
+                 }}>
+                   <SkipForward className="h-5 w-5" />
+                 </Button>
+               </div>
+           )}
+
+           {phase === "intro" && (
+               <Button size="lg" className="w-full rounded-full h-16 text-lg font-bold bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/30 mt-4" onClick={startSession}>
+                 Start Training
                </Button>
-             )}
-          </div>
+           )}
+           
+           {phase === "outro" && (
+               <Button size="lg" className="w-full rounded-full h-16 text-lg font-bold bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/30 mt-4" onClick={() => setLocation("/")}>
+                 Finish Session
+               </Button>
+           )}
+
         </div>
+
+        {/* Bottom Spacer for alignment */}
+        <div className="h-6"></div>
       </div>
-    </Layout>
+    </div>
   );
 }
 
