@@ -167,7 +167,7 @@ export default function Training() {
       )}
 
       {phase === "smell" && (
-        <div className="h-full flex flex-col relative overflow-hidden">
+        <div className="absolute inset-0 z-50 flex flex-col overflow-hidden bg-black">
            {/* Progress Bar */}
            <div className="absolute top-0 left-0 w-full h-1 bg-white/20 z-50">
             <div className="h-full bg-white transition-all duration-500" style={{ width: `${progress}%` }} />
@@ -181,25 +181,25 @@ export default function Training() {
                 className="w-full h-full object-cover animate-in fade-in duration-1000 scale-105"
               />
              {/* Gradient Overlays for readability */}
-             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
+             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/80" />
           </div>
 
           {/* Content Overlay */}
-          <div className="relative z-10 flex flex-col h-full p-6 text-white">
+          <div className="relative z-10 flex flex-col h-full p-6 text-white pb-32">
             
-            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-2">
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
                <h2 className="text-5xl font-bold tracking-tight drop-shadow-md">{activeScent.name}</h2>
                <p className="text-white/90 text-lg font-medium drop-shadow-sm">Focus gently on the scent...</p>
                
-               <div className="py-12">
-                 <span className="font-mono text-7xl font-bold tracking-widest drop-shadow-xl">{formatTime(timeLeft)}</span>
+               <div className="py-8">
+                 <span className="font-mono text-8xl font-bold tracking-widest drop-shadow-2xl">{formatTime(timeLeft)}</span>
                </div>
             </div>
 
-            <div className="mt-auto pb-8">
+            <div className="mt-auto">
               <Button 
                 variant="secondary" 
-                className="w-full rounded-full h-14 text-lg bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 border shadow-xl transition-all active:scale-95" 
+                className="w-full rounded-full h-16 text-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border-white/20 border shadow-2xl transition-all active:scale-95" 
                 onClick={() => { setIsActive(false); setPhase("rate"); }}
               >
                 Skip Timer

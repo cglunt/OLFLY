@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border/50">
-      <main className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
+    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border/50 relative">
+      <main className="flex-1 flex flex-col overflow-y-auto pb-24 scrollbar-hide relative">
         {children}
       </main>
       <BottomNav />
