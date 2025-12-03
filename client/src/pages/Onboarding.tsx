@@ -2,25 +2,10 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { ArrowRight, Check, Clock, Wind, Activity, Plus } from "lucide-react";
+import { Check, Clock, Wind, Activity, Plus, ArrowRight, User, Sparkles, Zap } from "lucide-react";
 import { getStoredData, saveStoredData } from "@/lib/data";
-
-// New Modern Minimalist Assets
-import logoImg from '@assets/generated_images/modern_minimalist_circular_logo_symbol_for_olfi.png';
-import breathImg from '@assets/generated_images/abstract_minimal_breath_visualization.png';
-import rhythmImg from '@assets/generated_images/abstract_minimal_daily_rhythm_visualization.png';
-import collectionImg from '@assets/generated_images/abstract_minimal_scent_collection_visualization.png';
-import journeyImg from '@assets/generated_images/abstract_minimal_recovery_journey_visualization.png';
-
-// Scent Assets
-import cloveImg from '@assets/generated_images/close-up_of_dried_cloves.png';
-import lemonImg from '@assets/generated_images/close-up_of_fresh_lemon.png';
-import eucalyptusImg from '@assets/generated_images/close-up_of_eucalyptus_leaves.png';
-import roseImg from '@assets/generated_images/close-up_of_a_pink_rose.png';
 
 export default function Onboarding() {
   const [, setLocation] = useLocation();
@@ -50,29 +35,43 @@ export default function Onboarding() {
   };
 
   const variants = {
-    enter: { x: 50, opacity: 0 },
+    enter: { x: 20, opacity: 0 },
     center: { x: 0, opacity: 1 },
-    exit: { x: -50, opacity: 0 }
+    exit: { x: -20, opacity: 0 }
   };
 
-  return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden font-sans">
-       {/* Modern Abstract Background Elements */}
-       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+  // Helper component for the "Block" style
+  const Block = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
+    <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay, duration: 0.4, ease: "easeOut" }}
+        className={`bg-[#1A1A2E] rounded-[2rem] p-6 border border-white/5 shadow-xl ${className}`}
+    >
+        {children}
+    </motion.div>
+  );
 
-      <div className="flex-1 flex flex-col z-10 max-w-md mx-auto w-full p-6">
-        <div className="flex justify-between items-center mb-6 pt-2">
-            {step > 1 ? (
-                <Button variant="ghost" size="sm" onClick={() => setStep(s => s - 1)} className="text-muted-foreground hover:text-white -ml-2">
-                    Back
-                </Button>
-            ) : <div />}
-            <div className="flex gap-1.5">
+  return (
+    <div className="min-h-screen bg-[#05050A] text-white flex flex-col font-sans selection:bg-purple-500/30">
+      {/* Flat Gradient Background */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-[#05050A] to-[#05050A] pointer-events-none" />
+      
+      <div className="flex-1 flex flex-col z-10 max-w-md mx-auto w-full p-6 relative">
+        {/* Header / Progress */}
+        <div className="flex justify-between items-center mb-8 pt-4">
+             {step > 1 ? (
+                <button onClick={() => setStep(s => s - 1)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+                    <ArrowRight className="rotate-180 text-white/70" size={20} />
+                </button>
+            ) : <div className="w-10" />}
+            
+            <div className="flex gap-2">
                 {[1,2,3,4,5,6].map(i => (
-                    <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-primary shadow-[0_0_10px_rgba(168,85,247,0.5)]' : 'w-2 bg-white/10'}`} />
+                    <div key={i} className={`h-2 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-purple-500' : 'w-2 bg-white/10'}`} />
                 ))}
             </div>
+             <div className="w-10" /> 
         </div>
 
         <AnimatePresence mode="wait">
@@ -83,25 +82,47 @@ export default function Onboarding() {
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="flex-1 flex flex-col text-center items-center"
+                    transition={{ duration: 0.4 }}
+                    className="flex-1 flex flex-col"
                 >
-                    <div className="w-40 h-40 mb-10 relative mt-8">
-                        <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
-                        <img src={logoImg} alt="Olfi Logo" className="w-full h-full object-contain relative z-10 drop-shadow-2xl" />
+                    <div className="mt-4 mb-auto">
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-8 shadow-lg shadow-purple-500/20"
+                        >
+                            <div className="w-12 h-12 rounded-full border-[3px] border-white/20 flex items-center justify-center">
+                                <div className="w-8 h-8 rounded-full bg-white" />
+                            </div>
+                        </motion.div>
+
+                        <h1 className="text-5xl font-bold mb-6 tracking-tight leading-[1.1]">
+                            Hello,<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Future Self.</span>
+                        </h1>
+                        
+                        <Block className="mb-6" delay={0.2}>
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-full bg-purple-500/10 text-purple-400">
+                                    <Sparkles size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold mb-1">Restore</h3>
+                                    <p className="text-white/60 leading-relaxed">
+                                        A guided journey to rebuild your sense of smell through neuroplasticity.
+                                    </p>
+                                </div>
+                            </div>
+                        </Block>
                     </div>
                     
-                    <h1 className="text-5xl font-heading font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 tracking-tight">OLFI</h1>
-                    <p className="text-muted-foreground text-xl mb-10 leading-relaxed max-w-xs mx-auto">
-                        A gentle path to rebuilding your sense of smell.
-                    </p>
-                    
-                    <div className="mt-auto w-full space-y-6">
-                        <Button size="lg" className="w-full rounded-full h-16 text-lg bg-white text-black hover:bg-white/90 shadow-xl shadow-white/10 font-bold tracking-wide transition-transform active:scale-95" onClick={nextStep}>
-                            Get Started
-                        </Button>
-                        <p className="text-sm font-medium text-white/40">Small steps create meaningful progress.</p>
-                    </div>
+                    <Button 
+                        onClick={nextStep}
+                        className="w-full h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-lg font-bold shadow-lg shadow-white/5 transition-all hover:scale-[1.02] active:scale-95"
+                    >
+                        Get Started
+                    </Button>
                 </motion.div>
             )}
 
@@ -115,54 +136,52 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl font-heading font-bold mb-2 text-white">Your daily practice</h2>
-                    <p className="text-muted-foreground mb-8">Reconnect your nose and brain.</p>
+                    <h2 className="text-4xl font-bold mb-2">Daily<br/>Practice</h2>
+                    <p className="text-white/50 text-lg mb-8">Reconnect nose and brain.</p>
                     
-                    <div className="relative mb-8">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent blur-xl" />
-                        <div className="grid grid-cols-2 gap-4 relative z-10">
-                            {[
-                                { name: "Clove", img: cloveImg },
-                                { name: "Lemon", img: lemonImg },
-                                { name: "Eucalyptus", img: eucalyptusImg },
-                                { name: "Rose", img: roseImg }
-                            ].map((scent, i) => (
-                                <motion.div 
-                                    key={scent.name} 
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="bg-white/5 backdrop-blur-sm rounded-3xl p-4 flex flex-col items-center gap-3 border border-white/10 hover:bg-white/10 transition-colors"
-                                >
-                                    <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-lg">
-                                        <img src={scent.img} className="w-full h-full object-cover" alt={scent.name} />
-                                    </div>
-                                    <span className="text-sm font-medium text-white/90">{scent.name}</span>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <ul className="space-y-4 mb-8 bg-secondary/30 p-6 rounded-3xl border border-white/5">
+                    <div className="grid grid-cols-2 gap-4 mb-8">
                         {[
-                            "Twenty seconds per scent",
-                            "Two sessions each day",
-                            "Track progress over time"
-                        ].map((point, i) => (
-                            <li key={i} className="flex items-center gap-3 text-white/80">
-                                <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
-                                    <Check size={14} strokeWidth={3} />
+                            { name: "Clove", color: "bg-orange-500" },
+                            { name: "Lemon", color: "bg-yellow-500" },
+                            { name: "Eucalyptus", color: "bg-teal-500" },
+                            { name: "Rose", color: "bg-pink-500" }
+                        ].map((scent, i) => (
+                            <motion.div 
+                                key={scent.name}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="bg-[#1A1A2E] aspect-square rounded-[2rem] p-5 flex flex-col justify-between border border-white/5 relative overflow-hidden group"
+                            >
+                                <div className={`absolute top-0 right-0 w-24 h-24 ${scent.color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`} />
+                                <div className={`w-10 h-10 rounded-full ${scent.color} flex items-center justify-center text-black font-bold shadow-lg`}>
+                                    {scent.name[0]}
                                 </div>
-                                {point}
-                            </li>
+                                <span className="text-lg font-medium">{scent.name}</span>
+                            </motion.div>
                         ))}
-                    </ul>
-
-                    <div className="mt-auto w-full">
-                        <Button size="lg" className="w-full rounded-full h-16 text-lg bg-gradient-primary text-white shadow-lg shadow-primary/25" onClick={nextStep}>
-                            Continue
-                        </Button>
                     </div>
+
+                    <Block className="mt-auto mb-6 bg-gradient-to-r from-purple-900/20 to-pink-900/20 border-purple-500/20">
+                         <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <div className="text-xs font-bold text-purple-400 uppercase tracking-wider">Format</div>
+                                <div className="text-xl font-bold">2x Daily</div>
+                            </div>
+                            <div className="w-px h-10 bg-white/10" />
+                            <div className="space-y-1">
+                                <div className="text-xs font-bold text-pink-400 uppercase tracking-wider">Duration</div>
+                                <div className="text-xl font-bold">20s / Scent</div>
+                            </div>
+                        </div>
+                    </Block>
+
+                    <Button 
+                        onClick={nextStep}
+                        className="w-full h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-lg font-bold shadow-lg shadow-purple-600/20"
+                    >
+                        Continue
+                    </Button>
                 </motion.div>
             )}
 
@@ -174,56 +193,60 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col items-center"
+                    className="flex-1 flex flex-col"
                 >
-                     <div className="w-56 h-56 mb-8 relative">
-                        <img src={rhythmImg} alt="Rhythm" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]" />
+                    <div className="mb-8">
+                        <h2 className="text-4xl font-bold mb-2">Set Your<br/>Rhythm</h2>
+                        <p className="text-white/50 text-lg">Consistency creates results.</p>
                     </div>
 
-                    <h2 className="text-3xl font-heading font-bold mb-4 text-white text-center">Daily rhythm</h2>
-                    <p className="text-muted-foreground text-center mb-10 max-w-xs mx-auto">
-                        Set reminders to build a consistent habit.
-                    </p>
-
-                    <div className="w-full space-y-6 bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10">
+                    <Block className="mb-6 space-y-6">
                          <div className="flex items-center justify-between">
-                            <Label className="text-white font-medium text-lg">Enable Reminders</Label>
-                            <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} />
+                            <span className="text-xl font-bold">Reminders</span>
+                            <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} className="data-[state=checked]:bg-purple-500" />
                         </div>
                         
                         {remindersEnabled && (
-                            <div className="grid gap-4 pt-2 animate-in slide-in-from-top-2 fade-in">
-                                <div className="space-y-2">
-                                    <Label className="text-primary/80 text-xs uppercase tracking-widest font-bold pl-1">Morning</Label>
-                                    <div className="relative group">
-                                        <Input 
-                                            type="time" 
-                                            value={morningTime} 
-                                            onChange={(e) => setMorningTime(e.target.value)}
-                                            className="bg-black/20 border-white/10 text-white h-16 text-xl rounded-2xl pl-12 focus:border-primary/50 transition-colors"
-                                        />
-                                        <Clock className="absolute left-4 top-5 text-primary h-6 w-6 opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                            <div className="grid gap-4 animate-in slide-in-from-top-2 fade-in">
+                                <div className="bg-black/20 rounded-2xl p-4 flex items-center justify-between border border-white/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-yellow-500/10 rounded-xl text-yellow-500">
+                                            <Clock size={20} />
+                                        </div>
+                                        <span className="font-medium text-white/80">Morning</span>
                                     </div>
+                                    <input 
+                                        type="time" 
+                                        value={morningTime}
+                                        onChange={(e) => setMorningTime(e.target.value)}
+                                        className="bg-transparent text-right font-bold text-xl focus:outline-none text-white w-auto"
+                                    />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-accent/80 text-xs uppercase tracking-widest font-bold pl-1">Evening</Label>
-                                    <div className="relative group">
-                                        <Input 
-                                            type="time" 
-                                            value={eveningTime} 
-                                            onChange={(e) => setEveningTime(e.target.value)}
-                                            className="bg-black/20 border-white/10 text-white h-16 text-xl rounded-2xl pl-12 focus:border-accent/50 transition-colors"
-                                        />
-                                        <Clock className="absolute left-4 top-5 text-accent h-6 w-6 opacity-70 group-focus-within:opacity-100 transition-opacity" />
+                                
+                                <div className="bg-black/20 rounded-2xl p-4 flex items-center justify-between border border-white/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-purple-500/10 rounded-xl text-purple-500">
+                                            <Clock size={20} />
+                                        </div>
+                                        <span className="font-medium text-white/80">Evening</span>
                                     </div>
+                                    <input 
+                                        type="time" 
+                                        value={eveningTime}
+                                        onChange={(e) => setEveningTime(e.target.value)}
+                                        className="bg-transparent text-right font-bold text-xl focus:outline-none text-white w-auto"
+                                    />
                                 </div>
                             </div>
                         )}
-                    </div>
-
-                    <div className="mt-auto w-full pt-8">
-                        <Button size="lg" className="w-full rounded-full h-16 text-lg bg-white text-background hover:bg-white/90 shadow-xl" onClick={nextStep}>
-                            Next Step
+                    </Block>
+                    
+                    <div className="mt-auto">
+                         <Button 
+                            onClick={nextStep}
+                            className="w-full h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-lg font-bold shadow-lg shadow-white/5"
+                        >
+                            Set Schedule
                         </Button>
                     </div>
                 </motion.div>
@@ -239,43 +262,48 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <div className="w-full h-40 mb-6 relative rounded-3xl overflow-hidden">
-                        <img src={collectionImg} alt="Collection" className="w-full h-full object-cover opacity-80 mix-blend-screen" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
-                    </div>
+                    <h2 className="text-4xl font-bold mb-2">Your<br/>Collection</h2>
+                    <p className="text-white/50 text-lg mb-8">Start with the classics.</p>
 
-                    <h2 className="text-3xl font-heading font-bold mb-3 text-white">Your Scents</h2>
-                    <p className="text-muted-foreground mb-8">
-                        We'll start with the classics. You can add personal scents later.
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-3 mb-8">
+                    <div className="grid grid-cols-1 gap-3 mb-8">
                         {[
-                            { name: "Clove", img: cloveImg, active: true },
-                            { name: "Lemon", img: lemonImg, active: true },
-                            { name: "Eucalyptus", img: eucalyptusImg, active: true },
-                            { name: "Rose", img: roseImg, active: true },
-                            { name: "Custom", icon: Plus, active: false },
-                            { name: "Custom", icon: Plus, active: false }
-                        ].map((item, i) => (
-                            <div key={i} className={`aspect-[4/3] rounded-2xl p-3 flex flex-col items-center justify-center gap-2 border transition-all ${item.active ? 'bg-white/10 border-white/10' : 'bg-white/5 border-dashed border-white/5 opacity-40'}`}>
-                                {item.img ? (
-                                    <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm">
-                                        <img src={item.img} className="w-full h-full object-cover" alt={item.name} />
-                                    </div>
-                                ) : (
-                                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-                                        {item.icon && <item.icon className="text-white w-5 h-5" />}
+                            { name: "Classic Kit", items: "Clove, Lemon, Eucalyptus, Rose", active: true },
+                            { name: "Custom Kit", items: "Create your own set", active: false },
+                        ].map((kit, i) => (
+                             <motion.div 
+                                key={i}
+                                className={`p-6 rounded-[2rem] border transition-all flex items-center justify-between ${kit.active ? 'bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-purple-500/50' : 'bg-[#1A1A2E] border-white/5 opacity-50'}`}
+                            >
+                                <div>
+                                    <h3 className="text-xl font-bold mb-1">{kit.name}</h3>
+                                    <p className="text-sm text-white/60">{kit.items}</p>
+                                </div>
+                                {kit.active && (
+                                    <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white">
+                                        <Check size={16} strokeWidth={3} />
                                     </div>
                                 )}
-                                <span className="text-xs font-medium text-white">{item.name}</span>
-                            </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                    
+                    <div className="grid grid-cols-4 gap-2 mb-8">
+                         {[
+                            "bg-orange-500",
+                            "bg-yellow-500",
+                            "bg-teal-500",
+                            "bg-pink-500"
+                        ].map((color, i) => (
+                            <div key={i} className={`aspect-square rounded-2xl ${color} opacity-80`} />
                         ))}
                     </div>
 
-                    <div className="mt-auto w-full space-y-3">
-                        <Button size="lg" className="w-full rounded-full h-16 text-lg bg-gradient-primary text-white shadow-lg shadow-primary/20" onClick={nextStep}>
-                            Confirm Collection
+                    <div className="mt-auto">
+                        <Button 
+                            onClick={nextStep}
+                            className="w-full h-16 rounded-[2rem] bg-purple-600 text-white hover:bg-purple-500 text-lg font-bold shadow-lg shadow-purple-600/20"
+                        >
+                            Confirm
                         </Button>
                     </div>
                 </motion.div>
@@ -289,26 +317,59 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col items-center text-center"
+                    className="flex-1 flex flex-col"
                 >
-                    <div className="w-full h-64 mb-8 relative rounded-[2.5rem] overflow-hidden bg-black/20 border border-white/5">
-                        <img src={journeyImg} alt="Journey" className="w-full h-full object-cover opacity-90" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
-                             <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider border border-primary/20 backdrop-blur-md">Insight</span>
-                        </div>
-                    </div>
+                    <h2 className="text-4xl font-bold mb-6">Progress<br/>Takes Time</h2>
+                    
+                    <Block className="flex-1 mb-6 relative overflow-hidden flex flex-col">
+                         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+                         
+                         <div className="relative z-10 flex-1 flex flex-col justify-between">
+                             <div className="space-y-6">
+                                <div className="flex gap-4 items-center">
+                                    <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                        <Activity size={24} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg">Track Intensity</h4>
+                                        <p className="text-white/50 text-sm">Log strength & clarity daily</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 items-center">
+                                    <div className="w-12 h-12 rounded-2xl bg-pink-500/20 flex items-center justify-center text-pink-400">
+                                        <Zap size={24} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-lg">Build Streak</h4>
+                                        <p className="text-white/50 text-sm">Consistency is key</p>
+                                    </div>
+                                </div>
+                             </div>
 
-                    <h2 className="text-3xl font-heading font-bold mb-4 text-white">Recovery takes time</h2>
-                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-                        Olfi helps you notice small improvements. Consistency is key.
-                    </p>
+                             {/* Abstract Graph */}
+                             <div className="h-32 w-full mt-8 relative">
+                                 <div className="absolute bottom-0 left-0 right-0 h-full flex items-end gap-2 opacity-50">
+                                     {[20, 40, 35, 50, 45, 60, 75, 70, 90].map((h, i) => (
+                                         <div key={i} className="flex-1 bg-purple-500 rounded-t-md" style={{ height: `${h}%` }} />
+                                     ))}
+                                 </div>
+                                 {/* Overlay Line */}
+                                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                                     <path d="M0,120 Q40,100 80,80 T160,60 T240,40 T320,10" fill="none" stroke="#d946ef" strokeWidth="4" strokeLinecap="round" className="drop-shadow-[0_0_10px_rgba(217,70,239,0.5)]" />
+                                     <circle cx="320" cy="10" r="6" fill="#d946ef" className="drop-shadow-[0_0_10px_rgba(217,70,239,0.8)]" />
+                                     <rect x="280" y="-25" width="80" height="28" rx="8" fill="white" />
+                                     <text x="320" y="-8" textAnchor="middle" fill="black" fontSize="12" fontWeight="bold">Goal</text>
+                                 </svg>
+                             </div>
+                         </div>
+                    </Block>
 
-                    <div className="mt-auto w-full pt-8">
-                        <Button size="lg" className="w-full rounded-full h-16 text-lg bg-white text-background hover:bg-white/90 shadow-xl" onClick={nextStep}>
-                            I'm Ready
-                        </Button>
-                    </div>
+                    <Button 
+                        onClick={nextStep}
+                        className="w-full h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-lg font-bold shadow-lg shadow-white/5"
+                    >
+                        Understood
+                    </Button>
                 </motion.div>
             )}
 
@@ -320,24 +381,22 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col items-center justify-center text-center"
+                    className="flex-1 flex flex-col justify-center"
                 >
-                    <div className="w-40 h-40 rounded-full bg-gradient-primary p-[2px] mb-8 shadow-[0_0_60px_rgba(168,85,247,0.5)] animate-pulse">
-                         <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                            <div className="w-32 h-32 rounded-full bg-gradient-primary flex items-center justify-center">
-                                <Check size={64} className="text-white drop-shadow-md" strokeWidth={3} />
-                            </div>
-                         </div>
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-[0_0_50px_rgba(168,85,247,0.4)] mb-8">
+                            <Check size={48} className="text-white" strokeWidth={4} />
+                        </div>
+                        <h2 className="text-5xl font-bold mb-4">You are<br/>Ready.</h2>
+                        <p className="text-white/50 text-xl">Let's begin your journey.</p>
                     </div>
-
-                    <h2 className="text-4xl font-heading font-bold mb-6 text-white">You are all set</h2>
-                    <p className="text-muted-foreground text-xl mb-12 leading-relaxed max-w-xs mx-auto">
-                        Your first session begins whenever you are ready.
-                    </p>
                     
-                    <div className="w-full space-y-4">
-                        <Button size="lg" className="w-full rounded-full h-16 text-xl bg-gradient-primary text-white shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform" onClick={completeOnboarding}>
-                            Begin Training
+                    <div className="mt-auto w-full space-y-4">
+                        <Button 
+                            onClick={completeOnboarding}
+                            className="w-full h-20 rounded-[2.5rem] bg-white text-black hover:bg-white/90 text-xl font-bold shadow-xl shadow-white/10 transition-transform hover:scale-[1.02]"
+                        >
+                            Start First Session
                         </Button>
                     </div>
                 </motion.div>

@@ -5,7 +5,7 @@ import cloveImg from '@assets/generated_images/close-up_of_dried_cloves.png';
 import lemonImg from '@assets/generated_images/close-up_of_fresh_lemon.png';
 import eucalyptusImg from '@assets/generated_images/close-up_of_eucalyptus_leaves.png';
 import roseImg from '@assets/generated_images/close-up_of_a_pink_rose.png';
-import avatarImg from '@assets/generated_images/super_simplified_minimalist_user_avatar_icon.png';
+import avatarImg from '@assets/generated_images/flat_vector_minimalist_user_profile_icon.png';
 
 export const AVATAR_IMAGE = avatarImg;
 
