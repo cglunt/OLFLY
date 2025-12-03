@@ -19,19 +19,19 @@ function Router() {
   const { user, isLoading } = useCurrentUser();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     
     // Redirect to onboarding if not completed
-    if (user && !user.hasOnboarded && location !== "/onboarding") {
+    if (!user.hasOnboarded && location !== "/onboarding") {
       setLocation("/onboarding");
     }
   }, [location, setLocation, user, isLoading]);
 
-  // Show loading state while user is being fetched
-  if (isLoading) {
+  // Show simple loading state
+  if (isLoading || !user) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
-        <p className="text-white/70">Loading...</p>
+        <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
