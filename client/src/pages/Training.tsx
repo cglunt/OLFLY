@@ -136,8 +136,8 @@ export default function Training() {
 
     await updateUserAsync({
       streak: newStreak,
-      lastSessionDate: new Date() as any,
-    });
+      lastSessionDate: new Date().toISOString(),
+    } as any);
   };
 
   // Show loading state while fetching user

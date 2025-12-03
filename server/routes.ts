@@ -34,7 +34,13 @@ export async function registerRoutes(
 
   app.patch("/api/users/:id", async (req, res) => {
     try {
-      const updates = insertUserSchema.partial().parse(req.body);
+      // Convert date strings to Date objects
+      const body = { ...req.body };
+      if (body.lastSessionDate && typeof body.lastSessionDate === 'string') {
+        body.lastSessionDate = new Date(body.lastSessionDate);
+      }
+      
+      const updates = insertUserSchema.partial().parse(body);
       const user = await storage.updateUser(req.params.id, updates);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
