@@ -118,7 +118,7 @@ export default function Training() {
              className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
              alt="Background Scent"
            />
-           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/80" />
+           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/80" />
         </div>
       )}
 
