@@ -3,13 +3,12 @@ import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { getStoredData } from "@/lib/data";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Calendar as CalendarIcon, TrendingUp, Activity } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Calendar as CalendarIcon, TrendingUp, Activity, Moon, Zap } from "lucide-react";
 
 export default function Progress() {
   const [data] = useState(getStoredData());
   
-  // Transform log data for charts
   const chartData = data.logs
     .slice(0, 7)
     .reverse()
@@ -22,108 +21,116 @@ export default function Progress() {
       };
     });
 
+  // Placeholder data for smooth wave look if real data is empty
+  const displayData = chartData.length > 1 ? chartData : [
+    { date: 'Mon', intensity: 2 },
+    { date: 'Tue', intensity: 4.5 },
+    { date: 'Wed', intensity: 3 },
+    { date: 'Thu', intensity: 6.5 },
+    { date: 'Fri', intensity: 5 },
+    { date: 'Sat', intensity: 8 },
+    { date: 'Sun', intensity: 7.5 },
+  ];
+
   return (
     <Layout>
-      <div className="p-6 pb-24 space-y-6">
-        <header>
-          <h1 className="text-3xl font-bold">Your Progress</h1>
-          <p className="text-muted-foreground">Track your recovery journey over time.</p>
+      <div className="p-6 pb-24 space-y-8">
+        <header className="flex justify-between items-end">
+          <div>
+             <h1 className="text-3xl font-heading font-bold text-white">Overview</h1>
+             <p className="text-muted-foreground">Weekly Analysis</p>
+          </div>
+          <div className="bg-secondary px-3 py-1.5 rounded-full text-sm font-medium text-white border border-white/5 flex items-center gap-2">
+             <span className="w-2 h-2 rounded-full bg-primary"></span>
+             Last 7 Days
+          </div>
         </header>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="w-full bg-secondary/50 rounded-full p-1 mb-6">
-            <TabsTrigger value="overview" className="rounded-full w-1/2">Overview</TabsTrigger>
-            <TabsTrigger value="history" className="rounded-full w-1/2">History</TabsTrigger>
-          </TabsList>
+        {/* Sleep Analytics Style Card */}
+        <Card className="bg-gradient-primary border-none shadow-lg shadow-primary/20 relative overflow-hidden">
+           <CardContent className="p-6 relative z-10 flex justify-between items-center">
+              <div className="space-y-2">
+                 <h3 className="text-white font-bold text-lg leading-tight max-w-[120px]">You almost reached a perfect streak</h3>
+                 <p className="text-white/70 text-xs">Keep it up!</p>
+              </div>
+              <div className="w-20 h-20 relative">
+                 <svg className="w-full h-full -rotate-90">
+                    <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.2)" strokeWidth="6" fill="none" />
+                    <circle cx="40" cy="40" r="36" stroke="white" strokeWidth="6" fill="none" strokeDasharray="226" strokeDashoffset="50" strokeLinecap="round" />
+                 </svg>
+                 <div className="absolute inset-0 flex items-center justify-center font-bold text-white text-sm">
+                    75%
+                 </div>
+              </div>
+           </CardContent>
+           {/* Decor */}
+           <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+        </Card>
 
-          <TabsContent value="overview" className="space-y-6">
-            {/* Intensity Chart */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-medium flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  Average Intensity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[200px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                      <XAxis 
-                        dataKey="date" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{fill: 'hsl(var(--muted-foreground))', fontSize: 12}}
-                        dy={10}
-                      />
-                      <YAxis 
-                        hide 
-                        domain={[0, 10]} 
-                      />
-                      <Tooltip 
-                        cursor={{stroke: 'hsl(var(--primary))', strokeWidth: 2}}
-                        contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="intensity" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={3} 
-                        dot={{fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))', strokeWidth: 2, r: 4}}
-                        activeDot={{r: 6, fill: 'hsl(var(--primary))'}} 
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Chart Section */}
+        <div className="space-y-4">
+           <div className="flex items-center justify-between px-2">
+              <div className="bg-secondary/50 px-3 py-1 rounded-lg text-xs font-medium text-white">
+                 Avg Intensity
+              </div>
+           </div>
 
-            {/* Stats Summary */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-primary/5 border-none">
-                <CardContent className="p-4">
-                  <div className="text-xs text-muted-foreground uppercase font-semibold mb-1">Active Streak</div>
-                  <div className="text-2xl font-bold text-primary">{data.settings.streak} Days</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-secondary/50 border-none">
-                <CardContent className="p-4">
-                  <div className="text-xs text-muted-foreground uppercase font-semibold mb-1">Total Sessions</div>
-                  <div className="text-2xl font-bold">{data.logs.length}</div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+           <div className="h-[250px] w-full relative">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={displayData}>
+                  <defs>
+                    <linearGradient id="colorIntensity" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(280, 80%, 60%)" stopOpacity={0.5}/>
+                      <stop offset="95%" stopColor="hsl(280, 80%, 60%)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Tooltip 
+                    contentStyle={{backgroundColor: 'hsl(240, 18%, 14%)', borderRadius: '12px', border: 'none', color: 'white'}}
+                    itemStyle={{color: 'hsl(280, 80%, 60%)'}}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="intensity" 
+                    stroke="hsl(280, 80%, 60%)" 
+                    strokeWidth={4}
+                    fillOpacity={1} 
+                    fill="url(#colorIntensity)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+              
+              {/* Selected Point Indicator (Fake) */}
+              <div className="absolute top-[30%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                 <div className="bg-white text-background text-xs font-bold px-2 py-1 rounded-full mb-2 shadow-lg">
+                    7.5 Intense
+                 </div>
+                 <div className="w-4 h-4 bg-white border-4 border-primary rounded-full shadow-[0_0_15px_hsl(280,80%,60%)]"></div>
+              </div>
+           </div>
+        </div>
 
-          <TabsContent value="history">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-muted-foreground text-sm uppercase tracking-wider">Recent Logs</h3>
-              {data.logs.length === 0 ? (
-                <div className="text-center py-10 text-muted-foreground">No logs yet. Start training!</div>
-              ) : (
-                data.logs.map((log: any) => (
-                  <Card key={log.id} className="hover:bg-secondary/20 transition-colors">
-                    <CardContent className="p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                          <Activity className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{new Date(log.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</p>
-                          <p className="text-xs text-muted-foreground">{new Date(log.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-sm font-bold text-primary">Completed</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4">
+           <div className="bg-secondary rounded-[1.5rem] p-5 flex flex-col gap-3 border border-white/5">
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                 <Moon size={20} />
+              </div>
+              <div>
+                 <p className="text-muted-foreground text-xs">Total Sessions</p>
+                 <p className="text-2xl font-bold text-white">{data.logs.length}</p>
+              </div>
+           </div>
+           <div className="bg-secondary rounded-[1.5rem] p-5 flex flex-col gap-3 border border-white/5">
+              <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400">
+                 <Zap size={20} />
+              </div>
+              <div>
+                 <p className="text-muted-foreground text-xs">Active Streak</p>
+                 <p className="text-2xl font-bold text-white">{data.settings.streak}</p>
+              </div>
+           </div>
+        </div>
+
       </div>
     </Layout>
   );

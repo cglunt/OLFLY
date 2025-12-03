@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { getStoredData, saveStoredData } from "@/lib/data";
-import { Plus, Search, MoreHorizontal } from "lucide-react";
+import { Plus, Search, MoreVertical, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Library() {
@@ -42,16 +42,16 @@ export default function Library() {
 
   return (
     <Layout>
-      <div className="p-6 pb-32 space-y-6">
-        <header className="flex items-center justify-between">
-          <h1 className="text-3xl font-heading font-bold">My Scents</h1>
+      <div className="p-6 pb-32 space-y-8">
+        <header className="flex items-center justify-between pt-2">
+          <h1 className="text-3xl font-heading font-bold text-white">My Collection</h1>
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="icon" className="rounded-full h-12 w-12 shadow-md bg-primary text-white hover:bg-primary/90">
+              <Button size="icon" className="rounded-full h-12 w-12 shadow-lg shadow-primary/30 bg-primary text-white hover:bg-primary/90">
                 <Plus className="h-6 w-6" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="rounded-3xl">
+            <DialogContent className="rounded-3xl bg-secondary border-white/10 text-white">
               <DialogHeader>
                 <DialogTitle className="font-heading text-xl">Add New Scent</DialogTitle>
               </DialogHeader>
@@ -63,54 +63,57 @@ export default function Library() {
                     placeholder="e.g. Coffee, Cinnamon..." 
                     value={newScentName}
                     onChange={(e) => setNewScentName(e.target.value)}
-                    className="rounded-xl h-12 bg-secondary/30 border-none"
+                    className="rounded-xl h-12 bg-black/20 border-white/10 text-white"
                   />
                 </div>
-                <Button className="w-full rounded-xl h-12" onClick={handleAddScent}>Add to Library</Button>
+                <Button className="w-full rounded-xl h-12 bg-primary text-white hover:bg-primary/90" onClick={handleAddScent}>Add to Library</Button>
               </div>
             </DialogContent>
           </Dialog>
         </header>
 
+        {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
           <Input 
-            placeholder="Search your scents..." 
-            className="pl-12 bg-white border-none h-12 rounded-2xl shadow-sm"
+            placeholder="Search scents..." 
+            className="pl-12 bg-secondary border-transparent focus:border-primary h-14 rounded-[1.25rem] text-white placeholder:text-muted-foreground shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Scents List */}
+        <div className="space-y-4">
           {filteredScents.map((scent: any, i: number) => (
             <motion.div
               key={scent.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.05 }}
             >
-              <Card className={`overflow-hidden border-none shadow-none ${scent.color || 'bg-white'} h-48 relative cursor-pointer group hover:shadow-lg transition-all`}>
-                <CardContent className="p-4 h-full flex flex-col justify-between relative z-10">
-                  <div className="flex justify-between items-start">
-                     <div className="h-8 w-8 rounded-full bg-white/50 flex items-center justify-center text-xs font-bold text-foreground/70">
-                       {i + 1}
-                     </div>
-                     <Button size="icon" variant="ghost" className="h-8 w-8 text-foreground/50 hover:bg-white/50 rounded-full">
-                        <MoreHorizontal className="h-5 w-5" />
-                     </Button>
-                  </div>
-                  
-                  <div className="text-center">
-                    <h3 className="font-heading font-bold text-xl text-foreground/90 mb-1">{scent.name}</h3>
-                    <p className="text-xs text-foreground/60 line-clamp-1">{scent.description}</p>
-                  </div>
+              <Card className="overflow-hidden border-none bg-secondary hover:bg-white/5 transition-colors cursor-pointer rounded-[1.5rem] group">
+                <CardContent className="p-4 flex items-center gap-4">
+                   <div className="h-16 w-16 rounded-2xl bg-white/5 p-2 flex items-center justify-center shrink-0 border border-white/5">
+                      <img src={scent.image} className="w-full h-full object-contain drop-shadow-lg" alt={scent.name} />
+                   </div>
+                   
+                   <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-lg text-white truncate">{scent.name}</h3>
+                      <p className="text-xs text-muted-foreground truncate">{scent.description}</p>
+                   </div>
+
+                   <div className="flex items-center gap-1">
+                      {scent.isDefault && (
+                         <div className="p-2 rounded-full bg-primary/10 text-primary">
+                            <Star size={16} fill="currentColor" />
+                         </div>
+                      )}
+                      <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-white hover:bg-white/10 rounded-full">
+                         <MoreVertical size={20} />
+                      </Button>
+                   </div>
                 </CardContent>
-                
-                {/* Image Background Decoration */}
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 opacity-80">
-                  <img src={scent.image} alt="" className="w-full h-full object-contain mix-blend-multiply" />
-                </div>
               </Card>
             </motion.div>
           ))}

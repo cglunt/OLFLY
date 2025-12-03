@@ -2,14 +2,22 @@ import { Link, useLocation } from "wouter";
 import { Home, Wind, BookOpen, BarChart2, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// New dark background image import
+import darkBg from '@assets/generated_images/dark_abstract_gradient_waves_background.png';
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  // Hide bottom nav on Training screen for immersive feel
   const showNav = location !== "/training";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border/50 relative font-sans">
-      <main className="flex-1 flex flex-col overflow-y-auto pb-24 scrollbar-hide relative bg-[#F9F4ED]">
+    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans">
+      {/* Global Background Image */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+         <img src={darkBg} alt="" className="w-full h-full object-cover" />
+         <div className="absolute inset-0 bg-background/80" /> {/* Tint */}
+      </div>
+      
+      <main className="flex-1 flex flex-col overflow-y-auto pb-24 scrollbar-hide relative z-10">
         {children}
       </main>
       {showNav && <BottomNav />}
@@ -28,7 +36,7 @@ function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 max-w-md mx-auto pb-2 pt-2 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#17171C]/90 backdrop-blur-xl z-50 max-w-md mx-auto pb-4 pt-2 border-t border-white/5">
       <div className="flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const isActive = location === item.path;
@@ -37,24 +45,20 @@ function BottomNav() {
               <div
                 className={cn(
                   "flex flex-col items-center justify-center w-16 h-full cursor-pointer group",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground hover:text-white"
                 )}
               >
                 <div className={cn(
-                  "p-1.5 rounded-xl transition-all duration-300 mb-1",
-                  isActive ? "bg-transparent" : "group-hover:bg-secondary/30"
+                  "p-1.5 rounded-full transition-all duration-300 mb-1",
+                  isActive ? "bg-primary/20" : "bg-transparent"
                 )}>
                   <item.icon
-                    size={24}
+                    size={22}
                     strokeWidth={isActive ? 2.5 : 2}
                     className="transition-transform duration-300"
                     fill={isActive ? "currentColor" : "none"}
                   />
                 </div>
-                <span className={cn(
-                  "text-[10px] font-medium transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground"
-                )}>{item.label}</span>
               </div>
             </Link>
           );

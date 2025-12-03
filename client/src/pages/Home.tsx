@@ -4,18 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getStoredData, AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, Video, FileText } from "lucide-react";
+import { Play, Video, FileText, Zap, Moon, Activity, Bell } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const [data] = useState(getStoredData());
   const [, setLocation] = useLocation();
-  const [greeting, setGreeting] = useState("Good Morning");
+  const [greeting, setGreeting] = useState("Hello");
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good Morning");
-    else if (hour < 18) setGreeting("Good Afternoon");
+    if (hour < 12) setGreeting("Hello");
+    else if (hour < 18) setGreeting("Hi");
     else setGreeting("Good Evening");
   }, []);
 
@@ -23,118 +23,129 @@ export default function Home() {
     <Layout>
       <div className="p-6 space-y-8">
         {/* Header with Avatar */}
-        <header className="flex justify-between items-center">
+        <header className="flex justify-between items-center pt-2">
           <div className="space-y-1">
-            <h1 className="text-3xl font-heading font-bold text-foreground">Start your<br />practice</h1>
+            <p className="text-muted-foreground text-lg font-medium">{greeting},</p>
+            <h1 className="text-4xl font-heading font-bold text-white tracking-tight">Sherman</h1>
           </div>
-          <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
-            <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
+          <div className="flex gap-4 items-center">
+             <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10">
+                <Bell className="w-6 h-6" />
+             </Button>
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-primary shadow-lg shadow-primary/20">
+              <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
+            </div>
           </div>
         </header>
 
-        {/* Filter Tabs (Visual only for now) */}
-        <div className="flex gap-6 text-sm font-medium text-muted-foreground overflow-x-auto scrollbar-hide pb-2">
-          <span className="text-primary border-b-2 border-primary pb-1 cursor-pointer whitespace-nowrap">Balance</span>
-          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Calm & relaxing</span>
-          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Focus</span>
-          <span className="hover:text-foreground cursor-pointer whitespace-nowrap">Anxiety</span>
-        </div>
-
-        {/* Horizontal Session Cards */}
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
-          {/* Main Training Card */}
-          <motion.div 
-            whileTap={{ scale: 0.98 }}
-            className="min-w-[280px] h-[180px] bg-[#F5D7C4] rounded-[2rem] relative overflow-hidden cursor-pointer shadow-sm"
-            onClick={() => setLocation("/training")}
-          >
-            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
-              <div>
-                <h3 className="font-heading text-2xl font-bold text-[#3C3C3C]">Daily<br/>Scent Training</h3>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[#3C3C3C]/70">
-                <span>4 Scents</span>
-                <span>•</span>
-                <span>5 Min</span>
-              </div>
-            </div>
-            {/* Decorative Illustration */}
-            <div className="absolute right-[-20px] bottom-[-20px] w-40 h-40 opacity-90">
-              <img src={data.scents[0].image} className="w-full h-full object-contain mix-blend-multiply" alt="decoration" />
-            </div>
-          </motion.div>
-
-          {/* Secondary Card */}
-          <motion.div 
-            whileTap={{ scale: 0.98 }}
-            className="min-w-[280px] h-[180px] bg-[#8AC1A2] rounded-[2rem] relative overflow-hidden cursor-pointer shadow-sm"
-            onClick={() => setLocation("/training")}
-          >
-            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
-              <div>
-                <h3 className="font-heading text-2xl font-bold text-white">Quick<br/>Reset</h3>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-white/80">
-                <span>1 Scent</span>
-                <span>•</span>
-                <span>1 Min</span>
-              </div>
-            </div>
-            <div className="absolute right-[-10px] bottom-[-10px] w-36 h-36 opacity-80">
-               <img src={data.scents[2].image} className="w-full h-full object-contain mix-blend-soft-light" alt="decoration" />
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Resources Section */}
-        <div className="space-y-4">
-          <h2 className="font-heading text-xl font-bold text-foreground">Resources</h2>
+        {/* Main Hero Card - "Daily Goals" style */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full bg-gradient-primary rounded-[2rem] p-6 text-white shadow-lg shadow-primary/20 relative overflow-hidden cursor-pointer"
+          onClick={() => setLocation("/training")}
+        >
+          <div className="relative z-10">
+             <div className="flex justify-between items-start mb-6">
+               <div>
+                 <span className="text-white/80 text-sm font-medium">Daily Goal</span>
+                 <h2 className="text-2xl font-bold mt-1">Scent Training</h2>
+                 <p className="text-white/90 text-sm">20 Min</p>
+               </div>
+               <div className="w-16 h-16 relative">
+                  {/* Simple circular progress */}
+                  <svg className="w-full h-full -rotate-90">
+                    <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" strokeWidth="4" fill="none" />
+                    <circle cx="32" cy="32" r="28" stroke="white" strokeWidth="4" fill="none" strokeDasharray="175" strokeDashoffset="45" strokeLinecap="round" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center font-bold text-sm">
+                    72%
+                  </div>
+               </div>
+             </div>
+             
+             <div className="flex gap-4 pt-2 border-t border-white/20">
+                <div className="flex items-center gap-2">
+                   <div className="p-1.5 bg-white/20 rounded-full">
+                      <Zap size={14} fill="currentColor" />
+                   </div>
+                   <div>
+                      <p className="text-[10px] text-white/70">Streak</p>
+                      <p className="text-sm font-bold">{data.settings.streak} Days</p>
+                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                   <div className="p-1.5 bg-white/20 rounded-full">
+                      <Activity size={14} />
+                   </div>
+                   <div>
+                      <p className="text-[10px] text-white/70">Progress</p>
+                      <p className="text-sm font-bold">+3.5%</p>
+                   </div>
+                </div>
+             </div>
+          </div>
           
-          <div className="grid gap-4">
-            {/* Resource Card 1 */}
-            <Card className="border-none shadow-sm bg-white hover:bg-secondary/20 transition-colors cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600 shrink-0">
-                  <FileText size={20} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground">Mind & Body Connection</h4>
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                    Understanding how olfactory nerves regenerate through neuroplasticity.
-                  </p>
-                </div>
-                <div className="ml-auto">
-                  <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">READ</span>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Decorative Circle */}
+          <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        </motion.div>
 
-            {/* Resource Card 2 */}
-            <Card className="border-none shadow-sm bg-white hover:bg-secondary/20 transition-colors cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
-                  <Video size={20} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground">Power of Mantra</h4>
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                    Using positive affirmations to boost your recovery process.
-                  </p>
-                </div>
-                <div className="ml-auto">
-                  <span className="text-[10px] font-bold bg-orange-100 text-orange-700 px-2 py-1 rounded-full">WATCH</span>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Top Routines Section */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+             <h2 className="font-heading text-xl font-bold text-white">Top Routines</h2>
+             <span className="text-sm text-primary font-medium cursor-pointer hover:text-primary/80">See All</span>
+          </div>
+          
+          <div className="space-y-3">
+            {/* Routine Card 1 */}
+            <motion.div 
+              whileTap={{ scale: 0.98 }}
+              className="bg-secondary rounded-[1.5rem] p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors"
+            >
+              <div className="h-12 w-12 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-md shadow-primary/30">
+                <Play size={20} fill="currentColor" className="ml-1" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-white">Morning Reset</h3>
+                <p className="text-xs text-muted-foreground">Lemon & Eucalyptus • 5 Min</p>
+              </div>
+            </motion.div>
+
+            {/* Routine Card 2 */}
+            <motion.div 
+              whileTap={{ scale: 0.98 }}
+              className="bg-secondary rounded-[1.5rem] p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors"
+            >
+              <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center text-primary">
+                <Moon size={20} fill="currentColor" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-white">Evening Calm</h3>
+                <p className="text-xs text-muted-foreground">Lavender & Rose • 10 Min</p>
+              </div>
+            </motion.div>
           </div>
         </div>
 
-        {/* Daily Affirmation Footer */}
-        <div className="bg-[#F9F4ED] p-6 rounded-3xl text-center">
-          <p className="font-heading text-lg font-medium text-foreground italic">
-            "I am healing a little more every day."
-          </p>
+        {/* Resources Horizontal Scroll */}
+        <div className="space-y-4">
+           <h2 className="font-heading text-xl font-bold text-white">Discover</h2>
+           <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
+              {[1,2,3].map((_, i) => (
+                 <div key={i} className="min-w-[200px] h-[120px] bg-secondary rounded-[1.5rem] p-4 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer border border-white/5">
+                    <div className="p-2 bg-white/5 w-fit rounded-xl">
+                       <FileText size={18} className="text-accent" />
+                    </div>
+                    <div>
+                       <p className="text-xs text-muted-foreground mb-1">Article</p>
+                       <h4 className="font-bold text-white text-sm">The Science of Smell</h4>
+                    </div>
+                 </div>
+              ))}
+           </div>
         </div>
+
       </div>
     </Layout>
   );

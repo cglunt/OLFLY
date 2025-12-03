@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { getStoredData, saveStoredData, DEFAULT_SCENTS, AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { ArrowLeft, Play, Pause, SkipForward, Heart, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Play, Pause, SkipForward, Heart, ChevronLeft, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -110,153 +110,159 @@ export default function Training() {
 
   return (
     <Layout>
-      <div className="h-full flex flex-col bg-[#F9F4ED] relative">
+      <div className="h-full flex flex-col bg-background relative overflow-hidden">
+        {/* Background Glows */}
+        <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-20%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
+
         {/* Top Header */}
         <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20">
-           <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-transparent">
-             <ChevronLeft className="h-6 w-6 text-foreground" />
+           <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white">
+             <ChevronLeft className="h-6 w-6" />
            </Button>
-           <Button variant="ghost" size="icon" className="text-red-400 hover:text-red-500 hover:bg-transparent">
+           <h2 className="text-sm font-bold tracking-widest uppercase text-muted-foreground">
+             {phase === 'intro' ? 'Start' : 'Session'}
+           </h2>
+           <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
              <Heart className="h-6 w-6" />
            </Button>
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-12 mt-8">
+        <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-12 mt-8 relative z-10">
           
-          {/* Circular Player / Image */}
-          <div className="relative w-[280px] h-[280px] flex items-center justify-center">
-            {/* Progress Ring */}
+          {/* Central Progress Circle - Cyberpunk Style */}
+          <div className="relative w-[300px] h-[300px] flex items-center justify-center">
+            {/* Static Background Ring */}
             {(phase === "breathe" || phase === "smell" || phase === "rest") && (
               <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none">
                 <circle
-                  cx="140"
-                  cy="140"
+                  cx="150"
+                  cy="150"
                   r={radius}
-                  stroke="currentColor"
-                  strokeWidth="2"
+                  stroke="hsl(var(--secondary))"
+                  strokeWidth="12"
                   fill="transparent"
-                  className="text-muted"
+                  strokeLinecap="round"
                 />
+                {/* Gradient Active Ring */}
+                <defs>
+                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="hsl(280, 80%, 60%)" />
+                    <stop offset="100%" stopColor="hsl(320, 90%, 60%)" />
+                  </linearGradient>
+                </defs>
                 <circle
-                  cx="140"
-                  cy="140"
+                  cx="150"
+                  cy="150"
                   r={radius}
-                  stroke="currentColor"
-                  strokeWidth="4"
+                  stroke="url(#progressGradient)"
+                  strokeWidth="12"
                   fill="transparent"
                   strokeDasharray={circumference}
                   strokeDashoffset={strokeDashoffset}
                   strokeLinecap="round"
-                  className="text-primary transition-all duration-1000 ease-linear"
+                  className="transition-all duration-1000 ease-linear drop-shadow-[0_0_10px_rgba(200,50,255,0.5)]"
                 />
               </svg>
             )}
 
-            {/* Central Image Container */}
-            <div className="w-60 h-60 rounded-full bg-white shadow-sm overflow-hidden flex items-center justify-center relative z-10 p-8">
-              <div className={`absolute inset-0 opacity-20 ${activeScent.color}`} />
-              <motion.img 
-                key={phase === "intro" ? "intro" : activeScent.image}
-                src={phase === "intro" || phase === "outro" ? AVATAR_IMAGE : activeScent.image} 
-                alt="Visual" 
-                className="w-full h-full object-contain"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              />
+            {/* Inner Content */}
+            <div className="text-center z-10 flex flex-col items-center justify-center gap-4">
+               {phase === "intro" || phase === "outro" ? (
+                  <div className="w-40 h-40 rounded-full bg-gradient-primary p-1 shadow-lg shadow-primary/30 animate-in zoom-in duration-700">
+                    <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
+                       <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-80" />
+                    </div>
+                  </div>
+               ) : (
+                  <motion.div 
+                    key={activeScent.id}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-40 h-40 relative"
+                  >
+                    <img src={activeScent.image} className="w-full h-full object-contain drop-shadow-2xl" />
+                  </motion.div>
+               )}
             </div>
           </div>
 
           {/* Text Info */}
-          <div className="text-center space-y-2">
-            <h3 className="text-primary font-medium uppercase tracking-widest text-xs">
-              {phase === "intro" ? "Preparation" : 
-               phase === "breathe" ? "Breathe In" : 
-               phase === "smell" ? "Focus" : 
-               phase === "rate" ? "Evaluation" :
-               phase === "rest" ? "Rest" : "Complete"}
-            </h3>
-            <h1 className="font-heading text-4xl font-bold text-foreground">
-              {phase === "intro" ? "Scent Training" : 
-               phase === "outro" ? "Great Job!" : 
-               activeScent.name}
-            </h1>
-            <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm pt-2">
-              {phase === "rate" ? (
-                <span className="text-foreground font-medium">Rate intensity below</span>
-              ) : (
-                <>
-                  <span>Full body</span>
-                  <span>•</span>
-                  <span>Relaxing</span>
-                  <span>•</span>
-                  <span>{formatTime(timeLeft)}</span>
-                </>
-              )}
-            </div>
+          <div className="text-center space-y-1">
+             <h1 className="text-4xl font-heading font-bold text-white tracking-tight">
+               {phase === "intro" ? "Daily Practice" : 
+                phase === "outro" ? "Completed" : 
+                activeScent.name}
+             </h1>
+             <p className="text-lg text-muted-foreground font-medium">
+               {phase === "intro" ? "Ready to start?" : 
+                phase === "breathe" ? "Breathe In Slowly" : 
+                phase === "smell" ? "Inhale Scent" : 
+                phase === "rest" ? "Rest & Reset" : 
+                formatTime(timeLeft)}
+             </p>
           </div>
 
-          {/* Controls Area */}
+          {/* Controls */}
           <div className="w-full max-w-xs">
              {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-full h-14 text-lg shadow-lg shadow-primary/20" onClick={startSession}>
-                 Start Session
+               <Button size="lg" className="w-full rounded-full h-16 text-lg bg-gradient-primary hover:opacity-90 shadow-lg shadow-primary/40 border-none text-white" onClick={startSession}>
+                 Start Training
                </Button>
              )}
 
              {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                <div className="flex items-center justify-center gap-8">
-                 <Button variant="ghost" size="icon" className="h-12 w-12 text-muted-foreground" onClick={() => {
-                    // Skip logic
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-secondary text-muted-foreground hover:text-white hover:bg-white/10" onClick={() => {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
                  }}>
-                   <SkipForward className="h-8 w-8 rotate-180" /> {/* Using rotate for rewind icon look */}
+                   <RotateCcw className="h-6 w-6" />
                  </Button>
                  
                  <Button 
                    size="icon" 
-                   className="h-20 w-20 rounded-full shadow-xl bg-white text-primary hover:bg-white/90 hover:scale-105 transition-all"
+                   className="h-20 w-20 rounded-full shadow-[0_0_30px_rgba(200,50,255,0.4)] bg-gradient-primary text-white hover:scale-105 transition-all border-4 border-background"
                    onClick={toggleTimer}
                  >
                    {isActive ? <Pause className="h-8 w-8 fill-current" /> : <Play className="h-8 w-8 fill-current pl-1" />}
                  </Button>
 
-                 <Button variant="ghost" size="icon" className="h-12 w-12 text-muted-foreground" onClick={() => {
+                 <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-secondary text-muted-foreground hover:text-white hover:bg-white/10" onClick={() => {
                     setIsActive(false);
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') startSmellPhase();
                  }}>
-                   <SkipForward className="h-8 w-8" />
+                   <SkipForward className="h-6 w-6" />
                  </Button>
                </div>
              )}
 
              {phase === "rate" && (
-               <div className="space-y-6 animate-in slide-in-from-bottom-10 fade-in duration-500">
+               <div className="space-y-8 animate-in slide-in-from-bottom-10 fade-in duration-500 bg-secondary/50 p-6 rounded-3xl border border-white/5">
+                  <div className="flex justify-between items-center px-2">
+                    <span className="text-xs font-bold text-muted-foreground uppercase">Intensity</span>
+                    <span className="text-2xl font-bold text-primary">{currentRating}/10</span>
+                  </div>
                  <Slider 
                     defaultValue={[5]} 
                     max={10} 
                     step={1} 
                     value={[currentRating]} 
                     onValueChange={(val) => setCurrentRating(val[0])}
-                    className="py-4"
+                    className="py-2"
                   />
-                  <div className="flex justify-between text-xs font-bold text-muted-foreground uppercase tracking-wider px-1">
-                    <span>None</span>
-                    <span>Strong</span>
-                  </div>
-                  <Button size="lg" className="w-full rounded-full h-14" onClick={submitRating}>
+                  <Button size="lg" className="w-full rounded-full h-14 bg-white text-background hover:bg-white/90 font-bold" onClick={submitRating}>
                     Submit Rating
                   </Button>
                </div>
              )}
 
              {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-full h-14 text-lg" onClick={() => setLocation("/")}>
+               <Button size="lg" className="w-full rounded-full h-14 text-lg bg-gradient-primary text-white shadow-lg shadow-primary/30" onClick={() => setLocation("/")}>
                  Finish
                </Button>
              )}
