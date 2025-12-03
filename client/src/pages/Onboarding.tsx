@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Check, Clock, Sparkles, Activity, Zap, ArrowRight } from "lucide-react";
 import { getStoredData, saveStoredData } from "@/lib/data";
+import { Logo } from "@/components/Logo";
 
 // App Logo
-import appLogo from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747163301.png';
 import onboardingIllustration from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747155862.png';
 
 export default function Onboarding() {
@@ -175,7 +175,7 @@ export default function Onboarding() {
 
                     <Block className="mt-auto mb-6 bg-gradient-to-r from-[#6d45d2]/20 to-[#db2faa]/20 border-[#ac41c3]/20">
                          <div className="text-center space-y-2">
-                            <p className="text-lg font-bold text-[#ac41c3]">“Twenty seconds per scent. You got this.”</p>
+                            <p className="text-lg font-bold text-[#db2faa]">“Twenty seconds per scent. You got this.”</p>
                             <p className="text-sm text-white/40">Your nose is cheering for you already.</p>
                          </div>
                     </Block>
@@ -310,7 +310,7 @@ export default function Onboarding() {
                     </div>
                     
                     <div className="mt-auto mb-6 bg-[#ac41c3]/10 rounded-2xl p-4 text-center border border-[#ac41c3]/20">
-                        <p className="text-[#ac41c3] font-bold">“Give your scents their moment to shine.”</p>
+                        <p className="text-[#db2faa] font-bold">“Give your scents their moment to shine.”</p>
                     </div>
 
                     <div className="pb-4 md:pb-0">
@@ -384,7 +384,7 @@ export default function Onboarding() {
                 >
                     <div className="text-center mb-8 md:mb-12">
                         <div className="flex justify-center mb-8">
-                            <img src={appLogo} alt="Olfly Logo" className="h-20 md:h-24 object-contain" />
+                            <Logo size="xl" />
                         </div>
                         <h2 className="text-4xl md:text-5xl font-bold mb-6">Your nose<br/>is ready.</h2>
                         <div className="space-y-4 max-w-xs mx-auto">
@@ -399,7 +399,7 @@ export default function Onboarding() {
                     
                     <div className="mt-auto w-full space-y-6 pb-4 md:pb-0">
                         <div className="text-center">
-                            <p className="text-[#ac41c3] font-bold text-lg mb-2">“Welcome to the Sniff Squad.”</p>
+                            <p className="text-[#db2faa] font-bold text-lg mb-2">“Welcome to the Sniff Squad.”</p>
                             <p className="text-white/40 text-sm">Let’s begin the great smell comeback.</p>
                         </div>
                         
