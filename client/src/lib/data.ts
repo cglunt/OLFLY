@@ -24,7 +24,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Clove',
     image: cloveImg,
     description: 'Spicy, warm, and aromatic.',
-    color: 'bg-orange-100',
+    color: 'bg-orange-500',
     isDefault: true,
   },
   {
@@ -32,7 +32,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Lemon',
     image: lemonImg,
     description: 'Citrusy, sharp, and fresh.',
-    color: 'bg-yellow-100',
+    color: 'bg-yellow-500',
     isDefault: true,
   },
   {
@@ -40,7 +40,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Eucalyptus',
     image: eucalyptusImg,
     description: 'Cool, camphorous, and minty.',
-    color: 'bg-green-100',
+    color: 'bg-teal-500',
     isDefault: true,
   },
   {
@@ -48,7 +48,7 @@ export const DEFAULT_SCENTS: Scent[] = [
     name: 'Rose',
     image: roseImg,
     description: 'Floral, sweet, and delicate.',
-    color: 'bg-pink-100',
+    color: 'bg-pink-500',
     isDefault: true,
   },
 ];

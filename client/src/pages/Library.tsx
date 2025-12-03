@@ -93,25 +93,23 @@ export default function Library() {
               transition={{ delay: i * 0.05 }}
             >
               <Card className="overflow-hidden border-none bg-secondary hover:bg-white/5 transition-colors cursor-pointer rounded-[1.5rem] group">
-                <CardContent className="p-4 flex items-center gap-4">
-                   <div className="h-16 w-16 rounded-2xl bg-white/5 p-2 flex items-center justify-center shrink-0 border border-white/5">
-                      <img src={scent.image} className="w-full h-full object-contain drop-shadow-lg" alt={scent.name} />
+                <CardContent className="p-4 flex items-center gap-5">
+                   {/* Flat Block Icon Style */}
+                   <div className={`h-16 w-16 rounded-2xl ${scent.color || 'bg-primary'} flex items-center justify-center shrink-0 shadow-lg`}>
+                      <span className="text-2xl font-bold text-black/80">{scent.name[0]}</span>
                    </div>
                    
-                   <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg text-white truncate">{scent.name}</h3>
+                   <div className="flex-1 min-w-0 py-1">
+                      <h3 className="font-bold text-lg text-white truncate mb-1">{scent.name}</h3>
                       <p className="text-xs text-muted-foreground truncate">{scent.description}</p>
                    </div>
 
                    <div className="flex items-center gap-1">
                       {scent.isDefault && (
-                         <div className="p-2 rounded-full bg-primary/10 text-primary">
-                            <Star size={16} fill="currentColor" />
+                         <div className="p-2 rounded-full bg-white/5 text-primary">
+                            <Star size={18} fill="currentColor" />
                          </div>
                       )}
-                      <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-white hover:bg-white/10 rounded-full">
-                         <MoreVertical size={20} />
-                      </Button>
                    </div>
                 </CardContent>
               </Card>

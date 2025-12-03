@@ -11,8 +11,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans">
-      {/* Global Background Image */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+      {/* Global Background Image - Fixed to ensure it covers everything */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-50 max-w-md mx-auto">
          <img src={darkBg} alt="" className="w-full h-full object-cover" />
          <div className="absolute inset-0 bg-background/80" /> {/* Tint */}
       </div>
