@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { getStoredData, saveStoredData } from "@/lib/data";
-import { Plus, Search, MoreVertical, Star } from "lucide-react";
+import { Plus, Search, MoreVertical, Star, Play } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Library() {
@@ -38,6 +38,15 @@ export default function Library() {
     saveStoredData(newData);
     setData(newData);
     setNewScentName("");
+  };
+
+  // Map of gradient colors for scents to match the "Top Routines" style
+  const getGradient = (color: string) => {
+    if (color.includes('orange')) return 'bg-gradient-to-br from-orange-400 to-red-500';
+    if (color.includes('yellow')) return 'bg-gradient-to-br from-yellow-300 to-orange-500';
+    if (color.includes('teal')) return 'bg-gradient-to-br from-teal-400 to-emerald-600';
+    if (color.includes('pink')) return 'bg-gradient-to-br from-pink-400 to-rose-600';
+    return 'bg-gradient-to-br from-gray-400 to-gray-600';
   };
 
   return (
@@ -84,7 +93,7 @@ export default function Library() {
         </div>
 
         {/* Scents List */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredScents.map((scent: any, i: number) => (
             <motion.div
               key={scent.id}
@@ -92,27 +101,26 @@ export default function Library() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <Card className="overflow-hidden border-none bg-secondary hover:bg-white/5 transition-colors cursor-pointer rounded-[1.5rem] group">
-                <CardContent className="p-4 flex items-center gap-5">
-                   {/* Flat Block Icon Style */}
-                   <div className={`h-16 w-16 rounded-2xl ${scent.color || 'bg-primary'} flex items-center justify-center shrink-0 shadow-lg`}>
-                      <span className="text-2xl font-bold text-black/80">{scent.name[0]}</span>
-                   </div>
-                   
-                   <div className="flex-1 min-w-0 py-1">
-                      <h3 className="font-bold text-lg text-white truncate mb-1">{scent.name}</h3>
-                      <p className="text-xs text-muted-foreground truncate">{scent.description}</p>
-                   </div>
+              <div className="bg-secondary rounded-[1.5rem] p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors">
+                {/* Gradient Circle with Play Icon - matching "Top Routines" style */}
+                <div className={`h-12 w-12 rounded-full ${getGradient(scent.color || 'bg-primary')} flex items-center justify-center text-white shadow-md shadow-black/20 shrink-0`}>
+                   <Play size={20} fill="currentColor" className="ml-1" />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                   <h3 className="font-bold text-white text-lg truncate">{scent.name}</h3>
+                   <p className="text-xs text-muted-foreground truncate">{scent.description}</p>
+                </div>
 
-                   <div className="flex items-center gap-1">
-                      {scent.isDefault && (
-                         <div className="p-2 rounded-full bg-white/5 text-primary">
-                            <Star size={18} fill="currentColor" />
-                         </div>
-                      )}
-                   </div>
-                </CardContent>
-              </Card>
+                <div className="flex items-center gap-2">
+                   {scent.isDefault && (
+                       <Star size={16} className="text-primary/40" fill="currentColor" />
+                   )}
+                   <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-white hover:bg-white/10 rounded-full h-8 w-8">
+                      <MoreVertical size={18} />
+                   </Button>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>

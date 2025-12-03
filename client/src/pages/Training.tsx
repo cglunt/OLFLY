@@ -110,9 +110,9 @@ export default function Training() {
 
   return (
     <Layout>
-      {/* Full Screen Background Image Overlay */}
+      {/* Full Screen Background Image Overlay - Fixed Positioning */}
       {phase === "smell" && (
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
            <img 
              src={activeScent.image} 
              className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 
