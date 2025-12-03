@@ -15,14 +15,14 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
   const showNav = location !== "/training";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans transform-gpu">
-      {/* Global Background Image - Fixed to ensure it covers everything */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-50 max-w-md mx-auto">
-         <img src={darkBg} alt="" className="w-full h-full object-cover" />
-         <div className="absolute inset-0 bg-background/80" /> {/* Tint */}
+    <div className="min-h-screen w-full bg-background flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border relative font-sans transform-gpu">
+      {/* Global Background Image - Fixed Option 3 */}
+      <div className="absolute inset-0 z-0 w-full h-full pointer-events-none">
+         <div className="absolute inset-0 bg-background/80 z-10" /> {/* Tint */}
+         <img src={darkBg} alt="" className="w-full h-full object-cover relative z-0" />
       </div>
 
-      {/* Custom Background Overlay (for specific pages like Training) */}
+      {/* Custom Background Overlay */}
       {backgroundOverlay && (
         <div className="absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden">
           {backgroundOverlay}
@@ -30,7 +30,7 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
       )}
       
       <main className={cn(
-        "flex-1 flex flex-col overflow-y-auto scrollbar-hide relative z-10",
+        "flex-1 flex flex-col overflow-y-auto scrollbar-hide relative z-10 w-full h-full",
         showNav ? "pb-24" : "pb-0"
       )}>
         {children}

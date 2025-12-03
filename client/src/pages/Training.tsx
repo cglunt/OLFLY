@@ -109,7 +109,7 @@ export default function Training() {
   const strokeDashoffset = circumference - ((totalDuration - timeLeft) / totalDuration) * circumference;
 
   const overlay = phase === "smell" ? (
-    <div className="fixed inset-0 w-full h-full max-w-md mx-auto z-0">
+    <div className="absolute inset-0 w-full h-full z-0">
        <img 
          src={activeScent.image} 
          className="w-full h-full object-cover opacity-20 animate-in fade-in duration-1000" 

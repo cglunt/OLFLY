@@ -55,11 +55,14 @@ export default function Onboarding() {
   );
 
   return (
-    <div className="min-h-screen bg-[#05050A] text-white flex flex-col font-sans selection:bg-purple-500/30 overflow-y-auto">
-      {/* Flat Gradient Background */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-[#05050A] to-[#05050A] pointer-events-none" />
+    <div className="min-h-screen w-full bg-[#05050A] text-white flex flex-col font-sans selection:bg-purple-500/30 relative overflow-hidden">
+      {/* Fix Option 3: Absolute Overlay for Background */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-900/20 via-[#05050A] to-[#05050A]" />
+      </div>
       
-      <div className="flex-1 flex flex-col z-10 max-w-md mx-auto w-full p-4 md:p-6 relative min-h-screen">
+      {/* Content Wrapper - Fix Option 2: Ensure parent containers do not shrink */}
+      <div className="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full h-full min-h-screen p-4 md:p-6">
         {/* Header / Progress */}
         <div className="flex justify-between items-center mb-6 md:mb-8 pt-2 md:pt-4 shrink-0">
              {step > 1 ? (
