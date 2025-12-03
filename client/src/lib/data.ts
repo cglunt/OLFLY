@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 
-// New Pastel Assets
-import cloveImg from '@assets/generated_images/pastel_flat_illustration_of_clove.png';
-import lemonImg from '@assets/generated_images/pastel_flat_illustration_of_lemon.png';
-import eucalyptusImg from '@assets/generated_images/pastel_flat_illustration_of_eucalyptus.png';
-import roseImg from '@assets/generated_images/pastel_flat_illustration_of_rose.png';
+// Reverting to Photo Assets for Training Mode as requested
+import cloveImg from '@assets/generated_images/close-up_of_dried_cloves.png';
+import lemonImg from '@assets/generated_images/close-up_of_fresh_lemon.png';
+import eucalyptusImg from '@assets/generated_images/close-up_of_eucalyptus_leaves.png';
+import roseImg from '@assets/generated_images/close-up_of_a_pink_rose.png';
 import avatarImg from '@assets/generated_images/pastel_flat_illustration_of_a_friendly_avatar.png';
 
 export const AVATAR_IMAGE = avatarImg;
@@ -67,7 +67,7 @@ export type UserSettings = {
 };
 
 // Simple local storage wrapper
-const STORAGE_KEY = 'scentpath_data_v2';
+const STORAGE_KEY = 'scentpath_data_v3';
 
 export const getStoredData = () => {
   const stored = localStorage.getItem(STORAGE_KEY);

@@ -110,9 +110,22 @@ export default function Training() {
 
   return (
     <Layout>
+      {/* Full Screen Background Image Overlay */}
+      {phase === "smell" && (
+        <div className="absolute inset-0 z-0">
+           <img 
+             src={activeScent.image} 
+             className="w-full h-full object-cover opacity-30 mix-blend-overlay animate-in fade-in duration-1000" 
+             alt="Background Scent"
+           />
+           <div className="absolute inset-0 bg-background/60" />
+        </div>
+      )}
+
       <div className="h-full flex flex-col bg-background relative overflow-hidden">
         {/* Background Glows */}
         <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
+
         <div className="absolute bottom-[-20%] right-[-20%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Top Header */}
@@ -180,9 +193,9 @@ export default function Training() {
                     key={activeScent.id}
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-40 h-40 relative"
+                    className="w-40 h-40 relative rounded-full overflow-hidden shadow-2xl shadow-primary/20"
                   >
-                    <img src={activeScent.image} className="w-full h-full object-contain drop-shadow-2xl" />
+                    <img src={activeScent.image} className="w-full h-full object-cover" />
                   </motion.div>
                )}
             </div>
