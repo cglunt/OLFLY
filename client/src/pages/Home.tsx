@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, FileText, Zap, Moon, Activity, Bell, Clock, Package, ShoppingBag } from "lucide-react";
+import { Play, Zap, Moon, Activity, Bell, Clock, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -156,48 +156,26 @@ export default function Home() {
           />
         </motion.div>
 
-        {/* Shop Buttons */}
-        <div className="grid grid-cols-2 gap-3">
-          <motion.a
-            href="https://olfly.com/starter-kit"
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-4 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
-            data-testid="button-starter-kit"
-          >
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-              <Package size={18} className="text-white" />
-            </div>
-            <div>
-              <p className="text-white font-bold text-sm">Get Starter Kit</p>
-              <p className="text-white/70 text-xs">Essential oils set</p>
-            </div>
-          </motion.a>
-          
-          <motion.a
-            href="https://olfly.com/shop"
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-[#3b1645] rounded-2xl p-4 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
-            data-testid="button-shop"
-          >
-            <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center shrink-0">
-              <ShoppingBag size={18} className="text-[#ac41c3]" />
-            </div>
-            <div>
-              <p className="text-white font-bold text-sm">Shop</p>
-              <p className="text-white/70 text-xs">Browse products</p>
-            </div>
-          </motion.a>
-        </div>
+        {/* Starter Kit Button */}
+        <motion.a
+          href="https://olfly.com/starter-kit"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-[1.5rem] p-4 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
+          data-testid="button-starter-kit"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <Package size={18} className="text-white" />
+          </div>
+          <div>
+            <p className="text-white font-bold text-sm">Get Starter Kit</p>
+            <p className="text-white/70 text-xs">Essential oils set</p>
+          </div>
+        </motion.a>
 
         {/* Top Routines Section - Flat Cards */}
         <div className="space-y-4">
