@@ -8,10 +8,10 @@ import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { ALL_SCENTS } from "@/lib/data";
 
-import topToddImg from '@assets/Top_Todd_1767067979878.png';
-import lowerGinaImg from '@assets/Lower_Gina_1767067979877.png';
-import lowerLiuImg from '@assets/Lower_Liu_1767067979878.png';
-import lowerMiaImg from '@assets/Lower_Mia_1767067979878.png';
+import topToddImg from '@assets/Top_Todd@2x_1767069623167.png';
+import topMiaImg from '@assets/Top_Mia@2x_1767069623167.png';
+import lowerGinaImg from '@assets/Lower_Gina@2x_1767069623166.png';
+import lowerLiuImg from '@assets/Lower_Liu@2x_1767069623166.png';
 
 const QUIZ_QUESTIONS = [
   {
@@ -363,20 +363,11 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col relative overflow-hidden"
+                    className="flex-1 flex flex-col"
                 >
-                    <motion.img 
-                        src={lowerMiaImg} 
-                        alt="" 
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 0.9 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                        className="fixed bottom-0 right-0 w-[32rem] md:w-[40rem] object-contain z-0 pointer-events-none"
-                    />
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Progress takes<br/>patience</h2>
                     
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 relative z-10">Progress takes<br/>patience</h2>
-                    
-                    <div className="space-y-6 mb-8 relative z-10">
+                    <div className="space-y-4 mb-4">
                          <p className="text-white/70 text-lg leading-relaxed">
                             Smell recovery can take weeks or months. That's completely normal.
                          </p>
@@ -385,11 +376,20 @@ export default function Onboarding() {
                          </p>
                     </div>
                     
-                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4 relative z-10">
+                    <motion.div 
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="flex justify-center my-4"
+                    >
+                        <img src={topMiaImg} alt="" className="w-40 h-40 md:w-48 md:h-48 object-contain" />
+                    </motion.div>
+                    
+                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
                         <motion.h3 
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
                             className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight"
                         >
                             "Slow progress<br/>is still progress."
@@ -397,14 +397,14 @@ export default function Onboarding() {
                         <motion.p 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                            className="text-white/50 text-lg mt-6"
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            className="text-white/50 text-lg mt-4"
                         >
                             Your brain is literally rewiring.
                         </motion.p>
                     </div>
 
-                    <div className="pb-4 md:pb-0 mt-auto relative z-10">
+                    <div className="pb-4 md:pb-0 mt-auto">
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
