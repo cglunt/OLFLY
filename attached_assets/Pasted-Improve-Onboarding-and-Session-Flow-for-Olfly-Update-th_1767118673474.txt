@@ -1,0 +1,220 @@
+Improve Onboarding and Session Flow for Olfly
+
+Update the Olfly onboarding and training session experience to improve clarity, reduce confusion, and support real-world scent preparation. Add clear preparation instructions, a pre-session setup step, and fix the rest and reset UX so users are not prompted to smell during rest periods.
+
+1. Onboarding: Scent Preparation Screen
+Add a New Onboarding Screen
+
+Insert a new onboarding screen titled:
+
+“Prepare your baseline scents”
+
+Purpose
+
+Teach users how to prepare their smell training scents so they are ready and portable.
+
+Content Layout
+
+Title at top
+
+Short explanation paragraph
+
+Visual area that can display a preparation image
+
+Step-by-step instructions
+
+CTA button
+
+Copy to Use
+
+Title:
+Prepare your baseline scents
+
+Body text:
+To get the most out of smell training, it helps to prepare your scents ahead of time. We recommend starting with four classic scents that are commonly used in smell retraining.
+
+Recommended baseline scents:
+
+Rose
+
+Clove
+
+Lemon
+
+Eucalyptus
+
+How to prepare your scents:
+
+Use small glass jars with lids.
+
+Place a cotton ball inside each jar.
+
+Add a few drops of essential oil to the cotton ball.
+
+Close the lid to keep the scent fresh.
+
+Helpful tip:
+Keeping your scents in small containers makes it easy to train anywhere when you get a reminder.
+
+CTA button:
+“I’m ready”
+
+Optional secondary link:
+“View safety tips”
+
+2. Pre-Session Setup Prompt
+Add a Pre-Session Screen Before Training Starts
+
+Before the timer begins, insert a setup screen that pauses the session until the user confirms readiness.
+
+Title
+
+“Get your scents ready”
+
+Copy
+
+Body text:
+Before we begin, gather your prepared scents and place them within reach. This helps you stay focused and relaxed during the session.
+
+Checklist UI:
+
+Rose ready
+
+Clove ready
+
+Lemon ready
+
+Eucalyptus ready
+
+Checkboxes optional. A simple confirmation button is sufficient.
+
+Primary button:
+“Start session”
+
+Secondary button:
+“Need help preparing scents?”
+
+This should link back to the preparation onboarding content.
+
+3. Training Session: Active Smell Phase (No Change Needed)
+
+During active smelling:
+
+Show the scent image
+
+Show timer
+
+Show scent name
+
+Allow intensity rating after the smell interval
+
+No changes needed here.
+
+4. Training Session: Rest and Reset Phase (Critical Fix)
+Problem to Fix
+
+Currently the scent image is shown during rest, which confuses users and suggests they should continue smelling.
+
+Required Change
+
+During rest periods:
+
+Remove scent imagery entirely
+
+Replace with a calm resting visual
+
+Shift copy from smelling to breathing and preparation
+
+Rest Screen Content
+
+Visual:
+Use a calm illustration or graphic showing a person resting or breathing calmly.
+
+Title:
+Rest and reset
+
+Body text:
+Take a moment to breathe and let your senses rest.
+
+Guidance text:
+Inhale slowly through your nose.
+Exhale gently through your mouth.
+
+Next scent prompt:
+When you are ready, prepare your next scent: Rose
+(Replace Rose dynamically based on session order)
+
+Timer Behavior
+
+Timer continues to count down rest period
+
+No scent image or scent name displayed
+
+Clear transition indicator when next scent begins
+
+5. Session Flow Summary (For Implementation)
+
+Session flow should be:
+
+Pre-session setup screen
+
+Smell phase with scent image and timer
+
+Intensity rating
+
+Rest and reset screen with breathing guidance
+
+Prompt for next scent
+
+Repeat until session complete
+
+6. Accessibility and Clarity Improvements
+
+Use plain language
+
+Avoid medical terms during session flow
+
+Ensure text clearly distinguishes between smelling and resting
+
+Use color or icon changes to visually differentiate:
+
+Smell phase
+
+Rest phase
+
+7. Optional Enhancement (Nice to Have)
+
+Add a toggle in Settings:
+
+“Show breathing guidance during rest”
+Default: On
+
+Implementation Notes for Replit
+
+Create separate components for:
+
+PreparationOnboarding
+
+PreSessionSetup
+
+RestPhaseScreen
+
+Use state to control phase visibility
+
+Ensure rest phase never displays scent images
+
+Keep UI consistent with deep purple flat style
+
+Use soft animation transitions between phases
+
+Outcome This Should Achieve
+
+Users understand how to prepare scents before training
+
+Sessions feel calm and intentional
+
+Rest periods are no longer confusing
+
+Users are less likely to rush or misuse scents
+
+Overall trust and usability increases
