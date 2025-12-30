@@ -94,7 +94,7 @@ export default function Learn() {
            <h3 className="text-lg font-bold text-white">Discover</h3>
            <div 
              className="bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40"
-             onClick={() => setLocation("/article/restoring-smell")}
+             onClick={() => setLocation("/launch/article/restoring-smell")}
              data-testid="card-article-restoring"
            >
              <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl mb-3">
