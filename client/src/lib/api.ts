@@ -1,4 +1,4 @@
-import type { User, InsertUser, UserScent, Session, InsertSession } from "@shared/schema";
+import type { User, InsertUser, UserScent, Session, InsertSession, SymptomLog, InsertSymptomLog } from "@shared/schema";
 
 // User API
 export async function createUser(userData: InsertUser): Promise<User> {
@@ -75,5 +75,23 @@ export async function updateSession(id: string, updates: Partial<InsertSession>)
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update session");
+  return res.json();
+}
+
+// Symptom Log API
+export async function createSymptomLog(logData: InsertSymptomLog): Promise<SymptomLog> {
+  const res = await fetch("/api/symptom-logs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(logData),
+  });
+  if (!res.ok) throw new Error("Failed to create symptom log");
+  return res.json();
+}
+
+export async function getUserSymptomLogs(userId: string, limit?: number): Promise<SymptomLog[]> {
+  const url = `/api/users/${userId}/symptom-logs${limit ? `?limit=${limit}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch symptom logs");
   return res.json();
 }

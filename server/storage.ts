@@ -1,6 +1,6 @@
-import { users, userScents, sessions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession } from "@shared/schema";
+import { users, userScents, sessions, symptomLogs, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -19,6 +19,10 @@ export interface IStorage {
   getUserSessions(userId: string, limit?: number): Promise<Session[]>;
   getSession(id: string): Promise<Session | undefined>;
   updateSession(id: string, updates: Partial<InsertSession>): Promise<Session | undefined>;
+  
+  // Symptom log operations
+  createSymptomLog(log: InsertSymptomLog): Promise<SymptomLog>;
+  getUserSymptomLogs(userId: string, limit?: number): Promise<SymptomLog[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -61,8 +65,7 @@ export class DatabaseStorage implements IStorage {
   async removeUserScent(userId: string, scentId: string): Promise<void> {
     await db
       .delete(userScents)
-      .where(eq(userScents.userId, userId))
-      .where(eq(userScents.scentId, scentId));
+      .where(and(eq(userScents.userId, userId), eq(userScents.scentId, scentId)));
   }
 
   async setUserScents(userId: string, scentIds: string[]): Promise<void> {
@@ -107,6 +110,24 @@ export class DatabaseStorage implements IStorage {
       .where(eq(sessions.id, id))
       .returning();
     return session || undefined;
+  }
+
+  // Symptom log operations
+  async createSymptomLog(log: InsertSymptomLog): Promise<SymptomLog> {
+    const [newLog] = await db
+      .insert(symptomLogs)
+      .values(log)
+      .returning();
+    return newLog;
+  }
+
+  async getUserSymptomLogs(userId: string, limit: number = 50): Promise<SymptomLog[]> {
+    return await db
+      .select()
+      .from(symptomLogs)
+      .where(eq(symptomLogs.userId, userId))
+      .orderBy(desc(symptomLogs.createdAt))
+      .limit(limit);
   }
 }
 

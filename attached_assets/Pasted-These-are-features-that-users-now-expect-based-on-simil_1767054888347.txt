@@ -1,0 +1,175 @@
+These are features that users now expect based on similar work.
+
+1. Guided Smell Training Sessions
+
+Daily guided smell routines
+
+Timed sniff intervals per scent
+
+Clear start and completion states
+
+Visual cues during sniffing
+
+Optional audio guidance
+
+Why it matters: This is the foundation of the product and is consistent with the research framing in the concept.
+
+2. Structured Scent Sets
+
+Default four scent protocol
+
+Ability to rotate scent sets over time
+
+Clear labeling and scent categories
+
+Visual representation of each scent
+
+Why it matters: The concept emphasizes structure and progression rather than random practice.
+
+3. Progress Tracking
+
+Daily completion tracking
+
+Intensity perception rating per scent
+
+Visual charts showing improvement over time
+
+Streak tracking
+
+Why it matters: The concept heavily leans on visibility of progress to reduce discouragement.
+
+4. Symptom Logging
+
+Smell strength changes
+
+Taste changes
+
+Distortions or phantom smells
+
+Notes field for qualitative feedback
+
+Why it matters: The concept frames smell recovery as personal and variable.
+
+5. Educational Onboarding
+
+Explanation of smell loss
+
+How olfactory retraining works
+
+What to expect during recovery
+
+Reassurance about timelines
+
+Why it matters: This builds trust and lowers anxiety, which the concept strongly prioritizes.
+
+Experience and Engagement Features (Where Olfly Can Shine)
+
+These go beyond the concept and modernize the experience.
+
+6. Personalized Recovery Journey
+
+Initial questionnaire to assess baseline
+
+Suggested training plan based on symptoms
+
+Gentle adaptation of routines over time
+
+Why it matters: This turns Olfly into a guide, not just a tracker.
+
+7. Routine Automation and Reminders
+
+Morning and evening reminder scheduling
+
+Smart nudges when sessions are skipped
+
+Flexible scheduling that adapts to user habits
+
+Why it matters: Consistency is the hardest part of smell retraining.
+
+8. Friendly Micro Motivation
+
+Encouraging copy after sessions
+
+Gentle humor and affirmations
+
+Milestone celebrations
+
+Non judgmental language
+
+Why it matters: This is a major emotional differentiator from clinical tools.
+
+9. Recovery Timeline Visualization
+
+Normalized recovery curves
+
+Compare user progress to typical ranges
+
+Reinforce that slow progress is normal
+
+Why it matters: This directly addresses the discouragement problem highlighted in the concept.
+
+10. Visual Identity and Calm Design System
+
+Flat deep purple UI
+
+Minimal distractions
+
+Consistent iconography and spacing
+
+Calm animations
+
+Why it matters: The concept proves that design trust matters in health apps.
+
+Strategic Differentiators for Olfly
+
+These are features not strongly present in the concept, and where Olfly can clearly stand apart.
+
+11. Custom Scent Library
+
+Add household scents
+
+Upload photos and notes
+
+Track familiarity vs intensity
+
+Why it matters: Familiar smells strengthen emotional memory pathways.
+
+12. Clinician Friendly Export
+
+Export progress as PDF or CSV
+
+Share logs with providers
+
+Printable summaries
+
+Why it matters: Makes Olfly useful in medical contexts without being medical software.
+
+13. Smart Insights Layer
+
+Pattern recognition over time
+
+Gentle suggestions like “you notice improvement after better sleep”
+
+No medical claims
+
+Why it matters: This feels intelligent without being invasive.
+
+14. Optional Community or Stories
+
+Anonymous recovery stories
+
+Tips from others
+
+Normalization of setbacks
+
+Why it matters: Reduces isolation without requiring social pressure.
+
+15. Google SSO and Account Sync
+
+Google sign in
+
+Cloud backup of progress
+
+Device switching
+
+Why it matters: This elevates Olfly from prototype to real product.

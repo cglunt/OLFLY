@@ -30,6 +30,17 @@ export const sessions = pgTable("sessions", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const symptomLogs = pgTable("symptom_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  smellStrength: integer("smell_strength").notNull(),
+  tasteChanges: integer("taste_changes").notNull(),
+  distortions: boolean("distortions").notNull().default(false),
+  phantomSmells: boolean("phantom_smells").notNull().default(false),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -46,6 +57,11 @@ export const insertSessionSchema = createInsertSchema(sessions).omit({
   createdAt: true,
 });
 
+export const insertSymptomLogSchema = createInsertSchema(symptomLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -55,3 +71,6 @@ export type UserScent = typeof userScents.$inferSelect;
 
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Session = typeof sessions.$inferSelect;
+
+export type InsertSymptomLog = z.infer<typeof insertSymptomLogSchema>;
+export type SymptomLog = typeof symptomLogs.$inferSelect;
