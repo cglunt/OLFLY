@@ -147,9 +147,13 @@
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold tracking-normal text-white;
+    text-wrap: balance;
   }
   p {
     @apply text-white/70;
+    text-wrap: pretty;
+    widows: 2;
+    orphans: 2;
   }
 }
 
