@@ -40,7 +40,7 @@ export default function Article() {
             
             <div className="flex items-center gap-3 mb-10 text-sm text-white/70">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa]" />
-                <span>By Olfly Medical Team • 5 min read</span>
+                <span>By Olfly Team • 5 min read</span>
             </div>
 
             <div className="prose prose-invert prose-lg max-w-none space-y-8 text-white/70 leading-relaxed">
