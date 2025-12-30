@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Clock, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight, HelpCircle } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { ALL_SCENTS } from "@/lib/data";
@@ -167,6 +167,11 @@ export default function Onboarding() {
                     </p>
                     
                     <Block className="flex-1 flex flex-col justify-center mb-4">
+                        <div className="flex justify-center mb-4">
+                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
+                                <HelpCircle size={28} className="text-white" />
+                            </div>
+                        </div>
                         <div className="text-center mb-6">
                             <span className="text-white/40 text-sm uppercase tracking-wider">Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
                         </div>
