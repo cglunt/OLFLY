@@ -2,46 +2,40 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
-  Play, Clock, Target, TrendingUp, Sparkles, 
-  Timer, BarChart3, FileText, Palette, Camera,
-  Heart, BookOpen, Wind, Smile, Check, ChevronDown,
-  Shield, AlertTriangle, Mail, Menu, X
+  TrendingUp, Sparkles, Timer, BarChart3, Palette,
+  BookOpen, Check, ChevronDown, Shield, Mail, Menu, X, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+
+import onboarding1 from "@/assets/onboarding1.jpg";
+import onboarding2 from "@/assets/onboarding2.jpg";
+import session1 from "@/assets/session1.jpg";
+import statsImg from "@/assets/stats.jpg";
+import phoneLifestyle from "@/assets/phone-lifestyle.png";
+import topMia from "@/assets/top-mia.png";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Features", href: "#features" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Safety", href: "#safety" },
   { label: "FAQ", href: "#faq" },
 ];
 
-const FEATURES_TRAINING = [
+const SCENTS = [
+  { name: "Clove", color: "from-amber-800 to-amber-900" },
+  { name: "Lemon", color: "from-yellow-400 to-yellow-500" },
+  { name: "Rose", color: "from-pink-400 to-rose-500" },
+  { name: "Eucalyptus", color: "from-green-400 to-emerald-500" },
+];
+
+const FEATURES = [
   { icon: Timer, title: "Timed sessions", desc: "20 seconds per scent with visual countdown" },
-  { icon: Clock, title: "Rest periods", desc: "Built-in breaks between scents" },
-  { icon: Play, title: "Optional audio prompts", desc: "Gentle cues to guide your session" },
-];
-
-const FEATURES_TRACKING = [
-  { icon: TrendingUp, title: "Intensity sliders", desc: "Rate how strong each scent feels" },
-  { icon: BarChart3, title: "Trend charts", desc: "See your progress over weeks" },
-  { icon: FileText, title: "Session summaries", desc: "Review your training history" },
-  { icon: FileText, title: "Export for clinician", desc: "Share progress with your doctor" },
-];
-
-const FEATURES_PERSONALIZATION = [
-  { icon: Palette, title: "Custom scent library", desc: "Add your own scents to train with" },
-  { icon: Camera, title: "Add photos and notes", desc: "Document your scent journey" },
-  { icon: Sparkles, title: "Swap recommended scents", desc: "Customize the four scent routine" },
-];
-
-const FEATURES_SUPPORT = [
-  { icon: BookOpen, title: "Symptom journaling", desc: "Track how you're feeling day to day" },
-  { icon: Heart, title: "Recovery timeline view", desc: "Visualize your journey over time" },
-  { icon: Wind, title: "Calm breathing prompt", desc: "Center yourself before training" },
-  { icon: Smile, title: "Light humor and affirmations", desc: "Encouragement when you need it" },
+  { icon: TrendingUp, title: "Progress tracking", desc: "See your improvement over weeks" },
+  { icon: Palette, title: "Custom scents", desc: "Add your own scents to train with" },
+  { icon: BookOpen, title: "Symptom journal", desc: "Track how you're feeling day to day" },
+  { icon: BarChart3, title: "Visual charts", desc: "Beautiful progress visualization" },
+  { icon: Sparkles, title: "Daily streaks", desc: "Stay motivated with consistency tracking" },
 ];
 
 const PRICING = [
@@ -62,27 +56,27 @@ const PRICING = [
   {
     name: "Plus",
     price: "$4.99",
-    period: "/month or $39.99/year",
+    period: "/month",
     features: [
       "Full history and charts",
       "Symptom journal",
       "Custom scent library",
       "Recovery timeline",
-      "Cloud sync with Google sign in",
+      "Cloud sync",
       "Export reports",
     ],
     cta: "Upgrade to Plus",
-    note: "Best value yearly",
+    note: "Most popular",
     highlight: true,
   },
   {
     name: "Premium",
     price: "$9.99",
-    period: "/month or $79.99/year",
+    period: "/month",
     features: [
+      "Everything in Plus",
       "Advanced insights",
-      "Adaptive training suggestions",
-      "Deeper correlations",
+      "Adaptive suggestions",
       "Early feature access",
     ],
     cta: "Go Premium",
@@ -104,16 +98,8 @@ const FAQS = [
     a: "The classic protocol uses rose, lemon, clove, and eucalyptus essential oils. You can purchase these separately or look for olfactory training kits. Olfly also lets you add custom scents."
   },
   {
-    q: "What if I miss a day?",
-    a: "Don't worry! Missing a day won't reset your progress. Just pick up where you left off. Olfly's reminders help you stay consistent, but the goal is gentle consistency, not perfection."
-  },
-  {
     q: "Is Olfly medical advice?",
     a: "No. Olfly provides educational and wellness support only. It does not diagnose, treat, or cure any condition. Always consult a healthcare professional for medical advice."
-  },
-  {
-    q: "Can I share progress with my clinician?",
-    a: "Yes! Plus and Premium users can export their session data and progress charts to share with their healthcare provider."
   },
 ];
 
@@ -129,19 +115,18 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A0F35] text-white font-sans">
+    <div className="min-h-screen bg-[#0c0c1d] text-white font-sans overflow-x-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-[#1A0F35]/95 backdrop-blur-sm border-b border-white/5">
+      <nav className="sticky top-0 z-50 bg-[#0c0c1d]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Logo size="md" />
           
-          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href.slice(1))}
-                className="text-[#B9AEE2] hover:text-white transition-colors text-sm font-medium"
+                className="text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 {link.label}
               </button>
@@ -151,14 +136,13 @@ export default function Landing() {
           <div className="hidden md:block">
             <Button
               onClick={() => setLocation("/launch")}
-              className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-6"
+              className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-6"
               data-testid="nav-cta"
             >
               Start free
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-white p-2"
@@ -167,25 +151,24 @@ export default function Landing() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden bg-[#2B215B] border-t border-white/5 px-6 py-4 space-y-4"
+            className="md:hidden bg-[#1a1a2e] border-t border-white/5 px-6 py-4 space-y-4"
           >
             {NAV_LINKS.map((link) => (
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href.slice(1))}
-                className="block text-[#B9AEE2] hover:text-white transition-colors font-medium w-full text-left py-2"
+                className="block text-white/70 hover:text-white transition-colors font-medium w-full text-left py-2"
               >
                 {link.label}
               </button>
             ))}
             <Button
               onClick={() => setLocation("/launch")}
-              className="w-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full"
+              className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full"
             >
               Start free
             </Button>
@@ -194,41 +177,33 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645] border border-[#6d45d2]/30 mb-6">
+              <Sparkles size={14} className="text-[#db2faa]" />
+              <span className="text-sm text-white/80">Smell training made simple</span>
+            </div>
+            
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
               Wake up your{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF37FF] to-[#A259FF]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
                 super sniffer.
               </span>
             </h1>
-            <p className="text-xl text-[#B9AEE2] mb-8">
-              Guided smell training, progress tracking, and gentle reminders that help you stay consistent.
-            </p>
             
-            <ul className="space-y-3 mb-8">
-              {[
-                "Four scent routine, guided step by step",
-                "Timers, streaks, and progress charts",
-                "Custom scents, symptom logs, and recovery timeline",
-                "Designed to feel calm, not clinical",
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-[#B9AEE2]">
-                  <Check size={20} className="text-[#A259FF] shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="text-xl text-white/70 mb-8 leading-relaxed">
+              Guided olfactory training with timers, progress tracking, and daily reminders. Just 20 seconds per scent, twice a day.
+            </p>
 
-            <div className="flex flex-wrap gap-4 mb-4">
+            <div className="flex flex-wrap gap-4 mb-8">
               <Button
                 onClick={() => setLocation("/launch")}
-                className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg"
+                className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
                 data-testid="hero-cta"
               >
                 Start free
@@ -236,142 +211,264 @@ export default function Landing() {
               <Button
                 onClick={() => scrollTo("how-it-works")}
                 variant="outline"
-                className="border-[#A259FF] text-[#A259FF] hover:bg-[#A259FF]/10 rounded-full px-8 py-6 text-lg"
+                className="border-white/20 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
               >
                 See how it works
               </Button>
             </div>
             
-            <p className="text-sm text-[#B9AEE2]/60">
+            <p className="text-sm text-white/50">
               Educational and wellness support only. Not medical advice.
             </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="hidden md:flex justify-center"
+            className="relative hidden lg:block"
           >
-            <div className="w-72 h-[500px] rounded-[3rem] bg-gradient-to-br from-[#DF37FF]/30 to-[#A259FF]/30 border border-white/10 flex items-center justify-center p-4">
-              <div className="w-full h-full rounded-[2.5rem] bg-[#2B215B] flex items-center justify-center">
-                <div className="text-center">
-                  <Logo size="lg" />
-                  <p className="text-[#B9AEE2] mt-4 text-sm">App Preview</p>
-                </div>
-              </div>
+            <div className="relative z-10">
+              <img 
+                src={phoneLifestyle} 
+                alt="Olfly app in use"
+                className="rounded-3xl shadow-2xl shadow-[#6d45d2]/20 w-full"
+              />
             </div>
+            <div className="absolute -top-8 -right-8 w-64 h-64 bg-gradient-to-br from-[#6d45d2]/30 to-[#db2faa]/30 rounded-full blur-3xl" />
+            <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-gradient-to-br from-[#db2faa]/30 to-[#6d45d2]/30 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </section>
 
-      {/* Social Proof Band */}
-      <section className="bg-[#2B215B]/50 py-12">
+      {/* Stats Band */}
+      <section className="bg-gradient-to-r from-[#3b1645]/50 to-[#1a1a2e]/50 py-12 border-y border-white/5">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { value: "2", label: "sessions per day" },
-              { value: "20", label: "seconds per scent" },
-              { value: "4", label: "core scents" },
+              { value: "2x", label: "Daily sessions" },
+              { value: "20s", label: "Per scent" },
+              { value: "4", label: "Core scents" },
+              { value: "12+", label: "Week program" },
             ].map((stat, i) => (
-              <div key={i} className="bg-[#2B215B] rounded-2xl p-6 text-center border border-white/5">
-                <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#DF37FF] to-[#A259FF]">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
                   {stat.value}
                 </div>
-                <div className="text-[#B9AEE2] text-sm mt-1">{stat.label}</div>
-              </div>
+                <div className="text-white/60 text-sm mt-1">{stat.label}</div>
+              </motion.div>
             ))}
-            <div className="bg-[#2B215B] rounded-2xl p-6 border border-white/5">
-              <p className="text-[#B9AEE2] italic text-sm">
-                "Olfly helped me stay consistent when I felt discouraged."
-              </p>
-              <p className="text-white/50 text-xs mt-2">— Early user</p>
-            </div>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
       <section id="how-it-works" className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">How it works</h2>
-        <p className="text-[#B9AEE2] text-center mb-12 max-w-xl mx-auto">
-          Simple, guided sessions that fit into your daily routine
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">How Olfly works</h2>
+          <p className="text-white/60 max-w-xl mx-auto">
+            Simple, guided sessions that fit into your daily routine
+          </p>
+        </motion.div>
         
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { icon: Clock, title: "Pick your training times", desc: "Set morning and evening reminders that work for your schedule" },
-            { icon: Play, title: "Follow the guided session", desc: "Olfly walks you through each scent with timers and prompts" },
-            { icon: TrendingUp, title: "Track progress over weeks", desc: "See how your smell perception improves with charts and logs" },
-          ].map((step, i) => (
+            { 
+              img: onboarding1, 
+              title: "Set your schedule", 
+              desc: "Choose morning and evening training times that work for you",
+              step: 1
+            },
+            { 
+              img: session1, 
+              title: "Follow guided sessions", 
+              desc: "Olfly walks you through each scent with timers and breathing prompts",
+              step: 2
+            },
+            { 
+              img: statsImg, 
+              title: "Track your progress", 
+              desc: "See how your smell perception improves over weeks and months",
+              step: 3
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="group"
+            >
+              <div className="relative mb-6 overflow-hidden rounded-3xl border border-white/10 bg-[#1a1a2e]">
+                <img 
+                  src={item.img} 
+                  alt={item.title}
+                  className="w-full aspect-[9/16] object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] flex items-center justify-center font-bold text-lg">
+                  {item.step}
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+              <p className="text-white/60">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Scent Cards Section */}
+      <section className="bg-[#1a1a2e]/50 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                Smell training{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
+                  really works
+                </span>
+              </h2>
+              <p className="text-white/70 mb-6 text-lg leading-relaxed">
+                Research shows daily scent training helps rebuild neural pathways for smell. Just 20 seconds per scent, twice a day. That's all it takes.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {SCENTS.map((scent, i) => (
+                  <motion.div
+                    key={scent.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className={`rounded-2xl p-4 bg-gradient-to-br ${scent.color} relative overflow-hidden`}
+                  >
+                    <span className="text-white font-bold text-lg relative z-10">{scent.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-6">
+                <p className="text-white font-bold text-lg mb-1">
+                  "Twenty seconds per scent. You got this."
+                </p>
+                <p className="text-white/70 text-sm">
+                  Your nose is cheering for you already.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <img 
+                src={onboarding2} 
+                alt="Scent training screen"
+                className="rounded-3xl border border-white/10 shadow-2xl shadow-[#6d45d2]/20 w-full max-w-sm mx-auto"
+              />
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-[#db2faa]/40 to-[#6d45d2]/40 rounded-full blur-2xl" />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need</h2>
+          <p className="text-white/60 max-w-xl mx-auto">
+            Tools designed for your smell recovery journey
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {FEATURES.map((feature, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-[#2B215B] rounded-2xl p-8 text-center border border-white/5"
+              className="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 hover:border-[#6d45d2]/30 transition-colors"
             >
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#DF37FF]/20 to-[#A259FF]/20 flex items-center justify-center mx-auto mb-4">
-                <step.icon size={28} className="text-[#A259FF]" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6d45d2]/20 to-[#db2faa]/20 flex items-center justify-center mb-4">
+                <feature.icon size={24} className="text-[#db2faa]" />
               </div>
-              <div className="text-[#A259FF] font-bold text-sm mb-2">Step {i + 1}</div>
-              <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-              <p className="text-[#B9AEE2] text-sm">{step.desc}</p>
+              <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+              <p className="text-white/60 text-sm">{feature.desc}</p>
             </motion.div>
           ))}
         </div>
-        
-        <p className="text-center text-[#B9AEE2] mt-8 italic">
-          Your nose is doing brain workouts. Yes, really.
-        </p>
       </section>
 
-      {/* Features */}
-      <section id="features" className="bg-[#2B215B]/30 py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Everything you need</h2>
-          <p className="text-[#B9AEE2] text-center mb-12 max-w-xl mx-auto">
-            Tools designed for your smell recovery journey
-          </p>
-
-          <div className="space-y-12">
-            {[
-              { title: "Guided Training", features: FEATURES_TRAINING },
-              { title: "Tracking", features: FEATURES_TRACKING },
-              { title: "Personalization", features: FEATURES_PERSONALIZATION },
-              { title: "Support", features: FEATURES_SUPPORT },
-            ].map((group, gi) => (
-              <div key={gi}>
-                <h3 className="text-xl font-bold mb-6 text-[#A259FF]">{group.title}</h3>
-                <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {group.features.map((feature, fi) => (
-                    <motion.div
-                      key={fi}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: fi * 0.05 }}
-                      className="bg-[#2B215B] rounded-xl p-5 border border-white/5"
-                    >
-                      <feature.icon size={20} className="text-[#A259FF] mb-3" strokeWidth={1.5} />
-                      <h4 className="font-bold mb-1">{feature.title}</h4>
-                      <p className="text-[#B9AEE2] text-sm">{feature.desc}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Character Section */}
+      <section className="bg-gradient-to-b from-[#1a1a2e]/50 to-[#0c0c1d] py-20">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <img 
+              src={topMia} 
+              alt="Mia - your training companion"
+              className="w-48 h-48 mx-auto mb-8 object-contain"
+            />
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Welcome to the{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
+                Sniff Squad
+              </span>
+            </h2>
+            <p className="text-white/70 text-lg mb-8 max-w-lg mx-auto">
+              Stay consistent. Stay patient. Sniff bravely. Olfly is with you every day.
+            </p>
+            <Button
+              onClick={() => setLocation("/launch")}
+              className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg"
+              data-testid="button-begin-training"
+            >
+              Begin training
+            </Button>
+          </motion.div>
         </div>
       </section>
 
       {/* Pricing */}
       <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Simple pricing</h2>
-        <p className="text-[#B9AEE2] text-center mb-12 max-w-xl mx-auto">
-          Start free and upgrade when you're ready for more
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple pricing</h2>
+          <p className="text-white/60 max-w-xl mx-auto">
+            Start free and upgrade when you're ready
+          </p>
+        </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {PRICING.map((plan, i) => (
@@ -381,25 +478,28 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`rounded-2xl p-8 border ${
+              className={`rounded-3xl p-8 border ${
                 plan.highlight 
-                  ? "bg-gradient-to-b from-[#DF37FF]/10 to-[#A259FF]/10 border-[#A259FF]" 
-                  : "bg-[#2B215B] border-white/5"
+                  ? "bg-gradient-to-b from-[#3b1645] to-[#1a1a2e] border-[#6d45d2]" 
+                  : "bg-[#1a1a2e] border-white/5"
               }`}
             >
               {plan.note && (
-                <div className="text-xs font-bold text-[#A259FF] mb-2">{plan.note}</div>
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-[#db2faa] mb-4 px-3 py-1 rounded-full bg-[#db2faa]/10">
+                  <Star size={12} fill="currentColor" />
+                  {plan.note}
+                </div>
               )}
               <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold">{plan.price}</span>
-                {plan.period && <span className="text-[#B9AEE2] text-sm">{plan.period}</span>}
+                {plan.period && <span className="text-white/50">{plan.period}</span>}
               </div>
               
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, fi) => (
-                  <li key={fi} className="flex items-start gap-2 text-[#B9AEE2] text-sm">
-                    <Check size={16} className="text-[#A259FF] shrink-0 mt-0.5" />
+                  <li key={fi} className="flex items-start gap-3 text-white/70 text-sm">
+                    <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -407,9 +507,9 @@ export default function Landing() {
 
               <Button
                 onClick={() => setLocation("/launch")}
-                className={`w-full rounded-full font-bold ${
+                className={`w-full rounded-full font-bold py-6 ${
                   plan.highlight
-                    ? "bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white"
+                    ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
                     : "bg-white/10 hover:bg-white/20 text-white"
                 }`}
               >
@@ -419,47 +519,36 @@ export default function Landing() {
           ))}
         </div>
 
-        <p className="text-center text-[#B9AEE2]/60 text-sm mt-8">
+        <p className="text-center text-white/40 text-sm mt-8">
           Olfly does not guarantee results. Recovery varies by person.
         </p>
       </section>
 
-      {/* Safety */}
-      <section id="safety" className="bg-[#2B215B]/30 py-20">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-[#2B215B] rounded-2xl p-8 border border-white/5">
-            <div className="flex items-center gap-3 mb-6">
-              <Shield size={24} className="text-[#A259FF]" />
-              <h2 className="text-2xl font-bold">Safety first</h2>
-            </div>
-            
-            <ul className="space-y-4 mb-8">
-              {[
-                "Essential oils are for smelling only. Do not ingest.",
-                "Stop if irritation occurs.",
-                "Consult a healthcare professional for health questions.",
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-[#B9AEE2]">
-                  <AlertTriangle size={18} className="text-yellow-500 shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex flex-wrap gap-4">
+      {/* Safety Note */}
+      <section className="max-w-3xl mx-auto px-6 py-12">
+        <div className="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 flex gap-4">
+          <Shield size={24} className="text-[#6d45d2] shrink-0" />
+          <div>
+            <h3 className="font-bold mb-2">Safety first</h3>
+            <p className="text-white/60 text-sm mb-4">
+              Essential oils are for smelling only. Do not ingest. Stop if irritation occurs. Consult a healthcare professional for health questions.
+            </p>
+            <div className="flex flex-wrap gap-3">
               <Button
                 onClick={() => setLocation("/legal/safety")}
                 variant="outline"
-                className="border-[#A259FF] text-[#A259FF] hover:bg-[#A259FF]/10 rounded-full"
+                size="sm"
+                className="border-white/20 text-white hover:bg-white/10 rounded-full text-xs"
               >
-                Read Safety Guide
+                Safety Guide
               </Button>
               <Button
                 onClick={() => setLocation("/legal/disclaimers")}
                 variant="outline"
-                className="border-[#A259FF] text-[#A259FF] hover:bg-[#A259FF]/10 rounded-full"
+                size="sm"
+                className="border-white/20 text-white hover:bg-white/10 rounded-full text-xs"
               >
-                Read Medical Disclaimer
+                Medical Disclaimer
               </Button>
             </div>
           </div>
@@ -468,13 +557,24 @@ export default function Landing() {
 
       {/* FAQ */}
       <section id="faq" className="max-w-3xl mx-auto px-6 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Frequently asked questions</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold">Questions?</h2>
+        </motion.div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           {FAQS.map((faq, i) => (
-            <div 
+            <motion.div 
               key={i}
-              className="bg-[#2B215B] rounded-xl border border-white/5 overflow-hidden"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -483,57 +583,63 @@ export default function Landing() {
                 <span className="font-medium pr-4">{faq.q}</span>
                 <ChevronDown 
                   size={20} 
-                  className={`text-[#A259FF] shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} 
+                  className={`text-[#db2faa] shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} 
                 />
               </button>
               {openFaq === i && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="px-5 pb-5 text-[#B9AEE2] text-sm"
+                  className="px-5 pb-5 text-white/60 text-sm"
                 >
                   {faq.a}
                 </motion.div>
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* Final CTA */}
       <section className="max-w-4xl mx-auto px-6 py-20">
-        <div className="bg-gradient-to-r from-[#DF37FF]/20 to-[#A259FF]/20 rounded-3xl p-8 md:p-12 text-center border border-[#A259FF]/30">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-r from-[#3b1645] to-[#1a1a2e] rounded-3xl p-8 md:p-12 text-center border border-[#6d45d2]/30"
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready for your smell comeback?
           </h2>
-          <p className="text-[#B9AEE2] mb-8 max-w-md mx-auto">
+          <p className="text-white/60 mb-8 max-w-md mx-auto">
             Start free. Stay consistent. Let Olfly guide the routine.
           </p>
           
           <Button
             onClick={() => setLocation("/launch")}
-            className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg mb-8"
+            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg mb-8 shadow-lg shadow-[#6d45d2]/30"
             data-testid="final-cta"
           >
             Start free
           </Button>
 
           <div className="max-w-sm mx-auto">
-            <p className="text-[#B9AEE2] text-sm mb-3">Get launch updates</p>
+            <p className="text-white/50 text-sm mb-3">Get launch updates</p>
             <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[#A259FF]"
+                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#6d45d2]"
+                data-testid="input-email-subscribe"
               />
-              <Button className="bg-white text-[#1A0F35] hover:bg-white/90 rounded-full px-6 font-bold">
+              <Button className="bg-white text-[#0c0c1d] hover:bg-white/90 rounded-full px-6 font-bold" data-testid="button-email-subscribe">
                 <Mail size={18} />
               </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
@@ -542,17 +648,17 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <Logo size="sm" />
             
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-[#B9AEE2]">
-              <button onClick={() => setLocation("/legal/terms")} className="hover:text-white">Terms</button>
-              <button onClick={() => setLocation("/legal/privacy")} className="hover:text-white">Privacy</button>
-              <button onClick={() => setLocation("/legal/disclaimers")} className="hover:text-white">Disclaimers</button>
-              <button onClick={() => setLocation("/legal/affiliate")} className="hover:text-white">Affiliate Disclosure</button>
-              <button onClick={() => setLocation("/legal/contact")} className="hover:text-white">Contact</button>
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
+              <button onClick={() => setLocation("/legal/terms")} className="hover:text-white transition-colors">Terms</button>
+              <button onClick={() => setLocation("/legal/privacy")} className="hover:text-white transition-colors">Privacy</button>
+              <button onClick={() => setLocation("/legal/disclaimers")} className="hover:text-white transition-colors">Disclaimers</button>
+              <button onClick={() => setLocation("/legal/affiliate")} className="hover:text-white transition-colors">Affiliate</button>
+              <button onClick={() => setLocation("/legal/contact")} className="hover:text-white transition-colors">Contact</button>
             </div>
           </div>
           
-          <p className="text-center text-[#B9AEE2]/50 text-xs mt-8">
-            Some links may be affiliate links. Olfly provides educational and wellness support only.
+          <p className="text-center text-white/30 text-xs mt-8">
+            Olfly provides educational and wellness support only. Not medical advice.
           </p>
         </div>
       </footer>
