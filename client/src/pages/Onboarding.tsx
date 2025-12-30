@@ -11,6 +11,7 @@ import { ALL_SCENTS } from "@/lib/data";
 import topToddImg from '@assets/Top_Todd_1767067979878.png';
 import lowerGinaImg from '@assets/Lower_Gina_1767067979877.png';
 import lowerLiuImg from '@assets/Lower_Liu_1767067979878.png';
+import lowerMiaImg from '@assets/Lower_Mia_1767067979878.png';
 
 const QUIZ_QUESTIONS = [
   {
@@ -362,11 +363,20 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col"
+                    className="flex-1 flex flex-col relative overflow-hidden"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Progress takes<br/>patience</h2>
+                    <motion.img 
+                        src={lowerMiaImg} 
+                        alt="" 
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 0.9 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="fixed bottom-0 right-0 w-[32rem] md:w-[40rem] object-contain z-0 pointer-events-none"
+                    />
                     
-                    <div className="space-y-6 mb-8">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4 relative z-10">Progress takes<br/>patience</h2>
+                    
+                    <div className="space-y-6 mb-8 relative z-10">
                          <p className="text-white/70 text-lg leading-relaxed">
                             Smell recovery can take weeks or months. That's completely normal.
                          </p>
@@ -375,7 +385,7 @@ export default function Onboarding() {
                          </p>
                     </div>
                     
-                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
+                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4 relative z-10">
                         <motion.h3 
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -394,7 +404,7 @@ export default function Onboarding() {
                         </motion.p>
                     </div>
 
-                    <div className="pb-4 md:pb-0 mt-auto">
+                    <div className="pb-4 md:pb-0 mt-auto relative z-10">
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
