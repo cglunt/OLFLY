@@ -177,62 +177,67 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        <div 
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `url(${phoneLifestyle})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'right center',
-          }}
-        />
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] from-30% via-[#0c0c1d]/80 via-50% to-transparent to-75%" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/20" />
-        
-        <div className="relative z-20 w-full max-w-6xl mx-auto px-6 py-16 md:py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-md lg:max-w-lg"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645]/80 backdrop-blur-sm border border-[#6d45d2]/30 mb-6">
-              <Sparkles size={14} className="text-[#db2faa]" />
-              <span className="text-sm text-white/80">Smell training made simple</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Wake up your{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
-                super sniffer.
-              </span>
-            </h1>
-            
-            <p className="text-xl text-white/80 mb-8 leading-relaxed">
-              Guided olfactory training with timers, progress tracking, and daily reminders. Just 20 seconds per scent, twice a day.
-            </p>
+      <section className="relative min-h-[90vh] overflow-hidden">
+        <div className="flex flex-col md:flex-row min-h-[90vh]">
+          {/* Text Column */}
+          <div className="relative z-20 flex-1 md:basis-1/2 bg-[#0c0c1d] flex items-center">
+            <div className="px-6 md:px-12 lg:px-16 py-16 md:py-24 max-w-xl ml-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645] border border-[#6d45d2]/30 mb-6">
+                  <Sparkles size={14} className="text-[#db2faa]" />
+                  <span className="text-sm text-white/80">Smell training made simple</span>
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                  Wake up your{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
+                    super sniffer.
+                  </span>
+                </h1>
+                
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                  Guided olfactory training with timers, progress tracking, and daily reminders. Just 20 seconds per scent, twice a day.
+                </p>
 
-            <div className="flex flex-wrap gap-4 mb-8">
-              <Button
-                onClick={() => setLocation("/launch")}
-                className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
-                data-testid="hero-cta"
-              >
-                Start free
-              </Button>
-              <Button
-                onClick={() => scrollTo("how-it-works")}
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg backdrop-blur-sm"
-              >
-                See how it works
-              </Button>
+                <div className="flex flex-wrap gap-4 mb-8">
+                  <Button
+                    onClick={() => setLocation("/launch")}
+                    className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
+                    data-testid="hero-cta"
+                  >
+                    Start free
+                  </Button>
+                  <Button
+                    onClick={() => scrollTo("how-it-works")}
+                    variant="outline"
+                    className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
+                  >
+                    See how it works
+                  </Button>
+                </div>
+                
+                <p className="text-sm text-white/50">
+                  Educational and wellness support only. Not medical advice.
+                </p>
+              </motion.div>
             </div>
-            
-            <p className="text-sm text-white/50">
-              Educational and wellness support only. Not medical advice.
-            </p>
-          </motion.div>
+            {/* Gradient overlay extending into image */}
+            <div className="hidden md:block absolute top-0 bottom-0 -right-32 w-32 bg-gradient-to-r from-[#0c0c1d] to-transparent z-30" />
+          </div>
+          
+          {/* Image Column */}
+          <div className="relative flex-1 md:basis-1/2 min-h-[50vh] md:min-h-0">
+            <img 
+              src={phoneLifestyle} 
+              alt="Olfly app in use"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/20" />
+          </div>
         </div>
       </section>
 
