@@ -90,7 +90,7 @@ export default function Onboarding() {
          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#6d45d2]/10 via-[#0c0c1d] to-[#0c0c1d]" />
       </div>
       
-      <div className="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full h-full min-h-screen p-4 md:p-6">
+      <div className="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full h-full min-h-screen px-6 py-4 md:px-8 md:py-6">
         <div className="flex justify-between items-center mb-6 md:mb-8 pt-2 md:pt-4 shrink-0">
              {step > 1 ? (
                 <button onClick={() => setStep(s => s - 1)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -382,7 +382,7 @@ export default function Onboarding() {
                         transition={{ delay: 0.2, duration: 0.5 }}
                         className="flex justify-center my-4"
                     >
-                        <img src={topMiaImg} alt="" className="w-40 h-40 md:w-48 md:h-48 object-contain" />
+                        <img src={topMiaImg} alt="" className="w-80 h-80 md:w-96 md:h-96 object-contain" />
                     </motion.div>
                     
                     <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
