@@ -226,7 +226,7 @@ export default function Landing() {
               </motion.div>
             </div>
             {/* Gradient overlay extending into image */}
-            <div className="hidden md:block absolute top-0 bottom-0 -right-32 w-32 bg-gradient-to-r from-[#0c0c1d] to-transparent z-30" />
+            <div className="hidden md:block absolute top-0 bottom-0 -right-48 w-48 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/60 to-transparent z-30" />
           </div>
           
           {/* Image Column */}
