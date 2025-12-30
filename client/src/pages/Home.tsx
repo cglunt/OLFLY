@@ -102,7 +102,7 @@ export default function Home() {
                <div>
                  <span className="text-white/90 text-sm font-medium uppercase tracking-wider">Daily Goal</span>
                  <h2 className="text-2xl font-bold mt-1">Scent Training</h2>
-                 <p className="text-white/90 text-sm mt-1">20 Min Session</p>
+                 <p className="text-white/90 text-sm mt-1">~2 Min Session</p>
                </div>
                <div className="w-16 h-16 relative">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
@@ -143,6 +143,14 @@ export default function Home() {
                    </div>
                 </div>
              </div>
+             
+             <Button 
+               className="w-full mt-4 bg-white text-[#6d45d2] hover:bg-white/90 font-semibold py-3 rounded-xl shadow-lg"
+               data-testid="button-start-training"
+             >
+               <Play size={18} className="mr-2" fill="currentColor" />
+               Start Training
+             </Button>
           </div>
         </motion.div>
 
