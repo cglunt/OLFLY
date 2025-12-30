@@ -177,14 +177,26 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${phoneLifestyle})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center right',
+          }}
+        />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/95 to-[#0c0c1d]/60" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/50" />
+        
+        <div className="relative z-20 max-w-6xl mx-auto px-6 py-16 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="max-w-xl"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645] border border-[#6d45d2]/30 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645]/80 backdrop-blur-sm border border-[#6d45d2]/30 mb-6">
               <Sparkles size={14} className="text-[#db2faa]" />
               <span className="text-sm text-white/80">Smell training made simple</span>
             </div>
@@ -196,7 +208,7 @@ export default function Landing() {
               </span>
             </h1>
             
-            <p className="text-xl text-white/70 mb-8 leading-relaxed">
+            <p className="text-xl text-white/80 mb-8 leading-relaxed">
               Guided olfactory training with timers, progress tracking, and daily reminders. Just 20 seconds per scent, twice a day.
             </p>
 
@@ -211,7 +223,7 @@ export default function Landing() {
               <Button
                 onClick={() => scrollTo("how-it-works")}
                 variant="outline"
-                className="border-white/20 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
+                className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg backdrop-blur-sm"
               >
                 See how it works
               </Button>
@@ -220,23 +232,6 @@ export default function Landing() {
             <p className="text-sm text-white/50">
               Educational and wellness support only. Not medical advice.
             </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative z-10">
-              <img 
-                src={phoneLifestyle} 
-                alt="Olfly app in use"
-                className="rounded-3xl shadow-2xl shadow-[#6d45d2]/20 w-full"
-              />
-            </div>
-            <div className="absolute -top-8 -right-8 w-64 h-64 bg-gradient-to-br from-[#6d45d2]/30 to-[#db2faa]/30 rounded-full blur-3xl" />
-            <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-gradient-to-br from-[#db2faa]/30 to-[#6d45d2]/30 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </section>
