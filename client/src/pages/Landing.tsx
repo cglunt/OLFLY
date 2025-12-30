@@ -183,7 +183,7 @@ export default function Landing() {
           style={{
             backgroundImage: `url(${phoneLifestyle})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center right',
+            backgroundPosition: '85% center',
           }}
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/95 to-[#0c0c1d]/60" />
