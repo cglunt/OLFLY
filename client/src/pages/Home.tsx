@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
 import { Play, Zap, Moon, Activity, Bell, Clock, Package } from "lucide-react";
-import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071669048.png";
+import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071916008.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
