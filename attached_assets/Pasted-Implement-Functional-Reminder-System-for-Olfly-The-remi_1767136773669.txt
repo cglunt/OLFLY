@@ -1,0 +1,125 @@
+Implement Functional Reminder System for Olfly
+
+The reminder feature in Olfly is currently non functional. Implement a complete reminder system that requests user permission, schedules reminders, persists settings, and clearly communicates reminder status to the user.
+
+1. Reminder Permission Flow
+
+On first reminder setup or first app launch after onboarding:
+
+Prompt the user with a friendly explanation screen:
+
+Title: “Want a reminder to train?”
+
+Body: “Consistent practice matters. Olfly can remind you when it is time to train.”
+
+Buttons:
+
+“Allow reminders”
+
+“Not now”
+
+When user taps “Allow reminders”:
+
+Request notification permission using the platform appropriate API
+
+Store permission status in app state and local storage
+
+2. Reminder Settings Screen
+
+Create or update a Reminder Settings screen with:
+
+Toggle: “Enable reminders”
+
+Morning reminder time picker
+
+Evening reminder time picker
+
+Preview text under each:
+
+“We will remind you at 8:00 AM”
+
+Status indicator:
+
+Enabled
+
+Disabled
+
+Permission not granted
+
+If permission is denied:
+
+Show guidance:
+
+“Notifications are off. Enable them in your device settings to receive reminders.”
+
+3. Scheduling Logic
+
+When reminders are enabled:
+
+Schedule two daily local notifications
+
+One for morning
+
+One for evening
+
+Use stored times
+
+Notification copy:
+
+Morning: “Time for your smell training. Your scents are waiting.”
+
+Evening: “Quick reset. A few minutes of smell training can help.”
+
+Store reminder settings:
+
+remindersEnabled
+
+morningReminderTime
+
+eveningReminderTime
+
+notificationPermissionStatus
+
+Persist all values in local storage.
+
+4. Reminder Feedback and Confirmation
+
+After user saves reminders:
+
+Show confirmation toast:
+
+“Reminders set. We will take it from here.”
+
+Add a subtle reminder status badge on Home screen:
+
+“Next reminder at 7:30 PM”
+
+5. Guardrails and UX Clarity
+
+Do not show reminder UI if notifications are denied without explanation
+
+Never silently fail
+
+Always reflect actual permission state
+
+Allow user to disable reminders without revoking permission
+
+6. Future Ready Calendar Integration (Do Not Implement Now)
+
+Leave a placeholder comment and feature flag for:
+
+“Sync sessions to calendar”
+
+Do not request calendar permissions yet.
+
+7. Deliverables
+
+Reminder permission prompt
+
+Functional scheduling logic
+
+Persistent reminder settings
+
+Clear user feedback
+
+No fake or inactive reminder UI

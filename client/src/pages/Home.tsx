@@ -8,8 +8,11 @@ import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUserSessions, updateUser } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSessions } from "@/lib/api";
+import { ReminderPermissionDialog } from "@/components/ReminderPermissionDialog";
+import { useReminders } from "@/hooks/useReminders";
+import { getNextReminderDisplay } from "@/lib/notifications";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -24,14 +27,19 @@ export default function Home() {
   const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState(getGreeting);
-  const queryClient = useQueryClient();
-
-  const updateRemindersMutation = useMutation({
-    mutationFn: (enabled: boolean) => updateUser(user!.id, { remindersEnabled: enabled }),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["currentUser"], updatedUser);
-    },
-  });
+  
+  const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
+  
+  const {
+    permissionStatus,
+    showPermissionDialog,
+    setShowPermissionDialog,
+    updateRemindersMutation,
+    handleToggleReminders,
+    handleAllowPermission,
+    handleNotNow,
+    isEnabled,
+  } = useReminders({ user, queryKey });
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["sessions", user?.id],
@@ -53,14 +61,12 @@ export default function Home() {
     );
   }
 
-  // Calculate progress based on completed sessions
   const completedSessions = sessions.filter(s => s.completed).length;
   const progressPercent = Math.min((completedSessions / 10) * 100, 100);
 
   return (
     <Layout>
       <div className="p-6 space-y-8">
-        {/* Header with Avatar */}
         <header className="flex justify-between items-center pt-4">
           <div className="space-y-1">
             <p className="text-white text-xl font-bold" data-testid="text-greeting">{greeting},</p>
@@ -84,7 +90,6 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Main Hero Card - Flat Gradient */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,7 +146,6 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Reminder Status Card */}
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,27 +155,38 @@ export default function Home() {
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#0c0c1d] flex items-center justify-center">
-              <Clock size={18} className="text-[#ac41c3]" />
+              <Bell size={18} className="text-[#ac41c3]" />
             </div>
             <div>
               <p className="text-white font-medium text-sm">Daily Reminders</p>
-              {user.remindersEnabled ? (
-                <p className="text-white/60 text-xs">{user.morningTime} & {user.eveningTime}</p>
+              {isEnabled ? (
+                <p className="text-green-400 text-xs flex items-center gap-1">
+                  <Clock size={10} />
+                  Next at {getNextReminderDisplay(user.morningTime || '08:00', user.eveningTime || '20:00')}
+                </p>
+              ) : permissionStatus === 'denied' ? (
+                <p className="text-red-400 text-xs">Permission denied</p>
               ) : (
                 <p className="text-white/60 text-xs">Tap to enable</p>
               )}
             </div>
           </div>
           <Switch
-            checked={user.remindersEnabled}
-            onCheckedChange={(checked) => updateRemindersMutation.mutate(checked)}
+            checked={isEnabled}
+            onCheckedChange={handleToggleReminders}
             disabled={updateRemindersMutation.isPending}
             className="data-[state=checked]:bg-[#ac41c3]"
             data-testid="switch-reminders"
           />
         </motion.div>
 
-        {/* Starter Kit Button */}
+        <ReminderPermissionDialog
+          open={showPermissionDialog}
+          onOpenChange={setShowPermissionDialog}
+          onAllow={handleAllowPermission}
+          onNotNow={handleNotNow}
+        />
+
         <motion.a
           href="https://olfly.com/starter-kit"
           target="_blank"
@@ -195,7 +210,6 @@ export default function Home() {
           </div>
         </motion.a>
 
-        {/* Top Routines Section - Flat Cards */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
              <h2 className="text-xl font-bold text-white">Top Routines</h2>
@@ -203,7 +217,6 @@ export default function Home() {
           </div>
           
           <div className="space-y-4">
-            {/* Routine Card 1 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
               onClick={() => setLocation("/launch/training?routine=morning")}
@@ -219,7 +232,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Routine Card 2 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
               onClick={() => setLocation("/launch/training?routine=evening")}

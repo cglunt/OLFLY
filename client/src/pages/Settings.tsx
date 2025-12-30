@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { Switch } from "@/components/ui/switch";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { updateUser } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -15,33 +16,35 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ReminderPermissionDialog } from "@/components/ReminderPermissionDialog";
+import { useReminders } from "@/hooks/useReminders";
+import { isNotificationSupported, cancelReminders } from "@/lib/notifications";
 
 export default function Settings() {
   const [, setLocation] = useLocation();
   const { user: firebaseUser, logOut } = useAuth();
   const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [morningTime, setMorningTime] = useState("09:00");
   const [eveningTime, setEveningTime] = useState("20:00");
   
   const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
 
-  const updateRemindersMutation = useMutation({
-    mutationFn: (enabled: boolean) => updateUser(user!.id, { remindersEnabled: enabled }),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(queryKey, updatedUser);
-    },
-  });
-
-  const updateTimesMutation = useMutation({
-    mutationFn: (times: { morningTime: string; eveningTime: string }) => 
-      updateUser(user!.id, times),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(queryKey, updatedUser);
-      setShowReminderDialog(false);
-    },
-  });
+  const {
+    permissionStatus,
+    showPermissionDialog,
+    setShowPermissionDialog,
+    updateRemindersMutation,
+    updateTimesMutation,
+    handleToggleReminders,
+    handleAllowPermission,
+    handleNotNow,
+    getReminderStatus,
+    isEnabled,
+    isSupported,
+  } = useReminders({ user, queryKey });
 
   const handleOpenReminderDialog = () => {
     if (user) {
@@ -49,6 +52,18 @@ export default function Settings() {
       setEveningTime(user.eveningTime || "20:00");
       setShowReminderDialog(true);
     }
+  };
+
+  const handleSaveTimes = () => {
+    updateTimesMutation.mutate({ morningTime, eveningTime }, {
+      onSuccess: () => {
+        setShowReminderDialog(false);
+        toast({
+          title: "Reminder times updated",
+          description: `Morning: ${formatTime(morningTime)}, Evening: ${formatTime(eveningTime)}`,
+        });
+      }
+    });
   };
 
   const handleReplayOnboarding = async () => {
@@ -63,6 +78,7 @@ export default function Settings() {
     try {
       await logOut();
       localStorage.removeItem("olfly_user_id");
+      cancelReminders();
       queryClient.clear();
       setLocation("/");
     } catch (error) {
@@ -70,7 +86,16 @@ export default function Settings() {
     }
   };
 
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const h = hours % 12 || 12;
+    return `${h}:${minutes.toString().padStart(2, '0')} ${period}`;
+  };
+
   if (!user) return null;
+
+  const reminderStatus = getReminderStatus();
 
   return (
     <Layout>
@@ -108,7 +133,7 @@ export default function Settings() {
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Preferences</h3>
+          <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Reminders</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
             <div className="p-4 flex items-center gap-4 border-b border-white/5">
               <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
@@ -116,17 +141,53 @@ export default function Settings() {
               </div>
               <div className="flex-1">
                 <p className="text-white font-medium">Daily Reminders</p>
-                <p className="text-white/50 text-sm">{user.morningTime} & {user.eveningTime}</p>
+                <div className="flex items-center gap-2">
+                  {reminderStatus.isEnabled ? (
+                    <CheckCircle size={12} className={reminderStatus.color} />
+                  ) : permissionStatus === 'denied' || !isSupported ? (
+                    <AlertCircle size={12} className={reminderStatus.color} />
+                  ) : null}
+                  <p className={`text-sm ${reminderStatus.color}`}>{reminderStatus.text}</p>
+                </div>
               </div>
               <Switch
-                checked={user.remindersEnabled}
-                onCheckedChange={(checked) => updateRemindersMutation.mutate(checked)}
-                disabled={updateRemindersMutation.isPending}
+                checked={isEnabled}
+                onCheckedChange={handleToggleReminders}
+                disabled={updateRemindersMutation.isPending || !isSupported}
                 className="data-[state=checked]:bg-[#ac41c3]"
+                data-testid="switch-reminders"
               />
             </div>
+            
+            {permissionStatus === 'denied' && (
+              <div className="p-4 bg-red-500/10 border-b border-white/5">
+                <p className="text-sm text-red-300">
+                  Notifications are off. Enable them in your browser settings to receive reminders.
+                </p>
+              </div>
+            )}
+            
+            {isEnabled && (
+              <>
+                <div className="p-4 border-b border-white/5">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white/70 text-sm">Morning reminder</span>
+                    <span className="text-white font-medium">{formatTime(user.morningTime || '08:00')}</span>
+                  </div>
+                  <p className="text-white/50 text-xs">We'll remind you at {formatTime(user.morningTime || '08:00')}</p>
+                </div>
+                <div className="p-4 border-b border-white/5">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white/70 text-sm">Evening reminder</span>
+                    <span className="text-white font-medium">{formatTime(user.eveningTime || '20:00')}</span>
+                  </div>
+                  <p className="text-white/50 text-xs">We'll remind you at {formatTime(user.eveningTime || '20:00')}</p>
+                </div>
+              </>
+            )}
+            
             <div 
-              className="p-4 flex items-center gap-4 border-b border-white/5 cursor-pointer hover:bg-[#4a1c57] transition-colors"
+              className="p-4 flex items-center gap-4 cursor-pointer hover:bg-[#4a1c57] transition-colors"
               onClick={handleOpenReminderDialog}
               data-testid="button-edit-reminders"
             >
@@ -139,6 +200,12 @@ export default function Settings() {
               </div>
               <ChevronRight size={20} className="text-white/40" />
             </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Preferences</h3>
+          <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
             <div 
               className="p-4 flex items-center gap-4 cursor-pointer hover:bg-[#4a1c57] transition-colors"
               onClick={handleReplayOnboarding}
@@ -241,6 +308,7 @@ export default function Settings() {
                 className="w-full p-3 rounded-xl bg-[#3b1645] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#ac41c3]"
                 data-testid="input-morning-time"
               />
+              <p className="text-white/50 text-sm">We'll remind you at {formatTime(morningTime)}</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="evening" className="text-white/70">Evening Reminder</Label>
@@ -252,9 +320,10 @@ export default function Settings() {
                 className="w-full p-3 rounded-xl bg-[#3b1645] border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#ac41c3]"
                 data-testid="input-evening-time"
               />
+              <p className="text-white/50 text-sm">We'll remind you at {formatTime(eveningTime)}</p>
             </div>
             <Button
-              onClick={() => updateTimesMutation.mutate({ morningTime, eveningTime })}
+              onClick={handleSaveTimes}
               disabled={updateTimesMutation.isPending}
               className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-medium py-3"
               data-testid="button-save-times"
@@ -264,6 +333,13 @@ export default function Settings() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ReminderPermissionDialog
+        open={showPermissionDialog}
+        onOpenChange={setShowPermissionDialog}
+        onAllow={handleAllowPermission}
+        onNotNow={handleNotNow}
+      />
     </Layout>
   );
 }
