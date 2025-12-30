@@ -216,7 +216,7 @@ export default function Home() {
 
               <div className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
                 <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
-                    <Zap size={20} className="text-yellow-500" />
+                    <Zap size={20} className="text-[#db2faa]" />
                 </div>
                 <div>
                     <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Quick Tip</p>

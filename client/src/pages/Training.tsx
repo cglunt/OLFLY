@@ -306,9 +306,9 @@ export default function Training() {
                       initial={{ scale: 0 }}
                       animate={{ scale: [0, 1.2, 1] }}
                       transition={{ delay: 0.3 }}
-                      className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-2"
+                      className="absolute -top-2 -right-2 bg-[#db2faa] rounded-full p-2"
                     >
-                      <Star size={20} className="text-yellow-700 fill-yellow-600" />
+                      <Star size={20} className="text-white fill-white" />
                     </motion.div>
                   </motion.div>
                )}
