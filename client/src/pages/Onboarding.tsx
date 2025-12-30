@@ -3,12 +3,14 @@ import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Check, Clock, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { ALL_SCENTS } from "@/lib/data";
 
-import onboardingIllustration from '@assets/Blue_Modern_Minimalist_Circle_Letter_O_Business_Consulting_Log_1764747155862.png';
+import topToddImg from '@assets/Top_Todd_1767067979878.png';
+import lowerGinaImg from '@assets/Lower_Gina_1767067979877.png';
+import lowerLiuImg from '@assets/Lower_Liu_1767067979878.png';
 
 const QUIZ_QUESTIONS = [
   {
@@ -70,11 +72,11 @@ export default function Onboarding() {
     exit: { x: -20, opacity: 0 }
   };
 
-  const Block = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
+  const Block = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
     <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay, duration: 0.4, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className={`bg-[#3b1645] rounded-[2rem] p-6 border border-white/5 shadow-xl ${className}`}
     >
         {children}
@@ -119,9 +121,9 @@ export default function Onboarding() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.5 }}
-                            className="w-64 h-64 md:w-72 md:h-72 mx-auto mb-8"
+                            className="w-48 h-48 md:w-56 md:h-56 mx-auto mb-6"
                         >
-                            <img src={onboardingIllustration} alt="Olfly Illustration" className="w-full h-full object-contain" />
+                            <img src={topToddImg} alt="Welcome" className="w-full h-full object-contain" />
                         </motion.div>
 
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight leading-[1.1] text-center">
@@ -162,16 +164,16 @@ export default function Onboarding() {
                     className="flex-1 flex flex-col"
                 >
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Quick check-in</h2>
-                    <p className="text-white/70 text-lg leading-relaxed mb-8">
+                    <p className="text-white/70 text-lg leading-relaxed mb-6">
                         Let's understand where you're at with your sense of smell.
                     </p>
                     
-                    <Block className="flex-1 flex flex-col justify-center mb-6">
-                        <div className="text-center mb-8">
+                    <Block className="flex-1 flex flex-col justify-center mb-4">
+                        <div className="text-center mb-6">
                             <span className="text-white/40 text-sm uppercase tracking-wider">Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
                         </div>
                         
-                        <h3 className="text-xl md:text-2xl font-bold text-center mb-8 leading-tight">
+                        <h3 className="text-xl md:text-2xl font-bold text-center mb-6 leading-tight">
                             {QUIZ_QUESTIONS[quizStep].question}
                         </h3>
                         
@@ -270,16 +272,16 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col"
+                    className="flex-1 flex flex-col relative"
                 >
-                    <div className="mb-6 md:mb-8">
+                    <div className="mb-4">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Pick your<br/>sniff schedule</h2>
                         <p className="text-white/70 text-lg leading-relaxed">
                             Choose when you want Olfly to remind you to train.
                         </p>
                     </div>
 
-                    <Block className="mb-6 space-y-4 md:space-y-6">
+                    <Block className="mb-4 space-y-4 md:space-y-6">
                          <div className="flex items-center justify-between">
                             <span className="text-lg md:text-xl font-bold">Reminders</span>
                             <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} className="data-[state=checked]:bg-[#ac41c3]" />
@@ -322,11 +324,22 @@ export default function Onboarding() {
                         )}
                     </Block>
 
-                    <div className="mt-auto mb-6 text-center space-y-2">
+                    <div className="text-center mb-2">
                         <p className="text-white/60 italic">"Morning sniff or evening sniff. Or both."</p>
                     </div>
                     
-                    <div className="pb-4 md:pb-0">
+                    <div className="flex-1 flex items-end justify-center overflow-hidden">
+                        <motion.img 
+                            src={lowerGinaImg} 
+                            alt="" 
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                            className="w-48 md:w-56 object-contain"
+                        />
+                    </div>
+                    
+                    <div className="pb-4 md:pb-0 mt-4">
                          <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
@@ -359,21 +372,26 @@ export default function Onboarding() {
                          </p>
                     </div>
                     
-                    <Block className="flex-1 mb-6 relative overflow-hidden flex flex-col min-h-[200px]">
-                         <div className="absolute top-0 right-0 w-64 h-64 bg-[#ac41c3]/10 rounded-full blur-3xl -mr-10 -mt-10" />
-                         
-                         <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center space-y-6">
-                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
-                                <Check size={32} className="text-white" />
-                             </div>
-                             <div>
-                                 <h3 className="text-xl font-bold text-white mb-2">"Slow progress is still progress."</h3>
-                                 <p className="text-white/50 text-sm">Your brain is literally rewiring.</p>
-                             </div>
-                         </div>
-                    </Block>
+                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
+                        <motion.h3 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight"
+                        >
+                            "Slow progress<br/>is still progress."
+                        </motion.h3>
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            className="text-white/50 text-lg mt-6"
+                        >
+                            Your brain is literally rewiring.
+                        </motion.p>
+                    </div>
 
-                    <div className="pb-4 md:pb-0">
+                    <div className="pb-4 md:pb-0 mt-auto">
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
@@ -393,14 +411,14 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col justify-center py-8"
+                    className="flex-1 flex flex-col py-4"
                 >
-                    <div className="text-center mb-8 md:mb-12">
-                        <div className="flex justify-center mb-8">
+                    <div className="text-center mb-6">
+                        <div className="flex justify-center mb-6">
                             <Logo size="xl" />
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6">Your nose<br/>is ready.</h2>
-                        <div className="space-y-4 max-w-xs mx-auto">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4">Your nose<br/>is ready.</h2>
+                        <div className="space-y-3 max-w-xs mx-auto">
                             <p className="text-white/80 text-lg">
                                 You've got this. Olfly is with you every day.
                             </p>
@@ -410,9 +428,20 @@ export default function Onboarding() {
                         </div>
                     </div>
                     
-                    <div className="mt-auto w-full space-y-6 pb-4 md:pb-0">
+                    <div className="flex-1 flex items-end justify-center overflow-hidden">
+                        <motion.img 
+                            src={lowerLiuImg} 
+                            alt="" 
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                            className="w-56 md:w-64 object-contain"
+                        />
+                    </div>
+                    
+                    <div className="w-full space-y-4 pb-4 md:pb-0 mt-4">
                         <div className="text-center">
-                            <p className="text-white font-bold text-lg mb-2">"Welcome to the Sniff Squad."</p>
+                            <p className="text-white font-bold text-lg mb-1">"Welcome to the Sniff Squad."</p>
                             <p className="text-white/40 text-sm">Let's begin the great smell comeback.</p>
                         </div>
                         
