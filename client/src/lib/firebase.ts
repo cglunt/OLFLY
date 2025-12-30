@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from "firebase/auth";
+import { initializeApp, FirebaseApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User, Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -9,12 +9,32 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+
+const isConfigured = !!(
+  firebaseConfig.apiKey &&
+  firebaseConfig.projectId &&
+  firebaseConfig.appId
+);
+
+if (isConfigured) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+  } catch (error) {
+    console.error("Firebase initialization error:", error);
+  }
+}
+
+export { auth };
 
 const googleProvider = new GoogleAuthProvider();
 
 export async function signInWithGoogle() {
+  if (!auth) {
+    throw new Error("Firebase not configured");
+  }
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
@@ -25,6 +45,9 @@ export async function signInWithGoogle() {
 }
 
 export async function logOut() {
+  if (!auth) {
+    return;
+  }
   try {
     await signOut(auth);
   } catch (error) {
@@ -34,7 +57,15 @@ export async function logOut() {
 }
 
 export function onAuthChange(callback: (user: User | null) => void) {
+  if (!auth) {
+    callback(null);
+    return () => {};
+  }
   return onAuthStateChanged(auth, callback);
+}
+
+export function isFirebaseConfigured() {
+  return isConfigured && auth !== null;
 }
 
 export type { User };

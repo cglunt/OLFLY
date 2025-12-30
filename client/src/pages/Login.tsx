@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -6,14 +6,27 @@ import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/useAuth";
 
 export default function Login() {
-  const { user, loading, signInWithGoogle, isAuthenticated } = useAuth();
+  const { loading, signInWithGoogle, isAuthenticated, error, isConfigured } = useAuth();
   const [, setLocation] = useLocation();
+  const [signInError, setSignInError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
       setLocation("/");
     }
   }, [loading, isAuthenticated, setLocation]);
+
+  const handleSignIn = async () => {
+    try {
+      setSignInError(null);
+      await signInWithGoogle();
+    } catch (err: any) {
+      if (err.code === "auth/popup-closed-by-user") {
+        return;
+      }
+      setSignInError(err.message || "Failed to sign in");
+    }
+  };
 
   if (loading) {
     return (
@@ -45,9 +58,15 @@ export default function Login() {
         </div>
 
         <div className="space-y-4">
+          {(error || signInError) && (
+            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-center">
+              <p className="text-red-300 text-sm">{error || signInError}</p>
+            </div>
+          )}
           <Button
-            onClick={signInWithGoogle}
-            className="w-full h-14 rounded-2xl bg-white text-black hover:bg-white/90 font-bold text-base flex items-center justify-center gap-3"
+            onClick={handleSignIn}
+            disabled={!isConfigured}
+            className="w-full h-14 rounded-2xl bg-white text-black hover:bg-white/90 font-bold text-base flex items-center justify-center gap-3 disabled:opacity-50"
             data-testid="button-google-signin"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
