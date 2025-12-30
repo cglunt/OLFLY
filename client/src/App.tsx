@@ -34,13 +34,13 @@ function AppRouter() {
   useEffect(() => {
     if (authLoading) return;
     
-    if (!firebaseUser && location.startsWith("/app") && location !== "/app/login") {
-      setLocation("/app/login");
+    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
+      setLocation("/launch/login");
       return;
     }
     
-    if (firebaseUser && location === "/app/login") {
-      setLocation("/app");
+    if (firebaseUser && location === "/launch/login") {
+      setLocation("/launch");
       return;
     }
   }, [authLoading, firebaseUser, location, setLocation]);
@@ -48,8 +48,8 @@ function AppRouter() {
   useEffect(() => {
     if (isLoading || !user || !firebaseUser) return;
     
-    if (!user.hasOnboarded && location.startsWith("/app") && location !== "/app/onboarding" && location !== "/app/login") {
-      setLocation("/app/onboarding");
+    if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
+      setLocation("/launch/onboarding");
     }
   }, [location, setLocation, user, isLoading, firebaseUser]);
 
@@ -75,15 +75,15 @@ function AppRouter() {
 
   return (
     <Switch>
-      <Route path="/app/login" component={Login} />
-      <Route path="/app/onboarding" component={Onboarding} />
-      <Route path="/app" component={Home} />
-      <Route path="/app/training" component={Training} />
-      <Route path="/app/library" component={Library} />
-      <Route path="/app/progress" component={Progress} />
-      <Route path="/app/learn" component={Learn} />
-      <Route path="/app/article/restoring-smell" component={Article} />
-      <Route path="/app/settings" component={Settings} />
+      <Route path="/launch/login" component={Login} />
+      <Route path="/launch/onboarding" component={Onboarding} />
+      <Route path="/launch" component={Home} />
+      <Route path="/launch/training" component={Training} />
+      <Route path="/launch/library" component={Library} />
+      <Route path="/launch/progress" component={Progress} />
+      <Route path="/launch/learn" component={Learn} />
+      <Route path="/launch/article/restoring-smell" component={Article} />
+      <Route path="/launch/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -92,7 +92,7 @@ function AppRouter() {
 function Router() {
   const [location] = useLocation();
 
-  const isAppRoute = location.startsWith("/app");
+  const isAppRoute = location.startsWith("/launch");
   const isLegalRoute = location.startsWith("/legal");
 
   if (isAppRoute) {

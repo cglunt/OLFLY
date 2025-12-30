@@ -20,7 +20,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      setLocation("/app");
+      setLocation("/launch");
     }
   }, [loading, isAuthenticated, setLocation]);
 

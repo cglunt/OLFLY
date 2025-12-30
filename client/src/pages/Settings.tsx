@@ -55,7 +55,7 @@ export default function Settings() {
     if (user) {
       const updatedUser = await updateUser(user.id, { hasOnboarded: false });
       queryClient.setQueryData(queryKey, updatedUser);
-      setLocation("/app");
+      setLocation("/launch");
     }
   };
 
@@ -195,7 +195,7 @@ export default function Settings() {
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
             <div 
               className="p-4 flex items-center gap-4 border-b border-white/5 cursor-pointer hover:bg-[#4a1c57] transition-colors"
-              onClick={() => setLocation("/app/learn")}
+              onClick={() => setLocation("/launch/learn")}
             >
               <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
                 <HelpCircle size={18} className="text-[#ac41c3]" />

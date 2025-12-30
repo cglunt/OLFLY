@@ -150,7 +150,7 @@ export default function Landing() {
           
           <div className="hidden md:block">
             <Button
-              onClick={() => setLocation("/app")}
+              onClick={() => setLocation("/launch")}
               className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-6"
               data-testid="nav-cta"
             >
@@ -184,7 +184,7 @@ export default function Landing() {
               </button>
             ))}
             <Button
-              onClick={() => setLocation("/app")}
+              onClick={() => setLocation("/launch")}
               className="w-full bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full"
             >
               Start free
@@ -227,7 +227,7 @@ export default function Landing() {
 
             <div className="flex flex-wrap gap-4 mb-4">
               <Button
-                onClick={() => setLocation("/app")}
+                onClick={() => setLocation("/launch")}
                 className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg"
                 data-testid="hero-cta"
               >
@@ -406,7 +406,7 @@ export default function Landing() {
               </ul>
 
               <Button
-                onClick={() => setLocation("/app")}
+                onClick={() => setLocation("/launch")}
                 className={`w-full rounded-full font-bold ${
                   plan.highlight
                     ? "bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white"
@@ -511,7 +511,7 @@ export default function Landing() {
           </p>
           
           <Button
-            onClick={() => setLocation("/app")}
+            onClick={() => setLocation("/launch")}
             className="bg-gradient-to-r from-[#DF37FF] to-[#A259FF] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg mb-8"
             data-testid="final-cta"
           >

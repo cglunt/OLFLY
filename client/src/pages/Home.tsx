@@ -89,7 +89,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
-          onClick={() => setLocation("/app/training")}
+          onClick={() => setLocation("/launch/training")}
           data-testid="card-daily-goal"
         >
           <div className="relative z-10">
@@ -206,7 +206,7 @@ export default function Home() {
             {/* Routine Card 1 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              onClick={() => setLocation("/app/training?routine=morning")}
+              onClick={() => setLocation("/launch/training?routine=morning")}
               className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
               data-testid="card-routine-morning"
             >
@@ -222,7 +222,7 @@ export default function Home() {
             {/* Routine Card 2 */}
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              onClick={() => setLocation("/app/training?routine=evening")}
+              onClick={() => setLocation("/launch/training?routine=evening")}
               className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
               data-testid="card-routine-evening"
             >

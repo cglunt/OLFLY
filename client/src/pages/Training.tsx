@@ -261,7 +261,7 @@ export default function Training() {
         
         {/* Header */}
         <header className="w-full flex justify-between items-center mt-2">
-           <Button variant="ghost" size="icon" onClick={() => setLocation("/app")} className="hover:bg-white/10 rounded-full text-white" data-testid="button-back">
+           <Button variant="ghost" size="icon" onClick={() => setLocation("/launch")} className="hover:bg-white/10 rounded-full text-white" data-testid="button-back">
              <ChevronLeft className="h-6 w-6" />
            </Button>
            <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
@@ -497,7 +497,7 @@ export default function Training() {
            )}
            
            {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/app")} data-testid="button-finish-session">
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/launch")} data-testid="button-finish-session">
                  Finish Session
                </Button>
            )}
