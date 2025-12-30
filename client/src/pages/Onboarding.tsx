@@ -116,12 +116,12 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <div className="mt-4 mb-8 md:mb-auto">
+                    <div className="mt-2">
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.5 }}
-                            className="w-48 h-48 md:w-56 md:h-56 mx-auto mb-6"
+                            className="w-80 h-80 md:w-96 md:h-96 mx-auto mb-4"
                         >
                             <img src={topToddImg} alt="Welcome" className="w-full h-full object-contain" />
                         </motion.div>
@@ -131,7 +131,7 @@ export default function Onboarding() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">super sniffer.</span>
                         </h1>
                         
-                        <div className="space-y-6">
+                        <div className="space-y-4 mb-6">
                              <p className="text-xl font-medium text-white/90">
                                 Welcome to Olfly, your gentle guide for smell recovery.
                              </p>
@@ -139,9 +139,7 @@ export default function Onboarding() {
                                 You bring the nose. We bring the timers, the reminders, and the encouragement.
                              </p>
                         </div>
-                    </div>
-                    
-                    <div className="mt-auto pb-4 md:pb-0">
+                        
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5 transition-all hover:scale-[1.02] active:scale-95"
