@@ -168,8 +168,8 @@ export default function Onboarding() {
                     
                     <Block className="flex-1 flex flex-col justify-center mb-4">
                         <div className="flex justify-center mb-4">
-                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
-                                <HelpCircle size={28} className="text-white" />
+                            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
+                                <HelpCircle size={56} className="text-white" />
                             </div>
                         </div>
                         <div className="text-center mb-6">
