@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, Zap, Moon, Activity, Bell, Clock } from "lucide-react";
+import { Play, Zap, Moon, Activity, Bell, Clock, Package } from "lucide-react";
 import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071669048.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -166,15 +166,18 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
           whileTap={{ scale: 0.98 }}
-          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-[1.5rem] p-3 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
+          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-[1.5rem] p-3 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
           data-testid="button-starter-kit"
         >
-          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-white/10">
-            <img src={starterKitImg} alt="Starter Kit" className="w-full h-full object-cover" />
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <Package size={18} className="text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-white font-bold text-base">Get Starter Kit</p>
             <p className="text-white/70 text-sm">Essential oils set</p>
+          </div>
+          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+            <img src={starterKitImg} alt="Starter Kit" className="w-full h-full object-cover" />
           </div>
         </motion.a>
 
