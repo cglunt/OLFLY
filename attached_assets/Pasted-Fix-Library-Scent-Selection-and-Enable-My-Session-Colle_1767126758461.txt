@@ -1,0 +1,184 @@
+Fix Library Scent Selection and Enable “My Session Collection”
+
+In the Olfly app, the Library screen currently shows scent cards that appear clickable, but selecting different scents does nothing. Fix this by implementing a complete scent selection system that lets users create and manage a personal collection of scents for training sessions.
+
+Goals
+
+Tapping a scent in the Library should open a scent detail view OR toggle selection, depending on the UI pattern chosen.
+
+Users must be able to build a “My Session Collection” (their preferred set of scents used for sessions).
+
+The Training flow must use the user’s selected scent collection during guided sessions.
+
+Persist selections using local storage (or existing storage system) so it works across refreshes.
+
+Provide clear UI feedback for selected scents.
+
+1. Define Data Model
+
+Create a consistent scent object format:
+
+id (string, stable unique id)
+
+name (string)
+
+imageUrl (string optional)
+
+isDefault (boolean)
+
+notes (string optional)
+
+category (string optional)
+
+createdAt (timestamp)
+
+updatedAt (timestamp)
+
+Create app state structures:
+
+allScents list
+
+selectedScentIds list for the user’s session collection
+
+Default scents should include:
+
+Rose
+
+Clove
+
+Lemon
+
+Eucalyptus
+
+2. Add “My Session Collection” UI on Library Screen
+
+At the top of Library screen add:
+
+Section title: “My Session Collection”
+
+Subtitle: “Choose 4 scents for your guided sessions”
+
+Selected count indicator: “2 of 4 selected”
+
+A “Save Collection” button (or auto-save behavior)
+
+Display selected scents as small chips or mini cards with an “X” remove option.
+
+Below that show:
+
+“All Scents” grid list
+
+3. Implement Selection Behavior
+
+When user taps a scent card in “All Scents”:
+
+Toggle selection on or off
+
+Visually show selected state:
+
+a checkmark icon
+
+a subtle border or gradient ring
+
+slightly raised card shadow
+
+If the user already has 4 selected, do not allow selecting a 5th.
+
+Show a small toast message: “You can select up to 4 scents.”
+
+If user taps a selected chip in “My Session Collection”:
+
+Remove it from selection list
+
+Persist selection list in local storage under:
+
+olflySelectedScentIds
+
+Auto-load it on app start.
+
+4. Scent Detail Screen (Optional but Recommended)
+
+If you already have a scent detail route, implement:
+
+Tap card opens /library/scent/:id
+
+Detail page includes:
+
+image
+
+notes
+
+intensity history (if available)
+
+Button: “Add to my session collection” or “Remove from my session collection”
+Use the same selection state.
+
+If detail does not exist, keep interaction as toggle select on card tap.
+
+5. Wire Selection Into Guided Sessions
+
+Update the guided session builder so it uses selected scents:
+
+Session scent list logic:
+
+If selectedScentIds.length === 4:
+
+session scents = those 4 selected scents in the order chosen
+
+Else:
+
+fallback to default set (Rose, Clove, Lemon, Eucalyptus)
+
+Add a small label on Training start:
+
+“Using your collection” or “Using default set”
+
+Also add a link:
+
+“Edit scent collection” that routes to Library.
+
+6. Fix Clickable But No Action Bug
+
+Identify why taps do nothing:
+
+Ensure scent cards have onClick handlers
+
+Confirm pointer events are not blocked by overlays
+
+Confirm no parent container is swallowing clicks
+
+Confirm state updates rerender the UI
+
+Add debugging steps:
+
+Add a temporary console log inside onClick
+
+Verify event is firing
+
+Verify state update occurs
+
+Verify selected state is reflected in UI
+
+7. UX Requirements
+
+Show clear selection state on cards
+
+Enforce maximum of 4 selected scents
+
+Provide feedback when limit reached
+
+Persist user collection
+
+Keep styling consistent with deep purple flat UI
+
+8. Deliverables
+
+Working selectable scent cards in Library
+
+“My Session Collection” section at top
+
+Selection state stored and loaded from local storage
+
+Guided sessions use the selected scent collection
+
+UI confirmation and error feedback for selection limit

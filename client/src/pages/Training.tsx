@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation, useSearch } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
@@ -113,15 +113,18 @@ export default function Training() {
   const activeScentIds = userScents.map(s => s.scentId);
   const sessionScents = ALL_SCENTS.filter((s: Scent) => activeScentIds.includes(s.id));
   
-  // Default scents for users with no selections
+  // Default scents for users with no selections or incomplete collection
   const defaultScents = ALL_SCENTS.filter((s: Scent) => ['clove', 'lemon', 'eucalyptus', 'rose'].includes(s.id));
+  
+  // Only use user's collection if they have exactly 4 scents selected
+  const hasCompleteCollection = sessionScents.length === 4;
   
   // If routine is selected, use routine-specific scents
   const routineScents = routine 
     ? ALL_SCENTS.filter((s: Scent) => routine.scents.includes(s.id))
     : null;
   
-  const trainingScents = routineScents || (sessionScents.length > 0 ? sessionScents : defaultScents);
+  const trainingScents = routineScents || (hasCompleteCollection ? sessionScents : defaultScents);
   const activeScent = trainingScents[currentScentIndex] || trainingScents[0];
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -486,6 +489,20 @@ export default function Training() {
 
            {phase === "intro" && (
                <>
+                 {/* Collection indicator */}
+                 <div className="flex items-center justify-center gap-2 text-white/60 text-sm mb-2">
+                   <span>{hasCompleteCollection ? "Using your collection" : "Using default set"}</span>
+                   <span className="text-white/40">•</span>
+                   <button 
+                     onClick={() => setLocation("/launch/library")}
+                     className="flex items-center gap-1 text-[#ac41c3] hover:text-[#db2faa] transition-colors"
+                     data-testid="button-edit-collection"
+                   >
+                     <Pencil size={12} />
+                     <span>Edit</span>
+                   </button>
+                 </div>
+                 
                  <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession} data-testid="button-start-training">
                    Start Training
                  </Button>
