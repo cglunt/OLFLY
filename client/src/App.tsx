@@ -28,9 +28,7 @@ import { useEffect } from "react";
 function Router() {
   const [location, setLocation] = useLocation();
   const { user: firebaseUser, loading: authLoading } = useAuth();
-  const { user, isLoading } = useCurrentUser();
-  
-  console.log("[Router] State:", { authLoading, hasFirebaseUser: !!firebaseUser, isLoading, hasUser: !!user, location });
+  const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
 
   useEffect(() => {
     if (authLoading) return;

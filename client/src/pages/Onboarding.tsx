@@ -7,7 +7,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Clock, ArrowRight, HelpCircle, FileText } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
 import { ALL_SCENTS } from "@/lib/data";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TERMS_VERSION = "1.0";
 
@@ -32,7 +34,9 @@ const QUIZ_QUESTIONS = [
 ];
 
 export default function Onboarding() {
-  const { user, updateUser } = useCurrentUser();
+  const { user: firebaseUser } = useAuth();
+  const { user, updateUserAsync } = useCurrentUser(firebaseUser?.displayName || undefined);
+  const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [quizStep, setQuizStep] = useState(0);
@@ -44,6 +48,8 @@ export default function Onboarding() {
     return localStorage.getItem("termsAccepted") === "true" && 
            localStorage.getItem("termsVersion") === TERMS_VERSION;
   });
+  
+  const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
 
   const totalSteps = 7;
   const defaultScents = ALL_SCENTS.filter(s => s.isDefault);
@@ -68,14 +74,19 @@ export default function Onboarding() {
     localStorage.setItem("termsAcceptedAt", new Date().toISOString());
     localStorage.setItem("termsVersion", TERMS_VERSION);
     
-    updateUser({
-      hasOnboarded: true,
-      remindersEnabled: remindersEnabled,
-      morningTime: morningTime,
-      eveningTime: eveningTime,
-    });
-    
-    setLocation("/");
+    try {
+      const updatedUser = await updateUserAsync({
+        hasOnboarded: true,
+        remindersEnabled: remindersEnabled,
+        morningTime: morningTime,
+        eveningTime: eveningTime,
+      });
+      
+      queryClient.setQueryData(queryKey, updatedUser);
+      setLocation("/");
+    } catch (error) {
+      console.error("Failed to complete onboarding:", error);
+    }
   };
 
   const variants = {
