@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation, useSearch } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check } from "lucide-react";
 import { motion } from "framer-motion";
+import restBoyImg from '@assets/rest-boy.png';
+import restGirlImg from '@assets/rest-girl.png';
 
 const MOTIVATION_MESSAGES = {
   breathe: [
@@ -50,7 +52,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserScents, createSession } from "@/lib/api";
 
-type Phase = "intro" | "breathe" | "smell" | "rest" | "rate" | "outro";
+type Phase = "intro" | "setup" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
 const ROUTINES = {
   morning: {
@@ -154,11 +156,15 @@ export default function Training() {
       setPhase("rate");
       setPhaseMotivation("");
     } else if (phase === "rest") {
-      startSmellPhase();
+      beginTraining();
     }
   };
 
   const startSession = () => {
+    setPhase("setup");
+  };
+
+  const beginTraining = () => {
     setPhase("breathe");
     setTimeLeft(5);
     setIsActive(true);
@@ -244,7 +250,7 @@ export default function Training() {
 
   return (
     <div className="relative min-h-screen w-screen overflow-hidden bg-[#0c0c1d]">
-      {/* Background Gradient / Image Overlay */}
+      {/* Background Gradient / Image Overlay - Only show scent image during smell phase, not during rest */}
       <div className="absolute inset-0 w-full h-full z-0">
         <div className="absolute inset-0 bg-[#0c0c1d] z-10" />
         {phase === "smell" && activeScent?.image && (
@@ -265,7 +271,7 @@ export default function Training() {
              <ChevronLeft className="h-6 w-6" />
            </Button>
            <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
-             {phase === 'intro' ? 'Start' : 'Session'}
+             {phase === 'intro' ? 'Start' : phase === 'setup' ? 'Get Ready' : 'Session'}
            </h2>
            
            <Dialog open={showHelp} onOpenChange={setShowHelp}>
@@ -305,7 +311,7 @@ export default function Training() {
           
            {/* Image / Avatar Circle */}
            <div className="relative">
-               {phase === "intro" && (
+               {(phase === "intro" || phase === "setup") && (
                   <div className="w-48 h-48 rounded-full border-4 border-[#3b1645] shadow-xl overflow-hidden bg-[#3b1645] p-1">
                      <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
                         <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
@@ -337,7 +343,7 @@ export default function Training() {
                     </motion.div>
                   </motion.div>
                )}
-               {phase !== "intro" && phase !== "outro" && (
+               {phase !== "intro" && phase !== "outro" && phase !== "setup" && (
                   <div className="relative w-[280px] h-[280px] flex items-center justify-center">
                        {/* Progress Ring */}
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
@@ -349,7 +355,7 @@ export default function Training() {
                               cx="150"
                               cy="150"
                               r={130}
-                              stroke="#ac41c3" 
+                              stroke={phase === "rest" ? "#6d45d2" : "#ac41c3"} 
                               strokeWidth="10"
                               fill="none"
                               strokeDasharray={2 * Math.PI * 130}
@@ -360,7 +366,16 @@ export default function Training() {
                           </svg>
                        )}
 
-                       {activeScent && (
+                       {phase === "rest" ? (
+                         <motion.div 
+                          key="rest-image"
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#0c0c1d] shadow-2xl z-10 bg-[#3b1645] flex items-center justify-center"
+                         >
+                          <img src={restGirlImg} className="w-full h-full object-cover" alt="Rest" />
+                         </motion.div>
+                       ) : activeScent && (
                        <motion.div 
                         key={activeScent.id}
                         initial={{ scale: 0.9, opacity: 0 }}
@@ -378,14 +393,17 @@ export default function Training() {
            <div className="text-center space-y-3">
              <h1 className="text-4xl font-bold text-white tracking-tight" data-testid="text-phase-title">
                {phase === "intro" ? (routine?.name || "Daily Practice") : 
+                phase === "setup" ? "Get your scents ready" :
                 phase === "outro" ? "Session Complete!" : 
+                phase === "rest" ? "Rest and reset" :
                 activeScent?.name || ""}
              </h1>
              <p className="text-xl text-white/70 font-medium tracking-wide max-w-xs" data-testid="text-phase-subtitle">
                {phase === "intro" ? (routine ? `${trainingScents.length} scents • ${Math.ceil(trainingScents.length * (smellDuration + 15) / 60)} min` : "Ready to start?") : 
+                phase === "setup" ? "Gather your prepared scents" :
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
-                phase === "rest" ? "Rest & Reset" : 
+                phase === "rest" ? "Take a moment to breathe" : 
                 phase === "rate" ? formatTime(timeLeft) :
                 phase === "outro" ? completionMessage : ""}
              </p>
@@ -442,7 +460,7 @@ export default function Training() {
                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
-                    else if (phase === 'rest') startSmellPhase();
+                    else if (phase === 'rest') beginTraining();
                  }} data-testid="button-restart">
                    <RotateCcw className="h-6 w-6" />
                  </Button>
@@ -460,7 +478,7 @@ export default function Training() {
                     setIsActive(false);
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') { setPhase('rate'); setPhaseMotivation(''); }
-                    else if (phase === 'rest') startSmellPhase();
+                    else if (phase === 'rest') beginTraining();
                  }} data-testid="button-skip">
                    <SkipForward className="h-6 w-6" />
                  </Button>
@@ -494,6 +512,65 @@ export default function Training() {
                    </motion.div>
                  )}
                </>
+           )}
+
+           {phase === "setup" && (
+               <motion.div
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 className="w-full bg-[#3b1645] rounded-2xl p-6 space-y-4"
+               >
+                 <p className="text-white/70 text-sm leading-relaxed text-center">
+                   Place your prepared scents within reach. This helps you stay focused and relaxed during the session.
+                 </p>
+                 
+                 <div className="grid grid-cols-2 gap-3">
+                   {trainingScents.map((scent) => (
+                     <div key={scent.id} className="flex items-center gap-2 bg-[#0c0c1d] rounded-xl p-3">
+                       <Check size={16} className="text-[#ac41c3]" />
+                       <span className="text-white text-sm font-medium">{scent.name}</span>
+                     </div>
+                   ))}
+                 </div>
+                 
+                 <Button 
+                   size="lg" 
+                   className="w-full rounded-xl h-14 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg"
+                   onClick={beginTraining}
+                   data-testid="button-begin-session"
+                 >
+                   Start session
+                 </Button>
+                 
+                 <button 
+                   onClick={() => setLocation("/launch/onboarding")}
+                   className="w-full text-center text-white/50 text-sm hover:text-white/70 transition-colors"
+                 >
+                   Need help preparing scents?
+                 </button>
+               </motion.div>
+           )}
+
+           {phase === "rest" && (
+               <motion.div
+                 initial={{ opacity: 0, y: 10 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 className="text-center space-y-4"
+               >
+                 <div className="flex items-center justify-center gap-2 text-[#6d45d2]">
+                   <Wind size={20} />
+                   <span className="text-sm font-medium">Breathing guidance</span>
+                 </div>
+                 <div className="bg-[#3b1645] rounded-xl p-4 space-y-2">
+                   <p className="text-white/70 text-sm">Inhale slowly through your nose.</p>
+                   <p className="text-white/70 text-sm">Exhale gently through your mouth.</p>
+                 </div>
+                 {trainingScents[currentScentIndex] && (
+                   <p className="text-[#ac41c3] text-sm font-medium">
+                     Next scent: {trainingScents[currentScentIndex].name}
+                   </p>
+                 )}
+               </motion.div>
            )}
            
            {phase === "outro" && (

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Clock, ArrowRight, HelpCircle, FileText } from "lucide-react";
+import { Clock, ArrowRight, HelpCircle, FileText, Droplet, FlaskConical } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
@@ -17,6 +17,9 @@ import topToddImg from '@assets/Top_Todd@2x_1767069623167.png';
 import topMiaImg from '@assets/Top_Mia@2x_1767069623167.png';
 import lowerGinaImg from '@assets/Lower_Gina@2x_1767069623166.png';
 import lowerLiuImg from '@assets/Lower_Liu@2x_1767069623166.png';
+import scentPrepImg from '@assets/scent-preparation.png';
+import restBoyImg from '@assets/rest-boy.png';
+import restGirlImg from '@assets/rest-girl.png';
 
 const QUIZ_QUESTIONS = [
   {
@@ -51,7 +54,7 @@ export default function Onboarding() {
   
   const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
 
-  const totalSteps = 7;
+  const totalSteps = 8;
   const defaultScents = ALL_SCENTS.filter(s => s.isDefault);
 
   const nextStep = () => setStep(s => s + 1);
@@ -298,6 +301,72 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
+                    className="flex-1 flex flex-col"
+                >
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Prepare your<br/>baseline scents</h2>
+                    
+                    <p className="text-white/70 text-lg leading-relaxed mb-4">
+                        To get the most out of smell training, it helps to prepare your scents ahead of time.
+                    </p>
+                    
+                    <div className="rounded-2xl overflow-hidden mb-4 border border-white/10">
+                        <img src={scentPrepImg} alt="Scent preparation" className="w-full h-48 object-cover" />
+                    </div>
+                    
+                    <Block className="mb-4 space-y-4">
+                        <h3 className="font-bold text-white">How to prepare your scents:</h3>
+                        <div className="space-y-3">
+                            <div className="flex gap-3">
+                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">1</div>
+                                <p className="text-white/70 text-sm">Use small glass jars with lids.</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">2</div>
+                                <p className="text-white/70 text-sm">Place a cotton ball inside each jar.</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">3</div>
+                                <p className="text-white/70 text-sm">Add a few drops of essential oil to the cotton ball.</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">4</div>
+                                <p className="text-white/70 text-sm">Close the lid to keep the scent fresh.</p>
+                            </div>
+                        </div>
+                        
+                        <div className="bg-[#0c0c1d] rounded-xl p-3 border border-white/5">
+                            <p className="text-white/60 text-sm">
+                                <span className="text-[#ac41c3] font-medium">Tip:</span> Keeping your scents in small containers makes it easy to train anywhere when you get a reminder.
+                            </p>
+                        </div>
+                    </Block>
+                    
+                    <div className="mt-auto space-y-3 pb-4 md:pb-0">
+                        <Button 
+                            onClick={nextStep}
+                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
+                            data-testid="button-scents-ready"
+                        >
+                            I'm ready
+                        </Button>
+                        <button 
+                            onClick={() => setLocation("/legal/safety")}
+                            className="w-full text-center text-white/50 text-sm hover:text-white/70 transition-colors"
+                        >
+                            View safety tips
+                        </button>
+                    </div>
+                </motion.div>
+            )}
+
+            {step === 5 && (
+                <motion.div
+                    key="step5"
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col relative overflow-hidden"
                 >
                     <motion.img 
@@ -369,7 +438,7 @@ export default function Onboarding() {
                          <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
-                            data-testid="button-next-step4"
+                            data-testid="button-next-step5"
                         >
                             Next
                         </Button>
@@ -377,9 +446,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-            {step === 5 && (
+            {step === 6 && (
                 <motion.div
-                    key="step5"
+                    key="step6"
                     variants={variants}
                     initial="enter"
                     animate="center"
@@ -430,7 +499,7 @@ export default function Onboarding() {
                         <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
-                            data-testid="button-next-step5"
+                            data-testid="button-next-step6"
                         >
                             Almost done
                         </Button>
@@ -438,9 +507,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-             {step === 6 && (
+             {step === 7 && (
                 <motion.div
-                    key="step6"
+                    key="step7"
                     variants={variants}
                     initial="enter"
                     animate="center"
@@ -497,9 +566,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-            {step === 7 && (
+            {step === 8 && (
                 <motion.div
-                    key="step7"
+                    key="step8"
                     variants={variants}
                     initial="enter"
                     animate="center"
