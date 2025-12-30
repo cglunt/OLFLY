@@ -13,10 +13,12 @@ const legalItems = [
 ];
 
 export default function Legal() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsAcceptedAt, setTermsAcceptedAt] = useState<string | null>(null);
   const [termsVersion, setTermsVersion] = useState("Not accepted");
+  
+  const backPath = location.startsWith("/launch") ? "/launch/settings" : "/";
 
   useEffect(() => {
     setTermsAccepted(localStorage.getItem("termsAccepted") === "true");
@@ -25,7 +27,7 @@ export default function Legal() {
   }, []);
 
   return (
-    <Layout showBack backPath="/settings">
+    <Layout showBack backPath={backPath}>
       <div className="p-6 pb-24 space-y-6">
         <header>
           <h1 className="text-3xl font-bold text-white">Legal</h1>
