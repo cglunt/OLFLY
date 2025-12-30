@@ -225,14 +225,14 @@ export default function Onboarding() {
                          </p>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
+                    <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
                         {defaultScents.map((scent, i) => (
                             <motion.div 
                                 key={scent.id}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="aspect-square rounded-[1.5rem] md:rounded-[2rem] overflow-hidden relative group"
+                                className="h-24 md:h-28 rounded-xl md:rounded-2xl overflow-hidden relative group"
                             >
                                 {scent.image && (
                                     <img 
@@ -242,8 +242,8 @@ export default function Onboarding() {
                                     />
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                                <div className="absolute bottom-0 left-0 right-0 p-4">
-                                    <span className="text-base md:text-lg font-bold text-white">{scent.name}</span>
+                                <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3">
+                                    <span className="text-sm md:text-base font-bold text-white">{scent.name}</span>
                                 </div>
                             </motion.div>
                         ))}
