@@ -183,18 +183,18 @@ export default function Landing() {
           style={{
             backgroundImage: `url(${phoneLifestyle})`,
             backgroundSize: 'cover',
-            backgroundPosition: '85% center',
+            backgroundPosition: 'right center',
           }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/95 to-[#0c0c1d]/60" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/50" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/90 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/30" />
         
-        <div className="relative z-20 max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div className="relative z-20 w-full max-w-6xl mx-auto px-6 py-16 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xl"
+            className="max-w-md lg:max-w-lg"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645]/80 backdrop-blur-sm border border-[#6d45d2]/30 mb-6">
               <Sparkles size={14} className="text-[#db2faa]" />
