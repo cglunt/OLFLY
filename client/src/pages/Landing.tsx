@@ -187,8 +187,9 @@ export default function Landing() {
             backgroundPosition: 'center',
           }}
         />
-        <div className="absolute inset-y-0 left-1/2 w-32 z-10 bg-gradient-to-r from-[#0c0c1d] to-transparent -translate-x-full" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/30" />
+        <div className="absolute inset-y-0 left-[40%] w-[20%] z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/70 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/40" />
+        <div className="absolute inset-y-0 right-0 w-1/2 z-10 bg-gradient-to-br from-[#6d45d2]/10 via-transparent to-[#db2faa]/10" />
         
         <div className="relative z-20 w-full max-w-6xl mx-auto px-6 py-16 md:py-24">
           <motion.div
