@@ -422,7 +422,7 @@ export default function Onboarding() {
                         initial={{ y: 100, opacity: 0 }}
                         animate={{ y: 0, opacity: 0.9 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="fixed bottom-0 right-0 w-[36rem] md:w-[48rem] object-contain z-0 pointer-events-none"
+                        className="fixed bottom-0 right-0 w-[100vw] md:w-[50vw] object-contain z-0 pointer-events-none"
                     />
                     
                     <div className="text-center mb-6 relative z-10">
