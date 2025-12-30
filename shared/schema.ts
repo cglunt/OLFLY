@@ -22,6 +22,16 @@ export const userScents = pgTable("user_scents", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const scentCollections = pgTable("scent_collections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  context: text("context").notNull().default('custom'),
+  scentIds: text("scent_ids").array().notNull().default([]),
+  isActive: boolean("is_active").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const sessions = pgTable("sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -52,6 +62,11 @@ export const insertUserScentSchema = createInsertSchema(userScents).omit({
   createdAt: true,
 });
 
+export const insertScentCollectionSchema = createInsertSchema(scentCollections).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertSessionSchema = createInsertSchema(sessions).omit({
   id: true,
   createdAt: true,
@@ -68,6 +83,9 @@ export type User = typeof users.$inferSelect;
 
 export type InsertUserScent = z.infer<typeof insertUserScentSchema>;
 export type UserScent = typeof userScents.$inferSelect;
+
+export type InsertScentCollection = z.infer<typeof insertScentCollectionSchema>;
+export type ScentCollection = typeof scentCollections.$inferSelect;
 
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Session = typeof sessions.$inferSelect;

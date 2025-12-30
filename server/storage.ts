@@ -1,4 +1,4 @@
-import { users, userScents, sessions, symptomLogs, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog } from "@shared/schema";
+import { users, userScents, sessions, symptomLogs, scentCollections, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -8,11 +8,21 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined>;
   
-  // User scents operations
+  // User scents operations (legacy - keeping for backwards compatibility)
   getUserScents(userId: string): Promise<UserScent[]>;
   addUserScent(userScent: InsertUserScent): Promise<UserScent>;
   removeUserScent(userId: string, scentId: string): Promise<void>;
   setUserScents(userId: string, scentIds: string[]): Promise<void>;
+  
+  // Scent collections operations
+  getUserCollections(userId: string): Promise<ScentCollection[]>;
+  getCollection(id: string): Promise<ScentCollection | undefined>;
+  createCollection(collection: InsertScentCollection): Promise<ScentCollection>;
+  updateCollection(id: string, userId: string, updates: Partial<InsertScentCollection>): Promise<ScentCollection | undefined>;
+  deleteCollection(id: string, userId: string): Promise<boolean>;
+  setActiveCollection(userId: string, collectionId: string): Promise<boolean>;
+  getActiveCollection(userId: string): Promise<ScentCollection | undefined>;
+  getCollectionByContext(userId: string, context: string): Promise<ScentCollection | undefined>;
   
   // Session operations
   createSession(session: InsertSession): Promise<Session>;
@@ -49,7 +59,7 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  // User scents operations
+  // User scents operations (legacy)
   async getUserScents(userId: string): Promise<UserScent[]> {
     return await db.select().from(userScents).where(eq(userScents.userId, userId));
   }
@@ -69,15 +79,83 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setUserScents(userId: string, scentIds: string[]): Promise<void> {
-    // Delete all existing scents for user
     await db.delete(userScents).where(eq(userScents.userId, userId));
     
-    // Insert new scents
     if (scentIds.length > 0) {
       await db.insert(userScents).values(
         scentIds.map(scentId => ({ userId, scentId }))
       );
     }
+  }
+
+  // Scent collections operations
+  async getUserCollections(userId: string): Promise<ScentCollection[]> {
+    return await db
+      .select()
+      .from(scentCollections)
+      .where(eq(scentCollections.userId, userId))
+      .orderBy(desc(scentCollections.createdAt));
+  }
+
+  async getCollection(id: string): Promise<ScentCollection | undefined> {
+    const [collection] = await db.select().from(scentCollections).where(eq(scentCollections.id, id));
+    return collection || undefined;
+  }
+
+  async createCollection(collection: InsertScentCollection): Promise<ScentCollection> {
+    const [newCollection] = await db
+      .insert(scentCollections)
+      .values(collection as any)
+      .returning();
+    return newCollection;
+  }
+
+  async updateCollection(id: string, userId: string, updates: Partial<InsertScentCollection>): Promise<ScentCollection | undefined> {
+    const [collection] = await db
+      .update(scentCollections)
+      .set(updates as any)
+      .where(and(eq(scentCollections.id, id), eq(scentCollections.userId, userId)))
+      .returning();
+    return collection || undefined;
+  }
+
+  async deleteCollection(id: string, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(scentCollections)
+      .where(and(eq(scentCollections.id, id), eq(scentCollections.userId, userId)))
+      .returning();
+    return result.length > 0;
+  }
+
+  async setActiveCollection(userId: string, collectionId: string): Promise<boolean> {
+    await db
+      .update(scentCollections)
+      .set({ isActive: false })
+      .where(eq(scentCollections.userId, userId));
+    
+    const [updated] = await db
+      .update(scentCollections)
+      .set({ isActive: true })
+      .where(and(eq(scentCollections.id, collectionId), eq(scentCollections.userId, userId)))
+      .returning();
+    
+    return !!updated;
+  }
+
+  async getActiveCollection(userId: string): Promise<ScentCollection | undefined> {
+    const [collection] = await db
+      .select()
+      .from(scentCollections)
+      .where(and(eq(scentCollections.userId, userId), eq(scentCollections.isActive, true)));
+    return collection || undefined;
+  }
+
+  async getCollectionByContext(userId: string, context: string): Promise<ScentCollection | undefined> {
+    const [collection] = await db
+      .select()
+      .from(scentCollections)
+      .where(and(eq(scentCollections.userId, userId), eq(scentCollections.context, context as any)));
+    return collection || undefined;
   }
 
   // Session operations

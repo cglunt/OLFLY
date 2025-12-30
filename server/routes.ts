@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema } from "@shared/schema";
+import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema, insertScentCollectionSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(
@@ -115,6 +115,82 @@ export async function registerRoutes(
       res.json(session);
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : "Invalid update data" });
+    }
+  });
+
+  // Scent collections routes
+  app.get("/api/users/:id/collections", async (req, res) => {
+    try {
+      const collections = await storage.getUserCollections(req.params.id);
+      res.json(collections);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.get("/api/users/:id/collections/active", async (req, res) => {
+    try {
+      const collection = await storage.getActiveCollection(req.params.id);
+      res.json(collection || null);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.get("/api/users/:id/collections/context/:context", async (req, res) => {
+    try {
+      const collection = await storage.getCollectionByContext(req.params.id, req.params.context);
+      res.json(collection || null);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.post("/api/collections", async (req, res) => {
+    try {
+      const collectionData = insertScentCollectionSchema.parse(req.body);
+      const collection = await storage.createCollection(collectionData);
+      res.json(collection);
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : "Invalid collection data" });
+    }
+  });
+
+  app.patch("/api/users/:userId/collections/:id", async (req, res) => {
+    try {
+      const updates = insertScentCollectionSchema.partial().parse(req.body);
+      const collection = await storage.updateCollection(req.params.id, req.params.userId, updates);
+      if (!collection) {
+        return res.status(404).json({ error: "Collection not found" });
+      }
+      res.json(collection);
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : "Invalid update data" });
+    }
+  });
+
+  app.delete("/api/users/:userId/collections/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteCollection(req.params.id, req.params.userId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Collection not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.post("/api/users/:userId/collections/:collectionId/activate", async (req, res) => {
+    try {
+      const activated = await storage.setActiveCollection(req.params.userId, req.params.collectionId);
+      if (!activated) {
+        return res.status(404).json({ error: "Collection not found" });
+      }
+      const collection = await storage.getCollection(req.params.collectionId);
+      res.json(collection);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
     }
   });
 

@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/dialog";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUserScents, createSession } from "@/lib/api";
+import { getActiveCollection, createSession } from "@/lib/api";
 
 type Phase = "intro" | "setup" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
@@ -103,14 +103,14 @@ export default function Training() {
     return milestone ? milestones[milestone as keyof typeof milestones] : null;
   };
 
-  // Fetch user's active scents
-  const { data: userScents = [] } = useQuery({
-    queryKey: ["userScents", user?.id],
-    queryFn: () => getUserScents(user!.id),
+  // Fetch user's active collection
+  const { data: activeCollection } = useQuery({
+    queryKey: ["activeCollection", user?.id],
+    queryFn: () => getActiveCollection(user!.id),
     enabled: !!user,
   });
 
-  const activeScentIds = userScents.map(s => s.scentId);
+  const activeScentIds = activeCollection?.scentIds || [];
   const sessionScents = ALL_SCENTS.filter((s: Scent) => activeScentIds.includes(s.id));
   
   // Default scents for users with no selections or incomplete collection
@@ -118,6 +118,7 @@ export default function Training() {
   
   // Only use user's collection if they have exactly 4 scents selected
   const hasCompleteCollection = sessionScents.length === 4;
+  const collectionName = activeCollection?.name || null;
   
   // If routine is selected, use routine-specific scents
   const routineScents = routine 
@@ -491,7 +492,7 @@ export default function Training() {
                <>
                  {/* Collection indicator */}
                  <div className="flex items-center justify-center gap-2 text-white/60 text-sm mb-2">
-                   <span>{hasCompleteCollection ? "Using your collection" : "Using default set"}</span>
+                   <span>{hasCompleteCollection ? (collectionName ? `Using "${collectionName}"` : "Using your collection") : "Using default set"}</span>
                    <span className="text-white/40">•</span>
                    <button 
                      onClick={() => setLocation("/launch/library")}

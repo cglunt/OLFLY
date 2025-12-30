@@ -1,4 +1,4 @@
-import type { User, InsertUser, UserScent, Session, InsertSession, SymptomLog, InsertSymptomLog } from "@shared/schema";
+import type { User, InsertUser, UserScent, Session, InsertSession, SymptomLog, InsertSymptomLog, ScentCollection, InsertScentCollection } from "@shared/schema";
 
 // User API
 export async function createUser(userData: InsertUser): Promise<User> {
@@ -27,7 +27,7 @@ export async function updateUser(id: string, updates: Partial<InsertUser>): Prom
   return res.json();
 }
 
-// User Scents API
+// User Scents API (legacy)
 export async function getUserScents(userId: string): Promise<UserScent[]> {
   const res = await fetch(`/api/users/${userId}/scents`);
   if (!res.ok) throw new Error("Failed to fetch user scents");
@@ -41,6 +41,60 @@ export async function setUserScents(userId: string, scentIds: string[]): Promise
     body: JSON.stringify({ scentIds }),
   });
   if (!res.ok) throw new Error("Failed to update user scents");
+  return res.json();
+}
+
+// Scent Collections API
+export async function getUserCollections(userId: string): Promise<ScentCollection[]> {
+  const res = await fetch(`/api/users/${userId}/collections`);
+  if (!res.ok) throw new Error("Failed to fetch collections");
+  return res.json();
+}
+
+export async function getActiveCollection(userId: string): Promise<ScentCollection | null> {
+  const res = await fetch(`/api/users/${userId}/collections/active`);
+  if (!res.ok) throw new Error("Failed to fetch active collection");
+  return res.json();
+}
+
+export async function getCollectionByContext(userId: string, context: string): Promise<ScentCollection | null> {
+  const res = await fetch(`/api/users/${userId}/collections/context/${context}`);
+  if (!res.ok) throw new Error("Failed to fetch collection by context");
+  return res.json();
+}
+
+export async function createCollection(collectionData: InsertScentCollection): Promise<ScentCollection> {
+  const res = await fetch("/api/collections", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(collectionData),
+  });
+  if (!res.ok) throw new Error("Failed to create collection");
+  return res.json();
+}
+
+export async function updateCollection(userId: string, id: string, updates: Partial<InsertScentCollection>): Promise<ScentCollection> {
+  const res = await fetch(`/api/users/${userId}/collections/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) throw new Error("Failed to update collection");
+  return res.json();
+}
+
+export async function deleteCollection(userId: string, id: string): Promise<void> {
+  const res = await fetch(`/api/users/${userId}/collections/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete collection");
+}
+
+export async function activateCollection(userId: string, collectionId: string): Promise<ScentCollection> {
+  const res = await fetch(`/api/users/${userId}/collections/${collectionId}/activate`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Failed to activate collection");
   return res.json();
 }
 
