@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function Layout({ children, backgroundOverlay, showBack, backPath }: LayoutProps) {
   const [location, setLocation] = useLocation();
-  const showNav = location !== "/training" && !showBack;
+  const showNav = location !== "/app/training" && !showBack;
 
   return (
     <div className="min-h-screen w-full bg-[#0c0c1d] text-white flex flex-col max-w-md mx-auto shadow-none overflow-hidden relative font-sans">
@@ -29,7 +29,7 @@ export default function Layout({ children, backgroundOverlay, showBack, backPath
       {showBack && (
         <header className="relative z-10 p-4 flex items-center">
           <button 
-            onClick={() => setLocation(backPath || "/")}
+            onClick={() => setLocation(backPath || "/app")}
             className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
           >
             <ArrowLeft size={20} className="text-white/70" />
@@ -52,11 +52,11 @@ function BottomNav() {
   const [location] = useLocation();
 
   const navItems = [
-    { path: "/", icon: Home, label: "Home" },
-    { path: "/library", icon: BookOpen, label: "Library" },
-    { path: "/progress", icon: BarChart2, label: "Progress" },
-    { path: "/learn", icon: GraduationCap, label: "Learn" },
-    { path: "/settings", icon: Settings, label: "Settings" },
+    { path: "/app", icon: Home, label: "Home" },
+    { path: "/app/library", icon: BookOpen, label: "Library" },
+    { path: "/app/progress", icon: BarChart2, label: "Progress" },
+    { path: "/app/learn", icon: GraduationCap, label: "Learn" },
+    { path: "/app/settings", icon: Settings, label: "Settings" },
   ];
 
   return (

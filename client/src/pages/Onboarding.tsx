@@ -83,7 +83,7 @@ export default function Onboarding() {
       });
       
       queryClient.setQueryData(queryKey, updatedUser);
-      setLocation("/");
+      setLocation("/app");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);
     }

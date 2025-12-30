@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import Training from "@/pages/Training";
 import Library from "@/pages/Library";
@@ -25,7 +26,7 @@ import { useAuth } from "@/lib/useAuth";
 import { TermsModal } from "@/components/TermsModal";
 import { useEffect } from "react";
 
-function Router() {
+function AppRouter() {
   const [location, setLocation] = useLocation();
   const { user: firebaseUser, loading: authLoading } = useAuth();
   const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
@@ -33,15 +34,13 @@ function Router() {
   useEffect(() => {
     if (authLoading) return;
     
-    // Redirect to login if not authenticated
-    if (!firebaseUser && location !== "/login") {
-      setLocation("/login");
+    if (!firebaseUser && location.startsWith("/app") && location !== "/app/login") {
+      setLocation("/app/login");
       return;
     }
     
-    // Redirect away from login if authenticated
-    if (firebaseUser && location === "/login") {
-      setLocation("/");
+    if (firebaseUser && location === "/app/login") {
+      setLocation("/app");
       return;
     }
   }, [authLoading, firebaseUser, location, setLocation]);
@@ -49,13 +48,11 @@ function Router() {
   useEffect(() => {
     if (isLoading || !user || !firebaseUser) return;
     
-    // Redirect to onboarding if not completed
-    if (!user.hasOnboarded && location !== "/onboarding" && location !== "/login") {
-      setLocation("/onboarding");
+    if (!user.hasOnboarded && location.startsWith("/app") && location !== "/app/onboarding" && location !== "/app/login") {
+      setLocation("/app/onboarding");
     }
   }, [location, setLocation, user, isLoading, firebaseUser]);
 
-  // Show loading state
   if (authLoading) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
@@ -64,12 +61,10 @@ function Router() {
     );
   }
 
-  // Show login if not authenticated
   if (!firebaseUser) {
     return <Login />;
   }
 
-  // Show loading while fetching user data
   if (isLoading || !user) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
@@ -80,15 +75,33 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/onboarding" component={Onboarding} />
-      <Route path="/" component={Home} />
-      <Route path="/training" component={Training} />
-      <Route path="/library" component={Library} />
-      <Route path="/progress" component={Progress} />
-      <Route path="/learn" component={Learn} />
-      <Route path="/article/restoring-smell" component={Article} />
-      <Route path="/settings" component={Settings} />
+      <Route path="/app/login" component={Login} />
+      <Route path="/app/onboarding" component={Onboarding} />
+      <Route path="/app" component={Home} />
+      <Route path="/app/training" component={Training} />
+      <Route path="/app/library" component={Library} />
+      <Route path="/app/progress" component={Progress} />
+      <Route path="/app/learn" component={Learn} />
+      <Route path="/app/article/restoring-smell" component={Article} />
+      <Route path="/app/settings" component={Settings} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function Router() {
+  const [location] = useLocation();
+
+  const isAppRoute = location.startsWith("/app");
+  const isLegalRoute = location.startsWith("/legal");
+
+  if (isAppRoute) {
+    return <AppRouter />;
+  }
+
+  return (
+    <Switch>
+      <Route path="/" component={Landing} />
       <Route path="/legal" component={Legal} />
       <Route path="/legal/terms" component={Terms} />
       <Route path="/legal/privacy" component={Privacy} />
@@ -96,7 +109,7 @@ function Router() {
       <Route path="/legal/affiliate" component={Affiliate} />
       <Route path="/legal/safety" component={Safety} />
       <Route path="/legal/contact" component={Contact} />
-      <Route component={NotFound} />
+      {!isLegalRoute && <Route component={NotFound} />}
     </Switch>
   );
 }

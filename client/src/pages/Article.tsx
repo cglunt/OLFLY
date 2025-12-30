@@ -10,7 +10,7 @@ export default function Article() {
     <div className="min-h-screen bg-[#0c0c1d] text-white font-sans">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0c0c1d]/80 backdrop-blur-md border-b border-white/5 p-4 flex items-center justify-between">
-        <Button variant="ghost" size="icon" onClick={() => setLocation("/")} className="hover:bg-white/10 rounded-full text-white">
+        <Button variant="ghost" size="icon" onClick={() => setLocation("/app")} className="hover:bg-white/10 rounded-full text-white">
            <ChevronLeft className="h-6 w-6" />
         </Button>
         <span className="font-bold text-sm tracking-wider uppercase opacity-70">Discover</span>

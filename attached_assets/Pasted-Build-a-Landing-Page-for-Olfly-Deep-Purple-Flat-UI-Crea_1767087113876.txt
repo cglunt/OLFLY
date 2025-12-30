@@ -1,0 +1,262 @@
+Build a Landing Page for Olfly (Deep Purple Flat UI)
+
+Create a responsive marketing landing page for an app called Olfly. The app helps people regain their sense of smell using guided olfactory training routines. Build this as a single page site using React + Vite + TailwindCSS. Match the app’s deep purple flat UI style.
+
+Brand and style
+
+Brand name: Olfly
+
+Tagline: “Wake up your super sniffer.”
+
+Visual style: modern, flat, clean, deep purple theme
+
+Colors:
+
+Background: #1A0F35
+
+Card: #2B215B
+
+Accent gradient: #DF37FF to #A259FF
+
+Text: white and #B9AEE2
+
+Typography: modern sans serif, bold headers, friendly tone
+
+Icon style: thin outline icons
+
+No wave textures. Minimal gradients only.
+
+Page Structure and Copy
+1. Top Navigation
+
+Sticky top nav with:
+
+Olfly logo (text logo with “OLF” emphasized)
+
+Links: How it works, Features, Pricing, Safety, FAQ
+
+Primary CTA button: “Start free”
+
+CTA should scroll to pricing or email capture.
+
+2. Hero Section
+
+Layout: left text, right app mockup placeholder image (use a gradient phone mockup box if no image)
+
+Headline:
+“Wake up your super sniffer.”
+
+Subheadline:
+“Guided smell training, progress tracking, and gentle reminders that help you stay consistent.”
+
+Bullets:
+
+“Four scent routine, guided step by step”
+
+“Timers, streaks, and progress charts”
+
+“Custom scents, symptom logs, and recovery timeline”
+
+“Designed to feel calm, not clinical”
+
+Buttons:
+
+Primary: “Start free”
+
+Secondary: “See how it works”
+
+Add a small trust line under buttons:
+“Educational and wellness support only. Not medical advice.”
+
+3. Social Proof Band
+
+Add 3 simple stat style cards (use placeholders if needed):
+
+“2 sessions per day”
+
+“20 seconds per scent”
+
+“Built for consistency”
+
+Add a testimonial style card with placeholder quote:
+“Olfly helped me stay consistent when I felt discouraged.”
+
+4. How It Works Section
+
+Three step cards with icons:
+
+“Pick your training times”
+
+“Follow the guided session”
+
+“Track progress over weeks”
+
+Add a small playful line:
+“Your nose is doing brain workouts. Yes, really.”
+
+5. Features Section (Grouped)
+
+Create feature cards in a clean grid, grouped into categories.
+
+Guided Training
+
+Timed sessions
+
+Rest periods
+
+Optional audio prompts
+
+Tracking
+
+Intensity sliders
+
+Trend charts
+
+Session summaries
+
+Export for clinician
+
+Personalization
+
+Custom scent library
+
+Add photos and notes
+
+Swap recommended scents
+
+Support
+
+Symptom journaling
+
+Recovery timeline view
+
+Calm breathing prompt
+
+Light humor and affirmations
+
+Each feature card should have:
+
+Title
+
+One sentence description
+
+Small icon
+
+6. Pricing Section
+
+Create pricing cards for three tiers:
+
+Free
+
+Price: $0
+Includes:
+
+Guided sessions
+
+Classic four scent routine
+
+Reminders
+
+Basic streaks
+
+7 day progress view
+
+Button: “Start free”
+
+Plus
+
+Price: $4.99 monthly or $39.99 yearly
+Includes:
+
+Full history and charts
+
+Symptom journal
+
+Custom scent library
+
+Recovery timeline
+
+Cloud sync with Google sign in
+
+Export reports
+
+Button: “Upgrade to Plus”
+Add small note: “Best value yearly”
+
+Premium
+
+Price: $9.99 monthly or $79.99 yearly
+Includes:
+
+Advanced insights
+
+Adaptive training suggestions
+
+Deeper correlations
+
+Early feature access
+
+Button: “Go Premium”
+
+Add a note below pricing:
+“Olfly does not guarantee results. Recovery varies by person.”
+
+7. Safety and Trust Section
+
+Create a calm card with safety guidance:
+
+“Essential oils are for smelling only. Do not ingest.”
+
+“Stop if irritation occurs.”
+
+“Consult a healthcare professional for health questions.”
+
+Add link buttons:
+
+“Read Safety Guide”
+
+“Read Medical Disclaimer”
+
+8. FAQ Section
+
+Create 6 FAQs with accordion UI.
+
+Suggested questions:
+
+“What is olfactory training?”
+
+“How long does it take?”
+
+“What scents do I need?”
+
+“What if I miss a day?”
+
+“Is Olfly medical advice?”
+
+“Can I share progress with my clinician?”
+
+9. Final CTA Section
+
+Large gradient card with headline:
+“Ready for your smell comeback?”
+
+Subtext:
+“Start free. Stay consistent. Let Olfly guide the routine.”
+
+Button:
+“Start free”
+
+Optional small email capture:
+
+Email field
+
+“Get launch updates”
+
+10. Footer
+
+Include:
+
+Links: Terms, Privacy, Disclaimers, Affiliate Disclosure, Contact
+
+Affiliate disclosure one liner:
+“Some links may be affiliate links.”
