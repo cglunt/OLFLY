@@ -19,24 +19,57 @@ import Disclaimers from "@/pages/Disclaimers";
 import Affiliate from "@/pages/Affiliate";
 import Safety from "@/pages/Safety";
 import Contact from "@/pages/Contact";
+import Login from "@/pages/Login";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
 import { TermsModal } from "@/components/TermsModal";
 import { useEffect } from "react";
 
 function Router() {
   const [location, setLocation] = useLocation();
+  const { user: firebaseUser, loading: authLoading } = useAuth();
   const { user, isLoading } = useCurrentUser();
 
   useEffect(() => {
-    if (isLoading || !user) return;
+    if (authLoading) return;
+    
+    // Redirect to login if not authenticated
+    if (!firebaseUser && location !== "/login") {
+      setLocation("/login");
+      return;
+    }
+    
+    // Redirect away from login if authenticated
+    if (firebaseUser && location === "/login") {
+      setLocation("/");
+      return;
+    }
+  }, [authLoading, firebaseUser, location, setLocation]);
+
+  useEffect(() => {
+    if (isLoading || !user || !firebaseUser) return;
     
     // Redirect to onboarding if not completed
-    if (!user.hasOnboarded && location !== "/onboarding") {
+    if (!user.hasOnboarded && location !== "/onboarding" && location !== "/login") {
       setLocation("/onboarding");
     }
-  }, [location, setLocation, user, isLoading]);
+  }, [location, setLocation, user, isLoading, firebaseUser]);
 
-  // Show simple loading state
+  // Show loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!firebaseUser) {
+    return <Login />;
+  }
+
+  // Show loading while fetching user data
   if (isLoading || !user) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
@@ -47,6 +80,7 @@ function Router() {
 
   return (
     <Switch>
+      <Route path="/login" component={Login} />
       <Route path="/onboarding" component={Onboarding} />
       <Route path="/" component={Home} />
       <Route path="/training" component={Training} />

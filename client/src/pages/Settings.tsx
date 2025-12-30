@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
 import { Switch } from "@/components/ui/switch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUser } from "@/lib/api";
@@ -9,6 +10,7 @@ import { updateUser } from "@/lib/api";
 export default function Settings() {
   const [, setLocation] = useLocation();
   const { user } = useCurrentUser();
+  const { user: firebaseUser, logOut } = useAuth();
   const queryClient = useQueryClient();
 
   const updateRemindersMutation = useMutation({
@@ -17,6 +19,17 @@ export default function Settings() {
       queryClient.setQueryData(["currentUser"], updatedUser);
     },
   });
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+      localStorage.removeItem("olfly_user_id");
+      queryClient.clear();
+      setLocation("/login");
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   if (!user) return null;
 
@@ -31,15 +44,26 @@ export default function Settings() {
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Account</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
-            <div className="p-4 flex items-center gap-4 border-b border-white/5">
-              <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
-                <User size={18} className="text-[#ac41c3]" />
-              </div>
+            <div className="p-4 flex items-center gap-4">
+              {firebaseUser?.photoURL ? (
+                <img 
+                  src={firebaseUser.photoURL} 
+                  alt="Profile" 
+                  className="w-12 h-12 rounded-full border-2 border-[#ac41c3]"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
+                  <User size={20} className="text-[#ac41c3]" />
+                </div>
+              )}
               <div className="flex-1">
-                <p className="text-white font-medium">{user.name}</p>
-                <p className="text-white/50 text-sm">Edit profile</p>
+                <p className="text-white font-medium text-lg">
+                  {firebaseUser?.displayName || user.name}
+                </p>
+                <p className="text-white/50 text-sm">
+                  {firebaseUser?.email || "Guest account"}
+                </p>
               </div>
-              <ChevronRight size={20} className="text-white/40" />
             </div>
           </div>
         </div>
@@ -119,7 +143,11 @@ export default function Settings() {
         </div>
 
         <div className="pt-4">
-          <button className="w-full p-4 bg-[#3b1645] rounded-2xl flex items-center justify-center gap-3 text-red-400 hover:bg-[#4a1c57] transition-colors">
+          <button 
+            onClick={handleSignOut}
+            className="w-full p-4 bg-[#3b1645] rounded-2xl flex items-center justify-center gap-3 text-red-400 hover:bg-[#4a1c57] transition-colors"
+            data-testid="button-sign-out"
+          >
             <LogOut size={18} />
             <span className="font-medium">Sign Out</span>
           </button>
