@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -52,10 +52,27 @@ import { getUserScents, createSession } from "@/lib/api";
 
 type Phase = "intro" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
+const ROUTINES = {
+  morning: {
+    name: "Morning Reset",
+    scents: ['lemon', 'eucalyptus'],
+    smellDuration: 15,
+  },
+  evening: {
+    name: "Evening Calm", 
+    scents: ['lavender', 'rose'],
+    smellDuration: 20,
+  },
+};
+
 export default function Training() {
   const { user, updateUserAsync } = useCurrentUser();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
+  const searchString = useSearch();
+  const searchParams = new URLSearchParams(searchString);
+  const routineType = searchParams.get('routine') as 'morning' | 'evening' | null;
+  const routine = routineType ? ROUTINES[routineType] : null;
   
   const [phase, setPhase] = useState<Phase>("intro");
   const [showHelp, setShowHelp] = useState(false);
@@ -95,11 +112,18 @@ export default function Training() {
   
   // Default scents for users with no selections
   const defaultScents = ALL_SCENTS.filter((s: Scent) => ['clove', 'lemon', 'eucalyptus', 'rose'].includes(s.id));
-  const trainingScents = sessionScents.length > 0 ? sessionScents : defaultScents;
+  
+  // If routine is selected, use routine-specific scents
+  const routineScents = routine 
+    ? ALL_SCENTS.filter((s: Scent) => routine.scents.includes(s.id))
+    : null;
+  
+  const trainingScents = routineScents || (sessionScents.length > 0 ? sessionScents : defaultScents);
   const activeScent = trainingScents[currentScentIndex] || trainingScents[0];
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? 20 : phase === "rest" ? 10 : 0;
+  const smellDuration = routine?.smellDuration || 20;
+  const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? smellDuration : phase === "rest" ? 10 : 0;
 
   const createSessionMutation = useMutation({
     mutationFn: createSession,
@@ -143,7 +167,7 @@ export default function Training() {
 
   const startSmellPhase = () => {
     setPhase("smell");
-    setTimeLeft(20);
+    setTimeLeft(smellDuration);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('smell'));
   };
@@ -353,12 +377,12 @@ export default function Training() {
            {/* Text Info */}
            <div className="text-center space-y-3">
              <h1 className="text-4xl font-bold text-white tracking-tight" data-testid="text-phase-title">
-               {phase === "intro" ? "Daily Practice" : 
+               {phase === "intro" ? (routine?.name || "Daily Practice") : 
                 phase === "outro" ? "Session Complete!" : 
                 activeScent?.name || ""}
              </h1>
              <p className="text-xl text-white/70 font-medium tracking-wide max-w-xs" data-testid="text-phase-subtitle">
-               {phase === "intro" ? "Ready to start?" : 
+               {phase === "intro" ? (routine ? `${trainingScents.length} scents • ${Math.ceil(trainingScents.length * (smellDuration + 15) / 60)} min` : "Ready to start?") : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
                 phase === "rest" ? "Rest & Reset" : 
