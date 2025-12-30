@@ -7,6 +7,7 @@ import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles,
 import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
+import topMiaImg from '@assets/top-mia.png';
 
 const MOTIVATION_MESSAGES = {
   breathe: [
@@ -312,10 +313,8 @@ export default function Training() {
            {/* Image / Avatar Circle */}
            <div className="relative">
                {(phase === "intro" || phase === "setup") && (
-                  <div className="w-48 h-48 rounded-full border-4 border-[#3b1645] shadow-xl overflow-hidden bg-[#3b1645] p-1">
-                     <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
-                        <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
-                     </div>
+                  <div className="w-48 h-48">
+                     <img src={topMiaImg} alt="Training guide" className="w-full h-full object-contain" />
                   </div>
                )}
                {phase === "outro" && (
