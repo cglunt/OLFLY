@@ -557,6 +557,14 @@ export default function Training() {
                  animate={{ opacity: 1, y: 0 }}
                  className="text-center space-y-4"
                >
+                 {trainingScents[currentScentIndex] && (
+                   <div className="mb-2">
+                     <p className="text-white/50 text-sm mb-1">Next scent</p>
+                     <p className="text-white text-2xl font-bold">
+                       {trainingScents[currentScentIndex].name}
+                     </p>
+                   </div>
+                 )}
                  <div className="flex items-center justify-center gap-2 text-[#6d45d2]">
                    <Wind size={20} />
                    <span className="text-sm font-medium">Breathing guidance</span>
@@ -565,11 +573,6 @@ export default function Training() {
                    <p className="text-white/70 text-sm">Inhale slowly through your nose.</p>
                    <p className="text-white/70 text-sm">Exhale gently through your mouth.</p>
                  </div>
-                 {trainingScents[currentScentIndex] && (
-                   <p className="text-[#ac41c3] text-sm font-medium">
-                     Next scent: {trainingScents[currentScentIndex].name}
-                   </p>
-                 )}
                </motion.div>
            )}
            

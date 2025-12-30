@@ -309,8 +309,10 @@ export default function Onboarding() {
                         To get the most out of smell training, it helps to prepare your scents ahead of time.
                     </p>
                     
-                    <div className="rounded-2xl overflow-hidden mb-4 border border-white/10">
-                        <img src={scentPrepImg} alt="Scent preparation" className="w-full h-48 object-cover" />
+                    <div className="flex justify-center mb-4">
+                        <div className="w-40 h-40 rounded-2xl overflow-hidden border border-white/10">
+                            <img src={scentPrepImg} alt="Scent preparation" className="w-full h-full object-contain bg-[#1a1a2e]" />
+                        </div>
                     </div>
                     
                     <Block className="mb-4 space-y-4">
