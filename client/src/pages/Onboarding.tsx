@@ -272,16 +272,25 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col relative"
+                    className="flex-1 flex flex-col relative overflow-hidden"
                 >
-                    <div className="mb-4">
+                    <motion.img 
+                        src={lowerGinaImg} 
+                        alt="" 
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 0.9 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="absolute -bottom-4 -right-8 w-64 md:w-80 object-contain z-0 pointer-events-none"
+                    />
+                    
+                    <div className="mb-4 relative z-10">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Pick your<br/>sniff schedule</h2>
                         <p className="text-white/70 text-lg leading-relaxed">
                             Choose when you want Olfly to remind you to train.
                         </p>
                     </div>
 
-                    <Block className="mb-4 space-y-4 md:space-y-6">
+                    <Block className="mb-4 space-y-4 md:space-y-6 relative z-10">
                          <div className="flex items-center justify-between">
                             <span className="text-lg md:text-xl font-bold">Reminders</span>
                             <Switch checked={remindersEnabled} onCheckedChange={setRemindersEnabled} className="data-[state=checked]:bg-[#ac41c3]" />
@@ -324,22 +333,13 @@ export default function Onboarding() {
                         )}
                     </Block>
 
-                    <div className="text-center mb-2">
+                    <div className="text-center mb-2 relative z-10">
                         <p className="text-white/60 italic">"Morning sniff or evening sniff. Or both."</p>
                     </div>
                     
-                    <div className="flex-1 flex items-end justify-center overflow-hidden">
-                        <motion.img 
-                            src={lowerGinaImg} 
-                            alt="" 
-                            initial={{ y: 100, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
-                            className="w-48 md:w-56 object-contain"
-                        />
-                    </div>
+                    <div className="flex-1" />
                     
-                    <div className="pb-4 md:pb-0 mt-4">
+                    <div className="pb-4 md:pb-0 relative z-10">
                          <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
@@ -411,9 +411,18 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col py-4"
+                    className="flex-1 flex flex-col py-4 relative overflow-hidden"
                 >
-                    <div className="text-center mb-6">
+                    <motion.img 
+                        src={lowerLiuImg} 
+                        alt="" 
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 0.9 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="absolute -bottom-4 -right-8 w-72 md:w-96 object-contain z-0 pointer-events-none"
+                    />
+                    
+                    <div className="text-center mb-6 relative z-10">
                         <div className="flex justify-center mb-6">
                             <Logo size="xl" />
                         </div>
@@ -428,18 +437,9 @@ export default function Onboarding() {
                         </div>
                     </div>
                     
-                    <div className="flex-1 flex items-end justify-center overflow-hidden">
-                        <motion.img 
-                            src={lowerLiuImg} 
-                            alt="" 
-                            initial={{ y: 100, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
-                            className="w-56 md:w-64 object-contain"
-                        />
-                    </div>
+                    <div className="flex-1" />
                     
-                    <div className="w-full space-y-4 pb-4 md:pb-0 mt-4">
+                    <div className="w-full space-y-4 pb-4 md:pb-0 relative z-10">
                         <div className="text-center">
                             <p className="text-white font-bold text-lg mb-1">"Welcome to the Sniff Squad."</p>
                             <p className="text-white/40 text-sm">Let's begin the great smell comeback.</p>
