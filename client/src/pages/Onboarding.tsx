@@ -448,16 +448,15 @@ export default function Onboarding() {
                                 Stay consistent. Stay patient. Sniff bravely.
                             </p>
                         </div>
+                        <div className="mt-6">
+                            <p className="text-white font-bold text-lg mb-1">"Welcome to the Sniff Squad."</p>
+                            <p className="text-white/40 text-sm">Let's begin the great smell comeback.</p>
+                        </div>
                     </div>
                     
                     <div className="flex-1" />
                     
-                    <div className="w-full space-y-4 pb-4 md:pb-0 relative z-10">
-                        <div className="text-center">
-                            <p className="text-white font-bold text-lg mb-1">"Welcome to the Sniff Squad."</p>
-                            <p className="text-white/40 text-sm">Let's begin the great smell comeback.</p>
-                        </div>
-                        
+                    <div className="w-full pb-4 md:pb-0 relative z-10">
                         <Button 
                             onClick={completeOnboarding}
                             className="w-full h-16 md:h-20 rounded-[2.5rem] bg-white text-black hover:bg-white/90 text-lg md:text-xl font-bold shadow-xl shadow-white/10 transition-transform hover:scale-[1.02]"
