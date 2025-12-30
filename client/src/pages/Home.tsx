@@ -2,19 +2,28 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, Zap, Moon, Activity, Bell, Clock, Package } from "lucide-react";
+import { Play, Zap, Moon, Activity, Bell, Clock, Package, User } from "lucide-react";
 import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071916008.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserSessions, updateUser } from "@/lib/api";
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return "Good Morning";
+  if (hour >= 12 && hour < 17) return "Good Afternoon";
+  if (hour >= 17 && hour < 21) return "Good Evening";
+  return "Good Night";
+}
+
 export default function Home() {
-  const { user } = useCurrentUser();
+  const { user: firebaseUser } = useAuth();
+  const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
   const [, setLocation] = useLocation();
-  const [greeting, setGreeting] = useState("Hello");
+  const [greeting, setGreeting] = useState(getGreeting);
   const queryClient = useQueryClient();
 
   const updateRemindersMutation = useMutation({
@@ -31,10 +40,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good Morning");
-    else if (hour < 18) setGreeting("Good Afternoon");
-    else setGreeting("Good Evening");
+    setGreeting(getGreeting());
   }, []);
 
   if (!user) {
@@ -58,14 +64,22 @@ export default function Home() {
         <header className="flex justify-between items-center pt-4">
           <div className="space-y-1">
             <p className="text-white text-xl font-bold" data-testid="text-greeting">{greeting},</p>
-            <h1 className="text-3xl font-bold text-white tracking-tight" data-testid="text-username">{user.name}</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tight" data-testid="text-username">
+              {firebaseUser?.displayName?.split(' ')[0] || user.name}
+            </h1>
           </div>
           <div className="flex gap-4 items-center">
              <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-12 h-12" data-testid="button-notifications">
                 <Bell className="w-6 h-6" strokeWidth={1.5} />
              </Button>
             <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#ac41c3] shadow-md shadow-black/40">
-              <img src={AVATAR_IMAGE} alt="Profile" className="h-full w-full object-cover" />
+              {firebaseUser?.photoURL ? (
+                <img src={firebaseUser.photoURL} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <div className="h-full w-full bg-[#6d45d2] flex items-center justify-center">
+                  <User size={24} className="text-white" />
+                </div>
+              )}
             </div>
           </div>
         </header>

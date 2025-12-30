@@ -12,52 +12,40 @@ function setStoredUserId(id: string) {
   localStorage.setItem(USER_ID_KEY, id);
 }
 
-async function getOrCreateUser(): Promise<User> {
+async function getOrCreateUser(displayName?: string): Promise<User> {
   const storedId = getStoredUserId();
-  console.log("[useCurrentUser] Starting getOrCreateUser, storedId:", storedId);
   
   if (storedId) {
     try {
       const existingUser = await getUser(storedId);
-      console.log("[useCurrentUser] Found existing user:", existingUser);
       return existingUser;
     } catch (e) {
-      console.log("[useCurrentUser] User not found, clearing storage");
       localStorage.removeItem(USER_ID_KEY);
     }
   }
   
-  console.log("[useCurrentUser] Creating new user");
   const newUser = await createUser({
-    name: "Sherman",
+    name: displayName || "User",
     hasOnboarded: false,
     remindersEnabled: true,
     streak: 0,
   });
-  console.log("[useCurrentUser] Created user:", newUser);
   
-  // Set default scents
   await setUserScents(newUser.id, ['clove', 'lemon', 'eucalyptus', 'rose']);
-  console.log("[useCurrentUser] Set default scents");
-  
-  // Store user ID
   setStoredUserId(newUser.id);
-  console.log("[useCurrentUser] Stored user ID, returning user");
   
   return newUser;
 }
 
-export function useCurrentUser() {
+export function useCurrentUser(displayName?: string) {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, error, status, fetchStatus } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: getOrCreateUser,
+  const { data: user, isLoading, error } = useQuery({
+    queryKey: ["currentUser", displayName],
+    queryFn: () => getOrCreateUser(displayName),
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
-  
-  console.log("[useCurrentUser] Hook state:", { user: user?.id, isLoading, error, status, fetchStatus });
 
   const updateUserMutation = useMutation({
     mutationFn: (updates: Partial<InsertUser>) => {
@@ -65,7 +53,7 @@ export function useCurrentUser() {
       return updateUser(user.id, updates);
     },
     onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["currentUser"], updatedUser);
+      queryClient.setQueryData(["currentUser", displayName], updatedUser);
     },
   });
 
