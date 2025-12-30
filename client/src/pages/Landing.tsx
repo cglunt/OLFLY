@@ -178,15 +178,16 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div className="absolute inset-y-0 left-0 w-1/2 bg-[#0c0c1d] z-0" />
         <div 
-          className="absolute inset-0 z-0"
+          className="absolute inset-y-0 right-0 w-1/2 z-0"
           style={{
             backgroundImage: `url(${phoneLifestyle})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'right center',
+            backgroundPosition: 'center',
           }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/90 to-transparent" />
+        <div className="absolute inset-y-0 left-1/2 w-32 z-10 bg-gradient-to-r from-[#0c0c1d] to-transparent -translate-x-full" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/30" />
         
         <div className="relative z-20 w-full max-w-6xl mx-auto px-6 py-16 md:py-24">
