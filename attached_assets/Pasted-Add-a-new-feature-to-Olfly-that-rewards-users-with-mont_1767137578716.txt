@@ -1,0 +1,208 @@
+Add a new feature to Olfly that rewards users with monthly streak and intensity improvement achievements and allows them to share these achievements on social media as an image card, similar to language learning apps.
+
+1. Achievement System
+
+Implement an achievement engine that evaluates user data daily and unlocks achievements.
+
+Inputs:
+
+Completed sessions by date
+
+Intensity ratings per scent by date
+
+Create achievements:
+A) Streak achievements:
+
+3, 7, 14, 30, 60, 90 day streak
+
+B) Improvement achievements:
+
+First improvement: any scent increases by +1 compared to prior 7 day average
+
+Monthly improvement: percentage increase in average intensity over last 30 days compared to previous 30 days
+
+Personal best: highest average intensity in a 7 day window
+
+Each achievement should include:
+
+id
+
+title
+
+description
+
+category (streak or improvement)
+
+unlockedAt timestamp
+
+shareTemplateType (streak, improvement, milestone)
+
+Store unlocked achievements in local storage:
+
+olflyAchievements
+
+2. UI: Progress Screen Updates
+
+Add a new section on Progress screen:
+
+Title: “Achievements”
+
+Grid of unlocked badges
+
+Locked badges shown as muted silhouettes with “Next up” label
+
+When a new achievement unlocks:
+
+Show a celebration modal
+
+Confetti animation optional
+
+Buttons:
+
+“Share”
+
+“Not now”
+
+3. Share Card Generator
+
+Create a “Share Card” component that renders a square social image (1080x1080).
+
+Design requirements:
+
+Deep purple background #1A0F35
+
+Flat UI cards #2B215B
+
+Accent gradient #DF37FF to #A259FF
+
+Bold headline
+
+Include badge icon
+
+Include user stats
+
+Include small Olfly logo with “OLF” emphasized
+
+Add discreet footer: “Olfly • Wake up your super sniffer”
+
+Create at least 3 templates:
+
+Streak template
+
+Improvement template with sparkline chart
+
+Milestone template
+
+4. Export and Share Functionality
+
+Add functionality to export the share card as an image and trigger share options.
+
+Implementation approach:
+
+Render the share card in an offscreen container
+
+Use html-to-image or similar library to generate PNG
+
+Provide options:
+
+“Download image”
+
+“Copy image”
+
+“Share” using Web Share API if supported
+If Web Share API not available:
+
+fallback to download
+
+5. Data Calculations
+
+Streak logic:
+
+A streak is consecutive days with at least one completed session
+
+Monthly improvement logic:
+
+Compute average intensity for last 30 days
+
+Compute average intensity for previous 30 days
+
+Calculate percent change
+
+If no prior data, show “New baseline month” badge instead
+
+Sparkline:
+
+Use a simple mini line chart based on last 30 days of average intensity
+
+6. Microcopy and Tone
+
+Use friendly language:
+
+“Your nose is leveling up.”
+
+“Consistency pays off.”
+
+“Slow progress is still progress.”
+
+7. Placement in App
+
+Add a “Share progress” button on:
+
+Achievement modal
+
+Progress screen
+
+Session summary screen (if streak or improvement changed)
+
+8. Deliverables
+
+Achievement engine
+
+Progress screen achievements section
+
+Achievement unlock modal
+
+Share card templates
+
+Export to PNG
+
+Share options with fallbacks
+
+Suggested Badge Naming (Fits Olfly Tone)
+
+You can use these immediately:
+
+Streak
+
+“Warm Up” (3 days)
+
+“Getting Serious” (7 days)
+
+“Habit Locked” (14 days)
+
+“Super Sniffer” (30 days)
+
+“Nose Ninja” (60 days)
+
+“Scent Sensei” (90 days)
+
+Improvement
+
+“First Spark”
+
+“Smell Signal Rising”
+
+“New Personal Best”
+
+“Progress You Can Feel”
+
+Quick UX Tip
+
+Do not over-celebrate tiny gains. Celebrate:
+
+streaks
+
+month over month improvement
+
+new personal bests
+That keeps it meaningful and avoids spammy vibes.

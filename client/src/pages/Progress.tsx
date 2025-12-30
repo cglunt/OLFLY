@@ -7,13 +7,17 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
 import { getUserSessions, getUserSymptomLogs, createSymptomLog } from "@/lib/api";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check } from "lucide-react";
+import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Award, Share2, Lock } from "lucide-react";
 import type { Session, SymptomLog } from "@shared/schema";
+import { useAchievements } from "@/hooks/useAchievements";
+import { AchievementModal } from "@/components/AchievementModal";
 
 export default function Progress() {
-  const { user } = useCurrentUser();
+  const { user: firebaseUser } = useAuth();
+  const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
   const queryClient = useQueryClient();
   const [showSymptomForm, setShowSymptomForm] = useState(false);
   const [smellStrength, setSmellStrength] = useState(5);
@@ -21,6 +25,7 @@ export default function Progress() {
   const [distortions, setDistortions] = useState(false);
   const [phantomSmells, setPhantomSmells] = useState(false);
   const [notes, setNotes] = useState("");
+  const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["sessions", user?.id],
@@ -33,6 +38,14 @@ export default function Progress() {
     queryFn: () => getUserSymptomLogs(user!.id),
     enabled: !!user,
   });
+
+  const {
+    unlockedAchievements,
+    lockedAchievements,
+    stats,
+    newAchievement,
+    dismissNewAchievement,
+  } = useAchievements(sessions);
 
   const createLogMutation = useMutation({
     mutationFn: createSymptomLog,
@@ -94,6 +107,8 @@ export default function Progress() {
     return "Every session counts. You've got this!";
   };
 
+  const nextLockedAchievement = lockedAchievements[0];
+
   return (
     <Layout>
       <div className="p-6 pb-24 space-y-8">
@@ -132,6 +147,51 @@ export default function Progress() {
           </CardContent>
           <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
         </Card>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Award size={20} className="text-[#db2faa]" />
+              Achievements
+            </h2>
+            {unlockedAchievements.length > 0 && (
+              <span className="text-sm text-white/60">{unlockedAchievements.length} unlocked</span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-4 gap-3">
+            {unlockedAchievements.slice(0, 4).map((achievement) => (
+              <button
+                key={achievement.id}
+                onClick={() => setSelectedAchievement(achievement)}
+                className="bg-[#3b1645] rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-[#4a1c57] transition-colors"
+                data-testid={`badge-${achievement.id}`}
+              >
+                <span className="text-3xl">{achievement.icon}</span>
+                <span className="text-white text-xs font-medium text-center leading-tight">{achievement.title}</span>
+              </button>
+            ))}
+            
+            {unlockedAchievements.length < 4 && nextLockedAchievement && (
+              <div className="bg-[#3b1645]/50 rounded-2xl p-4 flex flex-col items-center gap-2 opacity-50">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <Lock size={16} className="text-white/40" />
+                </div>
+                <span className="text-white/50 text-xs font-medium text-center">Next up</span>
+              </div>
+            )}
+          </div>
+
+          {unlockedAchievements.length === 0 && (
+            <div className="bg-[#3b1645]/30 rounded-xl p-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-[#3b1645] flex items-center justify-center mx-auto mb-3">
+                <Award size={24} className="text-white/40" />
+              </div>
+              <p className="text-white/60 text-sm">Complete sessions to unlock achievements</p>
+              <p className="text-white/40 text-xs mt-1">Your first badge awaits!</p>
+            </div>
+          )}
+        </div>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
@@ -201,6 +261,17 @@ export default function Progress() {
             </div>
           </div>
         </div>
+
+        {unlockedAchievements.length > 0 && (
+          <Button
+            onClick={() => setSelectedAchievement(unlockedAchievements[0])}
+            className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white rounded-xl h-12 flex items-center gap-2"
+            data-testid="button-share-progress"
+          >
+            <Share2 size={18} />
+            Share Progress
+          </Button>
+        )}
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -342,6 +413,16 @@ export default function Progress() {
           )}
         </div>
       </div>
+
+      <AchievementModal
+        achievement={newAchievement || selectedAchievement}
+        stats={stats}
+        onClose={() => {
+          dismissNewAchievement();
+          setSelectedAchievement(null);
+        }}
+        userName={firebaseUser?.displayName || user?.name}
+      />
     </Layout>
   );
 }
