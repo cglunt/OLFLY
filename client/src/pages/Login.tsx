@@ -28,6 +28,8 @@ export default function Login() {
     }
   };
 
+  console.log("[Login] Rendering, loading:", loading, "isConfigured:", isConfigured);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0c0c1d] flex items-center justify-center">

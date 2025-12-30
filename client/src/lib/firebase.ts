@@ -18,13 +18,23 @@ const isConfigured = !!(
   firebaseConfig.appId
 );
 
+console.log("[Firebase] Config check:", {
+  isConfigured,
+  hasApiKey: !!firebaseConfig.apiKey,
+  hasProjectId: !!firebaseConfig.projectId,
+  hasAppId: !!firebaseConfig.appId,
+});
+
 if (isConfigured) {
   try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    console.log("[Firebase] Initialized successfully");
   } catch (error) {
-    console.error("Firebase initialization error:", error);
+    console.error("[Firebase] Initialization error:", error);
   }
+} else {
+  console.warn("[Firebase] Not configured - missing credentials");
 }
 
 export { auth };
