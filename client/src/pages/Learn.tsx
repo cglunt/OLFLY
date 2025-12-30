@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, ShieldAlert, Sparkles, FileText, Zap, Activity } from "lucide-react";
+import { Brain, ShieldAlert, Sparkles, FileText } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Learn() {
@@ -76,40 +76,18 @@ export default function Learn() {
         {/* Discover Section */}
         <div className="space-y-4">
            <h3 className="text-lg font-bold text-white">Discover</h3>
-           <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6">
-              <div 
-                className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40"
-                onClick={() => setLocation("/article/restoring-smell")}
-                data-testid="card-article-restoring"
-              >
-                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
-                    <FileText size={20} className="text-[#ac41c3]" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Essential Read</p>
-                    <h4 className="font-bold text-white text-base leading-tight">Restoring Your Smell</h4>
-                </div>
-              </div>
-
-              <div className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
-                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
-                    <Zap size={20} className="text-[#db2faa]" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Quick Tip</p>
-                    <h4 className="font-bold text-white text-base leading-tight">Safety First</h4>
-                </div>
-              </div>
-
-              <div className="min-w-[220px] h-[140px] bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40 opacity-70">
-                <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl">
-                    <Activity size={20} className="text-[#db2faa]" />
-                </div>
-                <div>
-                    <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Science</p>
-                    <h4 className="font-bold text-white text-base leading-tight">How Neurons Heal</h4>
-                </div>
-              </div>
+           <div 
+             className="bg-[#3b1645] rounded-2xl p-5 flex flex-col justify-between hover:bg-[#4a1c57] transition-colors cursor-pointer shadow-md shadow-black/40"
+             onClick={() => setLocation("/article/restoring-smell")}
+             data-testid="card-article-restoring"
+           >
+             <div className="p-2 bg-[#ac41c3]/20 w-fit rounded-xl mb-3">
+                 <FileText size={20} className="text-[#ac41c3]" />
+             </div>
+             <div>
+                 <p className="text-xs text-white/70 mb-1 uppercase tracking-wide">Essential Read</p>
+                 <h4 className="font-bold text-white text-base leading-tight">Restoring Your Smell</h4>
+             </div>
            </div>
         </div>
       </div>
