@@ -318,14 +318,14 @@ export default function Training() {
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                           <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 300 300">
                             {/* Track */}
-                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="4" fill="none" />
+                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="10" fill="none" />
                             {/* Progress */}
                             <circle
                               cx="150"
                               cy="150"
                               r={130}
                               stroke="#ac41c3" 
-                              strokeWidth="4"
+                              strokeWidth="10"
                               fill="none"
                               strokeDasharray={2 * Math.PI * 130}
                               strokeDashoffset={2 * Math.PI * 130 - ((totalDuration - timeLeft) / totalDuration) * (2 * Math.PI * 130)}
