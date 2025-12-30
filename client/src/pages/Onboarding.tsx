@@ -280,7 +280,7 @@ export default function Onboarding() {
                         initial={{ y: 100, opacity: 0 }}
                         animate={{ y: 0, opacity: 0.9 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="absolute -bottom-4 -right-8 w-64 md:w-80 object-contain z-0 pointer-events-none"
+                        className="fixed bottom-0 right-0 w-64 md:w-80 object-contain z-0 pointer-events-none"
                     />
                     
                     <div className="mb-4 relative z-10">
@@ -419,7 +419,7 @@ export default function Onboarding() {
                         initial={{ y: 100, opacity: 0 }}
                         animate={{ y: 0, opacity: 0.9 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="absolute -bottom-4 -right-8 w-72 md:w-96 object-contain z-0 pointer-events-none"
+                        className="fixed bottom-0 right-0 w-72 md:w-96 object-contain z-0 pointer-events-none"
                     />
                     
                     <div className="text-center mb-6 relative z-10">
