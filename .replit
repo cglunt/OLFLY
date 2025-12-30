@@ -41,3 +41,10 @@ waitForPort = 5000
 [agent]
 mockupState = "FULLSTACK"
 integrations = ["javascript_database:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+VITE_FIREBASE_API_KEY = "AIzaSyBh7pplXL1xgeDfsjMXAwRFb4-eVd8c-Ic"
+VITE_FIREBASE_PROJECT_ID = "olfly-a7e63"
+VITE_FIREBASE_APP_ID = "1:813167561430:web:c52e88bb414ba71e14d777"
