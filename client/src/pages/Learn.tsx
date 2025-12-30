@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, ShieldAlert, Sparkles, FileText } from "lucide-react";
+import { Brain, ShieldAlert, Sparkles, FileText, Droplets, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Learn() {
@@ -71,6 +71,22 @@ export default function Learn() {
                 </div>
              </div>
           </div>
+        </div>
+
+        {/* Essential Oil Safety Card */}
+        <div 
+          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md"
+          onClick={() => setLocation("/legal/safety")}
+          data-testid="card-safety-link"
+        >
+          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <Droplets size={24} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-bold text-white text-base">Essential Oil Safety</h4>
+            <p className="text-sm text-white/80">Important guidelines for safe use</p>
+          </div>
+          <ChevronRight size={20} className="text-white/70" />
         </div>
 
         {/* Discover Section */}

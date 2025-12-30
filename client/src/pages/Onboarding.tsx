@@ -3,10 +3,13 @@ import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Clock, ArrowRight, HelpCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Clock, ArrowRight, HelpCircle, FileText } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { ALL_SCENTS } from "@/lib/data";
+
+const TERMS_VERSION = "1.0";
 
 import topToddImg from '@assets/Top_Todd@2x_1767069623167.png';
 import topMiaImg from '@assets/Top_Mia@2x_1767069623167.png';
@@ -37,8 +40,12 @@ export default function Onboarding() {
   const [morningTime, setMorningTime] = useState("08:00");
   const [eveningTime, setEveningTime] = useState("20:00");
   const [remindersEnabled, setRemindersEnabled] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(() => {
+    return localStorage.getItem("termsAccepted") === "true" && 
+           localStorage.getItem("termsVersion") === TERMS_VERSION;
+  });
 
-  const totalSteps = 6;
+  const totalSteps = 7;
   const defaultScents = ALL_SCENTS.filter(s => s.isDefault);
 
   const nextStep = () => setStep(s => s + 1);
@@ -56,6 +63,10 @@ export default function Onboarding() {
   
   const completeOnboarding = async () => {
     if (!user) return;
+    
+    localStorage.setItem("termsAccepted", "true");
+    localStorage.setItem("termsAcceptedAt", new Date().toISOString());
+    localStorage.setItem("termsVersion", TERMS_VERSION);
     
     updateUser({
       hasOnboarded: true,
@@ -419,6 +430,65 @@ export default function Onboarding() {
              {step === 6 && (
                 <motion.div
                     key="step6"
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.4 }}
+                    className="flex-1 flex flex-col py-4"
+                >
+                    <div className="flex justify-center mb-6">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] flex items-center justify-center">
+                            <FileText className="w-8 h-8 text-white" />
+                        </div>
+                    </div>
+                    
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">Quick note<br/>before you begin</h2>
+                    
+                    <Block className="mb-6">
+                        <p className="text-white/80 text-base leading-relaxed">
+                            Olfly provides educational and wellness support only. It does not provide medical advice, 
+                            diagnosis, or treatment. If you have questions about symptoms or your health, talk with 
+                            a qualified healthcare professional.
+                        </p>
+                    </Block>
+                    
+                    <div className="flex items-start gap-3 mb-6 px-2">
+                        <Checkbox 
+                            id="terms"
+                            checked={termsAccepted}
+                            onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                            className="mt-1 border-white/30 data-[state=checked]:bg-[#ac41c3] data-[state=checked]:border-[#ac41c3]"
+                            data-testid="checkbox-terms"
+                        />
+                        <label htmlFor="terms" className="text-white/70 text-sm leading-relaxed cursor-pointer">
+                            I understand Olfly is for educational and wellness support only and not medical advice.
+                        </label>
+                    </div>
+                    
+                    <div className="mt-auto space-y-3 pb-4 md:pb-0">
+                        <Button 
+                            onClick={nextStep}
+                            disabled={!termsAccepted}
+                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-testid="button-agree-continue"
+                        >
+                            I agree and continue
+                        </Button>
+                        <button 
+                            onClick={() => setLocation("/legal/terms")}
+                            className="w-full text-center text-white/50 text-sm hover:text-white/70 transition-colors"
+                            data-testid="link-view-terms"
+                        >
+                            View full terms
+                        </button>
+                    </div>
+                </motion.div>
+            )}
+
+            {step === 7 && (
+                <motion.div
+                    key="step7"
                     variants={variants}
                     initial="enter"
                     animate="center"

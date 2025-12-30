@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 
 const MOTIVATION_MESSAGES = {
@@ -66,6 +66,7 @@ export default function Training() {
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [completionMessage, setCompletionMessage] = useState("");
   const [finalStreak, setFinalStreak] = useState(0);
+  const [showSafetyNote, setShowSafetyNote] = useState(false);
   const [phaseMotivation, setPhaseMotivation] = useState("");
 
   const getMotivationMessage = (phaseType: 'breathe' | 'smell' | 'rest') => {
@@ -443,9 +444,32 @@ export default function Training() {
            )}
 
            {phase === "intro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession} data-testid="button-start-training">
-                 Start Training
-               </Button>
+               <>
+                 <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession} data-testid="button-start-training">
+                   Start Training
+                 </Button>
+                 <button 
+                   onClick={() => setShowSafetyNote(!showSafetyNote)}
+                   className="flex items-center justify-center gap-2 text-white/50 text-sm mt-4 mx-auto hover:text-white/70 transition-colors"
+                   data-testid="button-safety-note"
+                 >
+                   <Info size={14} />
+                   <span>Safety note</span>
+                   {showSafetyNote ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                 </button>
+                 {showSafetyNote && (
+                   <motion.div 
+                     initial={{ opacity: 0, height: 0 }}
+                     animate={{ opacity: 1, height: 'auto' }}
+                     className="bg-[#3b1645] rounded-xl p-4 mt-2"
+                   >
+                     <p className="text-white/70 text-sm leading-relaxed">
+                       Use essential oils with care. Do not ingest oils. Avoid direct skin contact unless diluted. 
+                       Keep oils away from children and pets. Stop use if irritation occurs.
+                     </p>
+                   </motion.div>
+                 )}
+               </>
            )}
            
            {phase === "outro" && (

@@ -1,15 +1,17 @@
 import { Link, useLocation } from "wouter";
-import { Home, Wind, BookOpen, BarChart2, GraduationCap } from "lucide-react";
+import { Home, Wind, BookOpen, BarChart2, GraduationCap, ArrowLeft, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: React.ReactNode;
   backgroundOverlay?: React.ReactNode;
+  showBack?: boolean;
+  backPath?: string;
 }
 
-export default function Layout({ children, backgroundOverlay }: LayoutProps) {
-  const [location] = useLocation();
-  const showNav = location !== "/training";
+export default function Layout({ children, backgroundOverlay, showBack, backPath }: LayoutProps) {
+  const [location, setLocation] = useLocation();
+  const showNav = location !== "/training" && !showBack;
 
   return (
     <div className="min-h-screen w-full bg-[#0c0c1d] text-white flex flex-col max-w-md mx-auto shadow-none overflow-hidden relative font-sans">
@@ -21,6 +23,18 @@ export default function Layout({ children, backgroundOverlay }: LayoutProps) {
         <div className="absolute inset-0 z-0 w-full h-full pointer-events-none overflow-hidden">
           {backgroundOverlay}
         </div>
+      )}
+
+      {/* Back Header */}
+      {showBack && (
+        <header className="relative z-10 p-4 flex items-center">
+          <button 
+            onClick={() => setLocation(backPath || "/")}
+            className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+          >
+            <ArrowLeft size={20} className="text-white/70" />
+          </button>
+        </header>
       )}
       
       <main className={cn(
@@ -42,6 +56,7 @@ function BottomNav() {
     { path: "/library", icon: BookOpen, label: "Library" },
     { path: "/progress", icon: BarChart2, label: "Progress" },
     { path: "/learn", icon: GraduationCap, label: "Learn" },
+    { path: "/settings", icon: Settings, label: "Settings" },
   ];
 
   return (

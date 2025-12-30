@@ -1,0 +1,242 @@
+Add Disclaimers and Legal Content Across Olfly
+
+Add a complete “Legal and Disclaimers” system to the Olfly app. Implement both short and full versions of disclaimers, and place them in specific parts of the user experience so they are visible, accessible, and not disruptive.
+
+Use React, React Router, Tailwind, and local storage. Create new routes, components, and UI patterns. Add acceptance tracking.
+
+Goals
+
+Users see a short medical disclaimer during onboarding and at first app use.
+
+Users can access full legal documents anytime from Settings.
+
+Product recommendation screens show affiliate disclosure inline.
+
+Essential oil safety guidance is included in Learn and as a contextual note inside Training.
+
+No guarantee, emergency, and responsibility disclaimers exist in Terms and in key places.
+
+Store user acceptance of terms in local storage with timestamp and version.
+
+1. Create New Routes
+
+Add the following routes:
+
+/legal (Legal hub page)
+
+/legal/terms (Terms of Use)
+
+/legal/privacy (Privacy Policy)
+
+/legal/disclaimers (Disclaimers page)
+
+/legal/affiliate (Affiliate Disclosure)
+
+/legal/safety (Essential Oil Safety)
+
+Add links to these pages from Settings.
+
+2. Add a “Legal” Section in Settings
+
+In the Settings screen, create a “Legal” section with list items:
+
+Terms of Use
+
+Privacy Policy
+
+Medical Disclaimer
+
+Affiliate Disclosure
+
+Essential Oil Safety
+
+Contact and Support
+
+Each item navigates to its respective page.
+
+Also show:
+
+“Terms accepted: Yes or No”
+
+“Accepted on: date”
+
+“Version: v1.0”
+
+Add a “Review terms” button.
+
+3. Add Onboarding Disclaimer Screen and Acceptance
+
+In onboarding, add a screen near the end titled:
+
+Title: “Quick note before you begin”
+Body: short, friendly disclaimer summary.
+Include a checkbox:
+
+“I understand Olfly is for educational and wellness support only and not medical advice.”
+
+Buttons:
+
+Primary: “I agree and continue”
+
+Secondary: “View full terms”
+
+Rules:
+
+Users cannot continue unless they check the box.
+
+Save acceptance in local storage with:
+
+termsAccepted: true
+
+termsAcceptedAt: ISO timestamp
+
+termsVersion: "1.0"
+
+If termsAccepted is false, redirect them to onboarding or the disclaimer screen.
+
+4. Add a First Run Interstitial if Needed
+
+If an existing user bypasses onboarding or loads the app directly:
+
+Show a modal interstitial on app load:
+
+Title: “Before you start”
+
+Short disclaimer
+
+Button: “Review and accept”
+
+Link: “View full terms”
+This should only appear if termsAccepted is not true.
+
+5. Add Contextual Disclaimers in Specific App Areas
+Training Session Screen
+
+Add a small collapsible info link under the session controls:
+
+Label: “Safety note”
+When expanded, show essential oil safety guidance in short form.
+
+Learn Screen
+
+In the Learn section, add a “Safety” card linking to /legal/safety.
+
+Product Recommendations Screen
+
+At the top of the recommended products page, add affiliate disclosure text:
+
+“Some links are affiliate links. We may earn a small commission at no cost to you.”
+
+Make it visually subtle but obvious.
+
+Export Screen or Clinician Export Button
+
+Add a short disclaimer near export:
+
+“This report is informational and not a medical record.”
+
+6. Copy to Implement
+A. Short Medical Disclaimer (Onboarding and modal)
+
+“Olﬂy provides educational and wellness support only. It does not provide medical advice, diagnosis, or treatment. If you have questions about symptoms or your health, talk with a qualified healthcare professional.”
+
+B. No Guarantee Disclaimer (Terms and Disclaimers page)
+
+“Results vary by person. Olfly does not guarantee improvement or restoration of smell or taste.”
+
+C. Emergency Disclaimer (Terms and Disclaimers page)
+
+“Olfly is not for emergency use. If you have severe symptoms or urgent concerns, seek immediate medical care.”
+
+D. Essential Oil Safety (Safety page and Training short form)
+
+“Use essential oils with care. Do not ingest oils. Avoid direct skin contact unless diluted. Keep oils away from children and pets. Stop use if irritation occurs and consult a healthcare professional if needed.”
+
+E. Affiliate Disclosure (Affiliate page and inline on product screen)
+
+“Some product links are affiliate links. If you purchase through these links, we may earn a small commission at no additional cost to you.”
+
+F. Educational Content Disclaimer (Learn and Terms)
+
+“Content in Olfly is informational only and should not be considered medical advice.”
+
+G. User Responsibility (Terms)
+
+“You are responsible for how you use information in the app and for your health decisions. Always consult professionals for medical guidance.”
+
+7. Terms of Use Page Structure
+
+Create a readable Terms of Use page with these sections:
+
+Overview
+
+Medical disclaimer
+
+No guarantee of results
+
+Essential oil safety
+
+Not for emergency use
+
+Affiliate disclosure
+
+User responsibilities
+
+Limitation of liability
+
+Changes to the app and terms
+
+Contact information
+
+Keep it concise, friendly, and readable.
+
+8. Privacy Policy Page Structure
+
+Create a privacy page with these sections:
+
+What data we collect (usage, logs, account data if Google sign in exists)
+
+How we store data (local storage now, future cloud sync optional)
+
+Sharing and third parties (analytics, affiliate links)
+
+User choices (export, delete local data, log out)
+
+Contact for privacy questions
+
+Do not claim HIPAA compliance. Keep it factual.
+
+9. UI Requirements
+
+Match Olfly deep purple flat UI styling
+
+Use clean cards and readable typography
+
+Provide “Back” navigation
+
+Add a sticky bottom button for acceptance screens
+
+Ensure all legal pages are mobile friendly and scrollable
+
+10. Acceptance Versioning
+
+Implement:
+
+termsVersion = "1.0"
+If the version changes later to “1.1”:
+
+force user to reaccept by resetting termsAccepted and showing the modal again.
+
+Deliverables
+
+Updated onboarding flow with acceptance screen
+
+Modal interstitial for first run when terms not accepted
+
+Legal hub and pages
+
+Settings section linking to legal pages
+
+Affiliate disclosure in product area
+
+Safety note in Training
