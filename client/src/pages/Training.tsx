@@ -3,8 +3,41 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star } from "lucide-react";
 import { motion } from "framer-motion";
+
+const MOTIVATION_MESSAGES = {
+  breathe: [
+    "Take a deep, calming breath...",
+    "Clear your mind...",
+    "Prepare your senses...",
+  ],
+  smell: [
+    "Focus on what you smell...",
+    "Notice any subtle sensations...",
+    "You're doing great!",
+  ],
+  rest: [
+    "Excellent! Take a moment...",
+    "Reset your senses...",
+    "Your neurons are reconnecting...",
+  ],
+  completion: [
+    "Amazing work! Every session helps your brain heal.",
+    "You're building new neural pathways!",
+    "Consistency is key - you're doing it!",
+    "Your dedication is inspiring!",
+    "One step closer to full recovery!",
+  ],
+  milestone: {
+    3: "3-day streak! You're building momentum!",
+    7: "One week strong! Your neurons are thanking you!",
+    14: "Two weeks! You're a smell training champion!",
+    30: "One month! Incredible dedication!",
+    60: "Two months! Your persistence is paying off!",
+    90: "Three months! You're a true warrior!",
+  },
+};
 import {
   Dialog,
   DialogContent,
@@ -31,6 +64,23 @@ export default function Training() {
   const [isActive, setIsActive] = useState(false);
   const [currentRating, setCurrentRating] = useState(5);
   const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [completionMessage, setCompletionMessage] = useState("");
+  const [finalStreak, setFinalStreak] = useState(0);
+  const [phaseMotivation, setPhaseMotivation] = useState("");
+
+  const getMotivationMessage = (phaseType: 'breathe' | 'smell' | 'rest') => {
+    const messages = MOTIVATION_MESSAGES[phaseType];
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
+  const getMilestoneMessage = (streak: number): string | null => {
+    const milestones = MOTIVATION_MESSAGES.milestone;
+    const milestone = Object.keys(milestones)
+      .map(Number)
+      .sort((a, b) => b - a)
+      .find(m => streak >= m);
+    return milestone ? milestones[milestone as keyof typeof milestones] : null;
+  };
 
   // Fetch user's active scents
   const { data: userScents = [] } = useQuery({
@@ -77,6 +127,7 @@ export default function Training() {
       startSmellPhase();
     } else if (phase === "smell") {
       setPhase("rate");
+      setPhaseMotivation("");
     } else if (phase === "rest") {
       startSmellPhase();
     }
@@ -86,12 +137,21 @@ export default function Training() {
     setPhase("breathe");
     setTimeLeft(5);
     setIsActive(true);
+    setPhaseMotivation(getMotivationMessage('breathe'));
   };
 
   const startSmellPhase = () => {
     setPhase("smell");
     setTimeLeft(20);
     setIsActive(true);
+    setPhaseMotivation(getMotivationMessage('smell'));
+  };
+
+  const startRestPhase = () => {
+    setPhase("rest");
+    setTimeLeft(10);
+    setIsActive(true);
+    setPhaseMotivation(getMotivationMessage('rest'));
   };
 
   const toggleTimer = () => {
@@ -104,9 +164,7 @@ export default function Training() {
     
     if (currentScentIndex < trainingScents.length - 1) {
       setCurrentScentIndex(prev => prev + 1);
-      setPhase("rest");
-      setTimeLeft(10);
-      setIsActive(true);
+      startRestPhase();
       setCurrentRating(5);
     } else {
       completeSession(newRatings);
@@ -117,6 +175,7 @@ export default function Training() {
     if (!user) return;
 
     setPhase("outro");
+    setPhaseMotivation("");
     
     // Save session to backend
     await createSessionMutation.mutateAsync({
@@ -125,7 +184,7 @@ export default function Training() {
       scentRatings: finalRatings,
     });
 
-    // Update user streak
+    // Calculate new streak
     const today = new Date().toISOString().split('T')[0];
     const lastSessionDate = user.lastSessionDate ? new Date(user.lastSessionDate).toISOString().split('T')[0] : null;
     
@@ -134,10 +193,19 @@ export default function Training() {
       newStreak = user.streak + 1;
     }
 
-    await updateUserAsync({
+    // Update user and get the actual updated streak from the server response
+    const updatedUser = await updateUserAsync({
       streak: newStreak,
       lastSessionDate: new Date().toISOString(),
     } as any);
+
+    // Use the actual streak from the server response
+    const actualStreak = updatedUser?.streak ?? newStreak;
+    setFinalStreak(actualStreak);
+    
+    const milestoneMsg = getMilestoneMessage(actualStreak);
+    const randomCompletion = MOTIVATION_MESSAGES.completion[Math.floor(Math.random() * MOTIVATION_MESSAGES.completion.length)];
+    setCompletionMessage(milestoneMsg || randomCompletion);
   };
 
   // Show loading state while fetching user
@@ -212,13 +280,39 @@ export default function Training() {
           
            {/* Image / Avatar Circle */}
            <div className="relative">
-               {phase === "intro" || phase === "outro" ? (
+               {phase === "intro" && (
                   <div className="w-48 h-48 rounded-full border-4 border-[#3b1645] shadow-xl overflow-hidden bg-[#3b1645] p-1">
                      <div className="w-full h-full rounded-full bg-black/20 flex items-center justify-center overflow-hidden">
                         <img src={AVATAR_IMAGE} className="w-full h-full object-cover opacity-90" />
                      </div>
                   </div>
-               ) : (
+               )}
+               {phase === "outro" && (
+                  <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="relative"
+                  >
+                    <div className="w-48 h-48 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-xl">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 rounded-full"
+                        style={{ background: "conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.1) 25%, transparent 50%)" }}
+                      />
+                      <Award size={64} className="text-white drop-shadow-lg" />
+                    </div>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      transition={{ delay: 0.3 }}
+                      className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-2"
+                    >
+                      <Star size={20} className="text-yellow-700 fill-yellow-600" />
+                    </motion.div>
+                  </motion.div>
+               )}
+               {phase !== "intro" && phase !== "outro" && (
                   <div className="relative w-[280px] h-[280px] flex items-center justify-center">
                        {/* Progress Ring */}
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
@@ -259,17 +353,40 @@ export default function Training() {
            <div className="text-center space-y-3">
              <h1 className="text-4xl font-bold text-white tracking-tight" data-testid="text-phase-title">
                {phase === "intro" ? "Daily Practice" : 
-                phase === "outro" ? "Completed" : 
+                phase === "outro" ? "Session Complete!" : 
                 activeScent?.name || ""}
              </h1>
-             <p className="text-xl text-white/70 font-medium tracking-wide" data-testid="text-phase-subtitle">
+             <p className="text-xl text-white/70 font-medium tracking-wide max-w-xs" data-testid="text-phase-subtitle">
                {phase === "intro" ? "Ready to start?" : 
                 phase === "breathe" ? "Breathe In Slowly" : 
                 phase === "smell" ? "Inhale Scent" : 
                 phase === "rest" ? "Rest & Reset" : 
                 phase === "rate" ? formatTime(timeLeft) :
-                phase === "outro" ? "Great work!" : ""}
+                phase === "outro" ? completionMessage : ""}
              </p>
+             {phase === "outro" && finalStreak > 0 && (
+               <motion.div 
+                 initial={{ opacity: 0, y: 10 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.5 }}
+                 className="flex items-center justify-center gap-2 mt-4"
+               >
+                 <Sparkles size={18} className="text-[#ac41c3]" />
+                 <span className="text-[#ac41c3] font-medium">{finalStreak} day streak!</span>
+                 <Sparkles size={18} className="text-[#ac41c3]" />
+               </motion.div>
+             )}
+             {(phase === "breathe" || phase === "smell" || phase === "rest") && phaseMotivation && (
+               <motion.p
+                 key={phaseMotivation}
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 className="text-[#ac41c3] text-sm font-medium mt-2"
+                 data-testid="text-motivation"
+               >
+                 {phaseMotivation}
+               </motion.p>
+             )}
            </div>
 
            {/* Phase Specific Controls */}
@@ -317,7 +434,7 @@ export default function Training() {
                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
                     setIsActive(false);
                     if (phase === 'breathe') startSmellPhase();
-                    else if (phase === 'smell') setPhase('rate');
+                    else if (phase === 'smell') { setPhase('rate'); setPhaseMotivation(''); }
                     else if (phase === 'rest') startSmellPhase();
                  }} data-testid="button-skip">
                    <SkipForward className="h-6 w-6" />

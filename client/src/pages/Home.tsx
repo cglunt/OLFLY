@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { AVATAR_IMAGE } from "@/lib/data";
 import { useLocation } from "wouter";
-import { Play, FileText, Zap, Moon, Activity, Bell } from "lucide-react";
+import { Play, FileText, Zap, Moon, Activity, Bell, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
-import { useQuery } from "@tanstack/react-query";
-import { getUserSessions } from "@/lib/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getUserSessions, updateUser } from "@/lib/api";
 
 export default function Home() {
   const { user } = useCurrentUser();
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState("Hello");
+  const queryClient = useQueryClient();
+
+  const updateRemindersMutation = useMutation({
+    mutationFn: (enabled: boolean) => updateUser(user!.id, { remindersEnabled: enabled }),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(["currentUser"], updatedUser);
+    },
+  });
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["sessions", user?.id],
@@ -115,6 +124,36 @@ export default function Home() {
                 </div>
              </div>
           </div>
+        </motion.div>
+
+        {/* Reminder Status Card */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-[#3b1645] rounded-2xl p-4 flex items-center justify-between shadow-md shadow-black/40"
+          data-testid="card-reminder-status"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#0c0c1d] flex items-center justify-center">
+              <Clock size={18} className="text-[#ac41c3]" />
+            </div>
+            <div>
+              <p className="text-white font-medium text-sm">Daily Reminders</p>
+              {user.remindersEnabled ? (
+                <p className="text-white/60 text-xs">{user.morningTime} & {user.eveningTime}</p>
+              ) : (
+                <p className="text-white/60 text-xs">Tap to enable</p>
+              )}
+            </div>
+          </div>
+          <Switch
+            checked={user.remindersEnabled}
+            onCheckedChange={(checked) => updateRemindersMutation.mutate(checked)}
+            disabled={updateRemindersMutation.isPending}
+            className="data-[state=checked]:bg-[#ac41c3]"
+            data-testid="switch-reminders"
+          />
         </motion.div>
 
         {/* Top Routines Section - Flat Cards */}

@@ -71,15 +71,7 @@ export default function Progress() {
       };
     });
 
-  const displayData = chartData.length > 1 ? chartData : [
-    { date: 'Mon', intensity: 2 },
-    { date: 'Tue', intensity: 3 },
-    { date: 'Wed', intensity: 4 },
-    { date: 'Thu', intensity: 3.5 },
-    { date: 'Fri', intensity: 5 },
-    { date: 'Sat', intensity: 4.5 },
-    { date: 'Sun', intensity: 5.5 },
-  ];
+  const displayData = chartData;
 
   const avgIntensity = chartData.length > 0 
     ? (chartData.reduce((sum, d) => sum + d.intensity, 0) / chartData.length).toFixed(1)
@@ -146,12 +138,16 @@ export default function Progress() {
             <div className="bg-[#3b1645] px-3 py-1 rounded-lg text-xs font-medium text-white">
               Avg Intensity: {avgIntensity}
             </div>
-            {chartData.length === 0 && (
-              <span className="text-white/40 text-xs">Sample data shown</span>
-            )}
           </div>
 
           <div className="h-[200px] w-full relative bg-[#3b1645] rounded-2xl p-4 shadow-md">
+            {displayData.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center">
+                <TrendingUp size={32} className="text-white/30 mb-3" />
+                <p className="text-white/50 text-sm">No sessions yet</p>
+                <p className="text-white/30 text-xs mt-1">Complete training sessions to see your progress chart</p>
+              </div>
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={displayData}>
                 <defs>
@@ -181,6 +177,7 @@ export default function Progress() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            )}
           </div>
         </div>
 
