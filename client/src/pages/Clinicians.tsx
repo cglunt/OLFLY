@@ -117,7 +117,7 @@ export default function Clinicians() {
   const [email, setEmail] = useState("");
 
   const handleRequestAccess = () => {
-    window.location.href = "mailto:clinicians@olfly.app?subject=Clinician%20Access%20Request";
+    window.location.href = "mailto:support@olfly.app?subject=Clinician%20Access%20Request";
   };
 
   return (
@@ -475,10 +475,10 @@ export default function Clinicians() {
           <div className="max-w-sm mx-auto">
             <p className="text-white/50 text-sm mb-3">Or email us directly</p>
             <a 
-              href="mailto:clinicians@olfly.app" 
+              href="mailto:support@olfly.app" 
               className="text-[#db2faa] hover:underline"
             >
-              clinicians@olfly.app
+              support@olfly.app
             </a>
           </div>
         </motion.div>
