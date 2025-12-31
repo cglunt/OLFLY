@@ -23,10 +23,10 @@ const NAV_LINKS = [
 ];
 
 const SCENTS = [
-  { name: "Clove", color: "from-[#6d45d2] to-[#5a3ab0]" },
-  { name: "Lemon", color: "from-[#8b5cf6] to-[#6d45d2]" },
-  { name: "Rose", color: "from-[#db2faa] to-[#ac41c3]" },
-  { name: "Eucalyptus", color: "from-[#ac41c3] to-[#6d45d2]" },
+  { name: "Clove", emoji: "🌰" },
+  { name: "Lemon", emoji: "🍋" },
+  { name: "Rose", emoji: "🌹" },
+  { name: "Eucalyptus", emoji: "🌿" },
 ];
 
 const FEATURES = [
@@ -411,9 +411,12 @@ export default function Landing() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className={`rounded-2xl p-4 bg-gradient-to-br ${scent.color} relative overflow-hidden`}
+                    className="rounded-2xl p-4 bg-white/95 relative overflow-hidden flex items-center gap-3"
                   >
-                    <span className="text-white font-bold text-lg relative z-10">{scent.name}</span>
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6d45d2]/10 to-[#db2faa]/10 flex items-center justify-center text-xl">
+                      {scent.emoji}
+                    </div>
+                    <span className="text-[#0c0c1d] font-bold text-lg">{scent.name}</span>
                   </motion.div>
                 ))}
               </div>
