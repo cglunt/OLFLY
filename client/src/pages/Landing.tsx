@@ -138,12 +138,14 @@ export default function Landing() {
                 {link.label}
               </button>
             ))}
-            <button
+            <Button
               onClick={() => setLocation("/clinicians")}
-              className="text-[#db2faa] hover:text-[#db2faa]/80 transition-colors text-sm font-medium"
+              variant="outline"
+              className="border-[#db2faa]/50 text-[#db2faa] hover:bg-[#db2faa]/10 rounded-full px-4 py-2 text-sm font-medium"
+              data-testid="nav-clinicians"
             >
               For Clinicians
-            </button>
+            </Button>
           </div>
           
           <div className="hidden md:block">
@@ -179,12 +181,14 @@ export default function Landing() {
                 {link.label}
               </button>
             ))}
-            <button
+            <Button
               onClick={() => setLocation("/clinicians")}
-              className="block text-[#db2faa] hover:text-[#db2faa]/80 transition-colors font-medium w-full text-left py-2"
+              variant="outline"
+              className="w-full border-[#db2faa]/50 text-[#db2faa] hover:bg-[#db2faa]/10 rounded-full font-medium"
+              data-testid="mobile-nav-clinicians"
             >
               For Clinicians
-            </button>
+            </Button>
             <Button
               onClick={() => setLocation("/launch")}
               className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full"
@@ -241,8 +245,11 @@ export default function Landing() {
                   </li>
                 </ul>
 
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs text-white/50 mb-4">
                   Inspired by research-backed smell training protocols used for olfactory recovery.
+                </p>
+                <p className="text-xs text-[#db2faa]/80 mb-6">
+                  Trusted by thousands working on their smell recovery journey.
                 </p>
 
                 <div className="flex flex-wrap gap-4 mb-4">
