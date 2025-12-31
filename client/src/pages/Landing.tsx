@@ -23,10 +23,10 @@ const NAV_LINKS = [
 ];
 
 const SCENTS = [
-  { name: "Clove", color: "from-amber-800 to-amber-900" },
-  { name: "Lemon", color: "from-yellow-400 to-yellow-500" },
-  { name: "Rose", color: "from-pink-400 to-rose-500" },
-  { name: "Eucalyptus", color: "from-green-400 to-emerald-500" },
+  { name: "Clove", color: "from-[#6d45d2] to-[#5a3ab0]" },
+  { name: "Lemon", color: "from-[#8b5cf6] to-[#6d45d2]" },
+  { name: "Rose", color: "from-[#db2faa] to-[#ac41c3]" },
+  { name: "Eucalyptus", color: "from-[#ac41c3] to-[#6d45d2]" },
 ];
 
 const FEATURES = [
