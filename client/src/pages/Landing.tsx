@@ -14,10 +14,10 @@ import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
 import phoneLifestyle from "@/assets/phone-lifestyle.png";
 import topMia from "@/assets/top-mia.png";
-import cloveImg from "@assets/stock_images/clove_spice_7fdd1e63.jpg";
-import lemonImg from "@assets/stock_images/fresh_lemon_citrus_f_253c633b.jpg";
-import roseImg from "@assets/stock_images/red_rose_flower_7cb64045.jpg";
-import eucalyptusImg from "@assets/stock_images/eucalyptus_leaves_pl_81679ded.jpg";
+import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
+import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
+import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
+import eucalyptusImg from "@assets/generated_images/close-up_of_eucalyptus_leaves.png";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
