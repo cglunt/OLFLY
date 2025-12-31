@@ -14,6 +14,10 @@ import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
 import phoneLifestyle from "@/assets/phone-lifestyle.png";
 import topMia from "@/assets/top-mia.png";
+import cloveImg from "@assets/stock_images/clove_spice_7fdd1e63.jpg";
+import lemonImg from "@assets/stock_images/fresh_lemon_citrus_f_253c633b.jpg";
+import roseImg from "@assets/stock_images/red_rose_flower_7cb64045.jpg";
+import eucalyptusImg from "@assets/stock_images/eucalyptus_leaves_pl_81679ded.jpg";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
@@ -23,10 +27,10 @@ const NAV_LINKS = [
 ];
 
 const SCENTS = [
-  { name: "Clove", emoji: "🌰" },
-  { name: "Lemon", emoji: "🍋" },
-  { name: "Rose", emoji: "🌹" },
-  { name: "Eucalyptus", emoji: "🌿" },
+  { name: "Clove", img: cloveImg },
+  { name: "Lemon", img: lemonImg },
+  { name: "Rose", img: roseImg },
+  { name: "Eucalyptus", img: eucalyptusImg },
 ];
 
 const FEATURES = [
@@ -411,10 +415,10 @@ export default function Landing() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="rounded-2xl p-4 bg-white/95 relative overflow-hidden flex items-center gap-3"
+                    className="rounded-2xl p-4 bg-white relative overflow-hidden flex items-center gap-3"
                   >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6d45d2]/10 to-[#db2faa]/10 flex items-center justify-center text-xl">
-                      {scent.emoji}
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[#6d45d2]/20">
+                      <img src={scent.img} alt={scent.name} className="w-full h-full object-cover" />
                     </div>
                     <span className="text-[#0c0c1d] font-bold text-lg">{scent.name}</span>
                   </motion.div>
