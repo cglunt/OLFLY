@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, Sparkles, Timer, BarChart3, Palette,
-  BookOpen, Check, ChevronDown, Shield, Mail, Menu, X, Star
+  BookOpen, Check, ChevronDown, Shield, Mail, Menu, X, Star, Stethoscope, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
@@ -30,12 +30,12 @@ const SCENTS = [
 ];
 
 const FEATURES = [
-  { icon: Timer, title: "Timed sessions", desc: "20 seconds per scent with visual countdown" },
-  { icon: TrendingUp, title: "Progress tracking", desc: "See your improvement over weeks" },
-  { icon: Palette, title: "Custom scents", desc: "Add your own scents to train with" },
-  { icon: BookOpen, title: "Symptom journal", desc: "Track how you're feeling day to day" },
-  { icon: BarChart3, title: "Visual charts", desc: "Beautiful progress visualization" },
-  { icon: Sparkles, title: "Daily streaks", desc: "Stay motivated with consistency tracking" },
+  { icon: Timer, title: "Build a simple daily routine", desc: "Short timed sessions that fit into any schedule" },
+  { icon: TrendingUp, title: "See improvement over time", desc: "Track your progress with visual charts and streaks" },
+  { icon: Palette, title: "Use scents you already have", desc: "Start with household items or essential oils" },
+  { icon: BookOpen, title: "Notice patterns and changes", desc: "Log symptoms and observations day to day" },
+  { icon: BarChart3, title: "Stay motivated with progress", desc: "Beautiful visualization of your journey" },
+  { icon: Sparkles, title: "Stay consistent without overthinking", desc: "Daily streaks and gentle reminders keep you on track" },
 ];
 
 const PRICING = [
@@ -46,7 +46,7 @@ const PRICING = [
     features: [
       "Guided sessions",
       "Classic four scent routine",
-      "Reminders",
+      "Daily reminders",
       "Basic streaks",
       "7 day progress view",
     ],
@@ -86,6 +86,14 @@ const PRICING = [
 
 const FAQS = [
   {
+    q: "Who is smell training for?",
+    a: "Smell training is for anyone experiencing reduced or altered sense of smell. It's commonly used after respiratory infections, post-viral conditions, or other causes of olfactory changes. Consistency is key, and results vary by person."
+  },
+  {
+    q: "How long does it take to see results?",
+    a: "Most people begin noticing changes within 4-12 weeks of consistent daily training. Some may take longer. The key is training twice daily and staying patient with the process."
+  },
+  {
     q: "What is olfactory training?",
     a: "Olfactory training is a rehabilitation technique where you repeatedly smell specific scents to help retrain your brain's smell pathways. It's backed by research and recommended by ENT specialists worldwide."
   },
@@ -106,7 +114,6 @@ const FAQS = [
 export default function Landing() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [email, setEmail] = useState("");
 
   const scrollTo = (id: string) => {
@@ -115,7 +122,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0c1d] text-white font-sans overflow-x-hidden">
+    <main className="min-h-screen bg-[#0c0c1d] text-white font-sans overflow-x-hidden">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-[#0c0c1d]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -131,6 +138,12 @@ export default function Landing() {
                 {link.label}
               </button>
             ))}
+            <button
+              onClick={() => setLocation("/clinicians")}
+              className="text-[#db2faa] hover:text-[#db2faa]/80 transition-colors text-sm font-medium"
+            >
+              For Clinicians
+            </button>
           </div>
           
           <div className="hidden md:block">
@@ -166,6 +179,12 @@ export default function Landing() {
                 {link.label}
               </button>
             ))}
+            <button
+              onClick={() => setLocation("/clinicians")}
+              className="block text-[#db2faa] hover:text-[#db2faa]/80 transition-colors font-medium w-full text-left py-2"
+            >
+              For Clinicians
+            </button>
             <Button
               onClick={() => setLocation("/launch")}
               className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full"
@@ -192,18 +211,41 @@ export default function Landing() {
                   <span className="text-sm text-white/80">Smell training made simple</span>
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
                   Wake up your{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
                     super sniffer.
                   </span>
                 </h1>
                 
-                <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  Guided olfactory training with timers, progress tracking, and daily reminders. Just 20 seconds per scent, twice a day.
+                <p className="text-lg text-white/80 mb-6">
+                  Train and restore your sense of smell with guided daily scent exercises, timers, and progress tracking.
                 </p>
 
-                <div className="flex flex-wrap gap-4 mb-8">
+                <ul className="space-y-2 mb-6 text-white/70">
+                  <li className="flex items-center gap-2">
+                    <Check size={16} className="text-[#db2faa]" />
+                    Guided olfactory training with short timed sessions
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={16} className="text-[#db2faa]" />
+                    Twice-daily routine designed to be simple and consistent
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={16} className="text-[#db2faa]" />
+                    Track streaks, notes, and progress charts
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={16} className="text-[#db2faa]" />
+                    Works with scents you already have at home
+                  </li>
+                </ul>
+
+                <p className="text-xs text-white/50 mb-6">
+                  Inspired by research-backed smell training protocols used for olfactory recovery.
+                </p>
+
+                <div className="flex flex-wrap gap-4 mb-4">
                   <Button
                     onClick={() => setLocation("/launch")}
                     className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
@@ -221,7 +263,7 @@ export default function Landing() {
                 </div>
                 
                 <p className="text-sm text-white/50">
-                  Educational and wellness support only. Not medical advice.
+                  Start free. Upgrade only if it helps.
                 </p>
               </motion.div>
             </div>
@@ -246,10 +288,10 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { value: "2x", label: "Daily sessions" },
-              { value: "20s", label: "Per scent" },
-              { value: "4", label: "Core scents" },
-              { value: "12+", label: "Week program" },
+              { value: "2x", label: "per day" },
+              { value: "20s", label: "per scent" },
+              { value: "4", label: "core scents to start" },
+              { value: "12+", label: "week programs" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -288,18 +330,21 @@ export default function Landing() {
               img: onboarding1, 
               title: "Set your schedule", 
               desc: "Choose morning and evening training times that work for you",
+              outcome: "Build a consistent habit that supports olfactory retraining.",
               step: 1
             },
             { 
               img: session1, 
               title: "Follow guided sessions", 
               desc: "Olfly walks you through each scent with timers and breathing prompts",
+              outcome: "Learn to focus on scent, breathe, and identify notes.",
               step: 2
             },
             { 
               img: statsImg, 
               title: "Track your progress", 
               desc: "See how your smell perception improves over weeks and months",
+              outcome: "See changes over time and stay motivated.",
               step: 3
             },
           ].map((item, i) => (
@@ -322,7 +367,8 @@ export default function Landing() {
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p className="text-white/60">{item.desc}</p>
+              <p className="text-white/60 mb-2">{item.desc}</p>
+              <p className="text-[#db2faa] text-sm font-medium">{item.outcome}</p>
             </motion.div>
           ))}
         </div>
@@ -343,8 +389,11 @@ export default function Landing() {
                   really works
                 </span>
               </h2>
-              <p className="text-white/70 mb-6 text-lg leading-relaxed">
-                Research shows daily scent training helps rebuild neural pathways for smell. Just 20 seconds per scent, twice a day. That's all it takes.
+              <p className="text-white/70 mb-4 text-lg leading-relaxed">
+                Research suggests repeated scent exposure can support olfactory retraining over time. Just 20 seconds per scent, twice a day. That's all it takes.
+              </p>
+              <p className="text-white/50 text-sm mb-6">
+                Results vary, but consistency matters.
               </p>
               
               <div className="grid grid-cols-2 gap-4 mb-8">
@@ -442,7 +491,10 @@ export default function Landing() {
                 Sniff Squad
               </span>
             </h2>
-            <p className="text-white/70 text-lg mb-8 max-w-lg mx-auto">
+            <p className="text-white/70 text-lg mb-2 max-w-lg mx-auto">
+              A supportive space to stay consistent and celebrate progress.
+            </p>
+            <p className="text-white/50 mb-8 max-w-lg mx-auto">
               Stay consistent. Stay patient. Sniff bravely. Olfly is with you every day.
             </p>
             <Button
@@ -462,11 +514,11 @@ export default function Landing() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple pricing</h2>
           <p className="text-white/60 max-w-xl mx-auto">
-            Start free and upgrade when you're ready
+            Start free and upgrade only if you want more guidance and tracking.
           </p>
         </motion.div>
 
@@ -496,7 +548,7 @@ export default function Landing() {
                 {plan.period && <span className="text-white/50">{plan.period}</span>}
               </div>
               
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, fi) => (
                   <li key={fi} className="flex items-start gap-3 text-white/70 text-sm">
                     <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
@@ -504,6 +556,10 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
+
+              {plan.price !== "$0" && (
+                <p className="text-xs text-white/40 mb-4">Cancel anytime. No long-term commitment.</p>
+              )}
 
               <Button
                 onClick={() => setLocation("/launch")}
@@ -519,9 +575,34 @@ export default function Landing() {
           ))}
         </div>
 
-        <p className="text-center text-white/40 text-sm mt-8">
-          Olfly does not guarantee results. Recovery varies by person.
+        <p className="text-center text-white/40 text-xs mt-6">
+          Launch pricing (subject to change). Olfly does not guarantee results.
         </p>
+
+        {/* Clinician Teaser */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 flex flex-col md:flex-row items-center gap-6"
+        >
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6d45d2]/20 to-[#db2faa]/20 flex items-center justify-center shrink-0">
+            <Stethoscope size={32} className="text-[#db2faa]" />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-xl font-bold mb-2">For clinicians and care teams</h3>
+            <p className="text-white/60 text-sm">
+              Support multiple patients with a dashboard, adherence tracking, and exportable progress reports.
+            </p>
+          </div>
+          <Button
+            onClick={() => setLocation("/clinicians")}
+            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-6 whitespace-nowrap"
+          >
+            View clinician plans
+            <ArrowRight size={16} className="ml-2" />
+          </Button>
+        </motion.div>
       </section>
 
       {/* Safety Note */}
@@ -563,39 +644,30 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold">Questions?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Frequently Asked Questions</h2>
         </motion.div>
         
         <div className="space-y-3">
           {FAQS.map((faq, i) => (
-            <motion.div 
+            <motion.details
               key={i}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden"
+              className="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden group"
             >
-              <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full p-5 flex items-center justify-between text-left"
-              >
+              <summary className="w-full p-5 flex items-center justify-between text-left cursor-pointer list-none">
                 <span className="font-medium pr-4">{faq.q}</span>
                 <ChevronDown 
                   size={20} 
-                  className={`text-[#db2faa] shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} 
+                  className="text-[#db2faa] shrink-0 transition-transform group-open:rotate-180" 
                 />
-              </button>
-              {openFaq === i && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  className="px-5 pb-5 text-white/60 text-sm"
-                >
-                  {faq.a}
-                </motion.div>
-              )}
-            </motion.div>
+              </summary>
+              <div className="px-5 pb-5 text-white/60 text-sm">
+                {faq.a}
+              </div>
+            </motion.details>
           ))}
         </div>
       </section>
@@ -612,7 +684,7 @@ export default function Landing() {
             Ready for your smell comeback?
           </h2>
           <p className="text-white/60 mb-8 max-w-md mx-auto">
-            Start free. Stay consistent. Let Olfly guide the routine.
+            Start free and rebuild your sense of smell with simple daily training.
           </p>
           
           <Button
@@ -649,6 +721,7 @@ export default function Landing() {
             <Logo size="sm" />
             
             <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
+              <button onClick={() => setLocation("/clinicians")} className="hover:text-white transition-colors">For Clinicians</button>
               <button onClick={() => setLocation("/legal/terms")} className="hover:text-white transition-colors">Terms</button>
               <button onClick={() => setLocation("/legal/privacy")} className="hover:text-white transition-colors">Privacy</button>
               <button onClick={() => setLocation("/legal/disclaimers")} className="hover:text-white transition-colors">Disclaimers</button>
@@ -662,6 +735,6 @@ export default function Landing() {
           </p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }

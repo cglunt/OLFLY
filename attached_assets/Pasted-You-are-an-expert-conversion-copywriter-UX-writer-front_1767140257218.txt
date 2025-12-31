@@ -1,0 +1,206 @@
+You are an expert conversion copywriter + UX writer + frontend engineer. Update my existing Olfly landing page (dark premium theme) to improve clarity, conversion, and AEO. Keep the current visual style, layout structure, and components, but revise copy and add a few small sections/lines as specified. Do NOT redesign the whole page. Make minimal, high-impact changes.
+
+NEW PRICING REQUIREMENTS (IMPORTANT)
+- Keep the existing consumer pricing grid (Free, Plus, Premium) on the main landing page.
+- Add a clearly visible “For Clinicians” link near the pricing section that routes to a NEW dedicated page.
+- Create a NEW page: /clinicians (or /for-clinicians) that includes:
+  1) A clinician-focused hero with clear value proposition
+  2) A features + pricing tiers comparison table (clinician tiers)
+  3) A short FAQ for clinicians
+  4) A CTA to “Request access” or “Contact” (email capture or mailto is fine for now)
+
+PRICING STRATEGY TO IMPLEMENT
+Consumer plans stay simple:
+- Free
+- Plus (suggested $4.99 to $7.99 / month)
+- Premium (keep current if you prefer, but ensure it’s clearly positioned)
+
+Clinician plans are separate (table format on clinician page):
+- Clinician Starter: $39–$59 / month, up to 10 active patients
+- Clinician Plus: $99–$149 / month, 25–50 active patients
+- Clinic/Enterprise: Custom pricing, unlimited patients, team accounts, advanced export options
+
+Clinician value drivers (must appear on clinician page and in table rows):
+- Clinician dashboard
+- Patient adherence tracking
+- Progress summaries
+- Exportable PDF reports per patient (key differentiator)
+- Program templates (Plus+)
+- Branded exports (Plus+)
+- CSV export or EHR-friendly export (Enterprise)
+- Team accounts (Enterprise)
+
+GOALS
+1) Increase above-the-fold clarity: instantly explain what Olfly does and who it is for.
+2) Improve AEO: add question-style headers and concise answers, and ensure key info is easy for AI/search to extract.
+3) Increase trust and reduce anxiety: add light credibility language and low-risk pricing reassurance.
+4) Reframe features into benefits: “what it does” -> “why it helps”.
+5) Keep the page fast and mobile-friendly.
+
+CONSTRAINTS
+- Preserve dark gradient aesthetic and existing spacing rhythm.
+- Keep the same CTA buttons and general section order.
+- Keep “Wake up your super sniffer.” as the hero headline, but add clarity text beneath it.
+- Avoid long paragraphs. Prefer short lines, bullets, and scannable headers.
+- Do not add external libraries. Use existing styles/components.
+- Add semantic HTML structure: <main>, <section>, <h1>-<h3>, <p>, <ul>/<li>, <details>/<summary> for FAQ.
+- Add basic SEO/AEO metadata in <head>: title, meta description, OpenGraph, and JSON-LD FAQ schema.
+
+ROUTING / NAV REQUIREMENTS
+- Ensure the top nav includes a link: “For Clinicians” that routes to the clinician page.
+- In the pricing section, add a secondary link/button: “Clinician plans” -> /clinicians.
+- If this is a single-page app, implement client-side routing (simple hash routing is fine) OR create a separate HTML page. Choose the simplest approach given the current codebase.
+
+SPECIFIC CHANGES TO IMPLEMENT (LANDING PAGE)
+
+A) HERO (above the fold)
+1) Keep headline: “Wake up your super sniffer.”
+2) Add a plain-language subheadline directly under it (1 sentence):
+   - “Train and restore your sense of smell with guided daily scent exercises, timers, and progress tracking.”
+3) Replace the current hero paragraph with 3 to 5 scannable bullet lines, such as:
+   - Guided olfactory training with short timed sessions
+   - Twice-daily routine designed to be simple and consistent
+   - Track streaks, notes, and progress charts
+   - Works with scents you already have at home
+4) Add one credibility micro-line near the hero stats (small text):
+   - “Inspired by research-backed smell training protocols used for olfactory recovery.”
+5) Add one low-friction reassurance micro-line near the primary CTA:
+   - “Start free. Upgrade only if it helps.”
+
+B) STATS ROW
+Keep the stats, but ensure labels are explicit and consistent:
+- “2x” -> “2x per day”
+- “20s” -> “20 seconds per scent”
+- “4” -> “4 core scents to start”
+- “12+” -> “12+ week programs”
+
+C) “How Olfly works” SECTION
+Keep the 3-step structure and visuals, but add one outcome sentence per step:
+- Step 1: Set your schedule -> “Build a consistent habit that supports olfactory retraining.”
+- Step 2: Follow guided sessions -> “Learn to focus on scent, breathe, and identify notes.”
+- Step 3: Track your progress -> “See changes over time and stay motivated.”
+
+D) “Smell training really works” SECTION
+1) Add one evidence-supporting sentence (simple, non-medical):
+   - “Research suggests repeated scent exposure can support olfactory retraining over time.”
+2) Add a gentle variability disclaimer (1 line):
+   - “Results vary, but consistency matters.”
+
+E) “Everything you need” FEATURE GRID
+Rewrite each card title/subtitle to be benefit-led. Keep the same number of cards and icons.
+Example mappings:
+- Timed sessions -> “Build a simple daily routine”
+- Progress tracking -> “See improvement over time”
+- Custom scents -> “Use scents you already have”
+- Symptom journal -> “Notice patterns and changes”
+- Visual charts -> “Stay motivated with progress”
+- Daily streaks -> “Stay consistent without overthinking”
+Each card: 1 short title + 1 short supporting line (12–16 words max).
+
+F) COMMUNITY SECTION
+Keep “Welcome to the Sniff Squad” but add one clarifying sentence:
+- “A supportive space to stay consistent and celebrate progress.”
+
+G) PRICING SECTION (CONSUMER)
+Keep the 3 tiers and layout, but add:
+1) A short reassurance line above the cards:
+   - “Start free and upgrade only if you want more guidance and tracking.”
+2) A micro-line under paid tiers:
+   - “Cancel anytime. No long-term commitment.”
+3) Ensure tier bullets are short and scannable.
+4) Add subtle note if provisional:
+   - “Launch pricing (subject to change)”
+5) Add a “For Clinicians” teaser below the consumer cards with a link/button:
+   - Title: “For clinicians and care teams”
+   - One sentence: “Support multiple patients with a dashboard, adherence tracking, and exportable progress reports.”
+   - CTA: “View clinician plans” -> /clinicians
+
+H) FAQ SECTION (AEO)
+Keep the existing FAQ accordion, but:
+1) Add two new questions at the top:
+   - “Who is smell training for?”
+   - “How long does it take to see results?”
+2) Answers must be concise (2–4 lines), avoid medical claims, mention variability and consistency.
+3) Implement FAQ with <details>/<summary> for accessibility and AEO.
+4) Add JSON-LD FAQ schema for all FAQ items.
+
+I) FINAL CTA SECTION
+Keep the CTA headline but add a clarity sub-line:
+- “Start free and rebuild your sense of smell with simple daily training.”
+
+TECHNICAL / SEO / AEO UPDATES (LANDING)
+1) <title>: “Olfly | Smell Training App for Guided Daily Olfactory Exercises”
+2) Meta description (150–160 chars) describing what it is and who it helps.
+3) OpenGraph tags (og:title, og:description, og:image placeholder, og:url).
+4) JSON-LD for WebSite + FAQPage.
+5) One H1 only, logical heading hierarchy.
+6) Buttons have accessible labels and aria attributes where needed.
+
+NEW PAGE: /clinicians (or /for-clinicians)
+
+PAGE STRUCTURE
+1) Clinician Hero (H1)
+   - Headline example: “Olfly for Clinicians”
+   - Subheadline: “Support smell training for multiple patients with adherence tracking and exportable progress reports.”
+   - CTA: “Request clinician access” (mailto or simple email form)
+   - Trust micro-line: “Designed for ENT, speech therapy, and care teams.”
+
+2) “What clinicians get” (benefit bullets)
+   - Clinician dashboard for multiple patients
+   - Adherence and session frequency tracking
+   - Progress summaries over time
+   - Exportable PDF progress reports per patient (highlight as key)
+   - Templates for common training programs (Plus+)
+   - Branded exports and CSV/EHR-friendly options (higher tiers)
+
+3) FEATURES + PRICING TABLE (REQUIRED)
+Create a comparison table with rows for features and columns:
+- Starter
+- Plus
+- Clinic/Enterprise
+
+Include rows like:
+- Active patients included
+- Clinician dashboard
+- Patient adherence tracking
+- Progress summaries
+- Exportable PDF reports per patient
+- Program templates
+- Branded PDF exports
+- CSV export / EHR-friendly export
+- Team accounts
+- Priority support
+
+Top row of table includes pricing:
+- Starter: “$39–$59 / month”
+- Plus: “$99–$149 / month”
+- Clinic/Enterprise: “Custom”
+
+Include a short note under table:
+- “Pricing ranges reflect launch pricing and may change.”
+
+4) Clinician FAQ (AEO)
+Use <details>/<summary> and add JSON-LD FAQPage for clinician FAQs too.
+Suggested questions:
+- “What is an active patient?”
+- “Can I export reports for documentation?”
+- “Do patients need their own paid subscription?”
+- “How do I get started as a clinician?”
+
+5) Footer link back to main page: “Back to Olfly home”
+
+SEO / AEO FOR CLINICIAN PAGE
+- Unique <title> and meta description for clinician page
+- OpenGraph tags
+- JSON-LD FAQPage for clinician FAQs
+- Clear headings and concise answers
+
+DELIVERABLE
+- Update existing landing page with the copy/structure changes.
+- Add the new clinician page and link it from nav and pricing section.
+- Implement the clinician pricing/features comparison table.
+- Ensure mobile responsiveness for the table (stack columns, horizontal scroll, or responsive table pattern).
+
+OUTPUT FORMAT
+- Implement changes directly in the codebase (index + routing + clinician page).
+- Keep descriptions brief. Implement first.
