@@ -51,6 +51,15 @@ export const symptomLogs = pgTable("symptom_logs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const contactSubmissions = pgTable("contact_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  subject: text("subject"),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -77,6 +86,11 @@ export const insertSymptomLogSchema = createInsertSchema(symptomLogs).omit({
   createdAt: true,
 });
 
+export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -92,3 +106,6 @@ export type Session = typeof sessions.$inferSelect;
 
 export type InsertSymptomLog = z.infer<typeof insertSymptomLogSchema>;
 export type SymptomLog = typeof symptomLogs.$inferSelect;
+
+export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
+export type ContactSubmission = typeof contactSubmissions.$inferSelect;
