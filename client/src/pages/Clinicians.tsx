@@ -117,7 +117,7 @@ export default function Clinicians() {
   const [email, setEmail] = useState("");
 
   const handleRequestAccess = () => {
-    window.location.href = "mailto:support@olfly.app?subject=Clinician%20Access%20Request";
+    window.open("mailto:support@olfly.app?subject=Clinician%20Access%20Request", "_blank");
   };
 
   return (
