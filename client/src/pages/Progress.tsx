@@ -10,10 +10,10 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { getUserSessions, getUserSymptomLogs, createSymptomLog } from "@/lib/api";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Award, Share2, Lock } from "lucide-react";
+import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Heart, Share2, Sparkles, Calendar, Star } from "lucide-react";
 import type { Session, SymptomLog } from "@shared/schema";
-import { useAchievements } from "@/hooks/useAchievements";
-import { AchievementModal } from "@/components/AchievementModal";
+import { useProgressUpdates } from "@/hooks/useProgressUpdates";
+import { ProgressShareCard } from "@/components/ProgressShareCard";
 
 export default function Progress() {
   const { user: firebaseUser } = useAuth();
@@ -25,7 +25,8 @@ export default function Progress() {
   const [distortions, setDistortions] = useState(false);
   const [phantomSmells, setPhantomSmells] = useState(false);
   const [notes, setNotes] = useState("");
-  const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
+  const [shareCardOpen, setShareCardOpen] = useState(false);
+  const [shareContent, setShareContent] = useState<{ type: 'statement' | 'milestone' | 'moment'; title: string; subtitle?: string } | null>(null);
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["sessions", user?.id],
@@ -40,12 +41,13 @@ export default function Progress() {
   });
 
   const {
-    unlockedAchievements,
-    lockedAchievements,
-    stats,
-    newAchievement,
-    dismissNewAchievement,
-  } = useAchievements(sessions);
+    supportStatements,
+    favoriteStatements,
+    toggleFavorite,
+    journeyMilestones,
+    progressMoments,
+    daysSinceStart,
+  } = useProgressUpdates(sessions);
 
   const createLogMutation = useMutation({
     mutationFn: createSymptomLog,
@@ -70,6 +72,11 @@ export default function Progress() {
       phantomSmells,
       notes: notes || null,
     });
+  };
+
+  const handleShare = (type: 'statement' | 'milestone' | 'moment', title: string, subtitle?: string) => {
+    setShareContent({ type, title, subtitle });
+    setShareCardOpen(true);
   };
 
   const chartData = sessions
@@ -107,7 +114,8 @@ export default function Progress() {
     return "Every session counts. You've got this!";
   };
 
-  const nextLockedAchievement = lockedAchievements[0];
+  const reachedMilestones = journeyMilestones.filter(m => m.reached);
+  const upcomingMilestones = journeyMilestones.filter(m => !m.reached);
 
   return (
     <Layout>
@@ -149,48 +157,138 @@ export default function Progress() {
         </Card>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Award size={20} className="text-[#db2faa]" />
-              Achievements
+              <Sparkles size={20} className="text-[#db2faa]" />
+              Progress Updates
             </h2>
-            {unlockedAchievements.length > 0 && (
-              <span className="text-sm text-white/60">{unlockedAchievements.length} unlocked</span>
-            )}
+            <p className="text-white/50 text-sm mt-1">Gentle check-ins to help you notice progress over time.</p>
           </div>
 
-          <div className="grid grid-cols-4 gap-3">
-            {unlockedAchievements.slice(0, 4).map((achievement) => (
-              <button
-                key={achievement.id}
-                onClick={() => setSelectedAchievement(achievement)}
-                className="bg-[#3b1645] rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-[#4a1c57] transition-colors"
-                data-testid={`badge-${achievement.id}`}
-              >
-                <span className="text-3xl">{achievement.icon}</span>
-                <span className="text-white text-xs font-medium text-center leading-tight">{achievement.title}</span>
-              </button>
-            ))}
-            
-            {unlockedAchievements.length < 4 && nextLockedAchievement && (
-              <div className="bg-[#3b1645]/50 rounded-2xl p-4 flex flex-col items-center gap-2 opacity-50">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                  <Lock size={16} className="text-white/40" />
-                </div>
-                <span className="text-white/50 text-xs font-medium text-center">Next up</span>
-              </div>
-            )}
-          </div>
-
-          {unlockedAchievements.length === 0 && (
-            <div className="bg-[#3b1645]/30 rounded-xl p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-[#3b1645] flex items-center justify-center mx-auto mb-3">
-                <Award size={24} className="text-white/40" />
-              </div>
-              <p className="text-white/60 text-sm">Complete sessions to unlock achievements</p>
-              <p className="text-white/40 text-xs mt-1">Your first badge awaits!</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-white/80 font-medium text-sm">Support statements</h3>
+              <span className="text-white/40 text-xs">Save one that fits today</span>
             </div>
-          )}
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
+              {supportStatements.map((statement, idx) => (
+                <div 
+                  key={idx} 
+                  className="bg-[#3b1645] rounded-xl p-4 min-w-[200px] flex flex-col gap-3 shrink-0"
+                  data-testid={`statement-card-${idx}`}
+                >
+                  <p className="text-white text-sm font-medium leading-relaxed">{statement}</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => toggleFavorite(statement)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
+                        favoriteStatements.includes(statement)
+                          ? 'bg-[#ac41c3] text-white'
+                          : 'bg-white/10 text-white/70 hover:bg-white/20'
+                      }`}
+                      data-testid={`button-save-${idx}`}
+                    >
+                      <Heart size={14} className={favoriteStatements.includes(statement) ? 'fill-current' : ''} />
+                      {favoriteStatements.includes(statement) ? 'Saved' : 'Save'}
+                    </button>
+                    <button
+                      onClick={() => handleShare('statement', statement)}
+                      className="flex-1 py-2 rounded-lg text-xs font-medium bg-white/10 text-white/70 hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
+                      data-testid={`button-share-statement-${idx}`}
+                    >
+                      <Share2 size={14} />
+                      Share
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-white/80 font-medium text-sm flex items-center gap-2">
+                <Calendar size={16} className="text-[#ac41c3]" />
+                Journey milestones
+              </h3>
+              {daysSinceStart > 0 && (
+                <span className="text-white/40 text-xs">Day {daysSinceStart}</span>
+              )}
+            </div>
+            <div className="bg-[#3b1645] rounded-xl p-4 space-y-3">
+              {reachedMilestones.length > 0 ? (
+                reachedMilestones.map((milestone) => (
+                  <div key={milestone.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] flex items-center justify-center">
+                        <Check size={16} className="text-white" />
+                      </div>
+                      <span className="text-white text-sm">{milestone.label}</span>
+                    </div>
+                    <button
+                      onClick={() => handleShare('milestone', milestone.label, `Day ${milestone.days} milestone`)}
+                      className="text-white/40 hover:text-white/70 transition-colors"
+                      data-testid={`button-share-milestone-${milestone.id}`}
+                    >
+                      <Share2 size={16} />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-white/50 text-sm text-center py-2">
+                  Start your first session to begin tracking milestones.
+                </p>
+              )}
+              {upcomingMilestones.length > 0 && reachedMilestones.length > 0 && (
+                <div className="border-t border-white/10 pt-3 mt-3">
+                  <p className="text-white/40 text-xs mb-2">Upcoming</p>
+                  {upcomingMilestones.slice(0, 2).map((milestone) => (
+                    <div key={milestone.id} className="flex items-center gap-3 py-1">
+                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        <Calendar size={14} className="text-white/40" />
+                      </div>
+                      <span className="text-white/40 text-sm">{milestone.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-white/80 font-medium text-sm flex items-center gap-2">
+              <Star size={16} className="text-[#db2faa]" />
+              Progress moments
+            </h3>
+            <p className="text-white/40 text-xs -mt-2">Small changes you might miss.</p>
+            <div className="bg-[#3b1645] rounded-xl p-4 space-y-3">
+              {progressMoments.length > 0 ? (
+                progressMoments.map((moment) => (
+                  <div key={moment.id} className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-white text-sm font-medium">{moment.title}</p>
+                      <p className="text-white/40 text-xs mt-0.5">{moment.detail}</p>
+                    </div>
+                    <button
+                      onClick={() => handleShare('moment', moment.title, moment.detail)}
+                      className="text-white/40 hover:text-white/70 transition-colors shrink-0 mt-0.5"
+                      data-testid={`button-share-moment-${moment.id}`}
+                    >
+                      <Share2 size={16} />
+                    </button>
+                  </div>
+                ))
+              ) : sessions.length === 0 ? (
+                <p className="text-white/50 text-sm text-center py-2">
+                  Start your first session to see progress moments.
+                </p>
+              ) : (
+                <p className="text-white/50 text-sm text-center py-2">
+                  You are building your baseline. Keep going!
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -261,17 +359,6 @@ export default function Progress() {
             </div>
           </div>
         </div>
-
-        {unlockedAchievements.length > 0 && (
-          <Button
-            onClick={() => setSelectedAchievement(unlockedAchievements[0])}
-            className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white rounded-xl h-12 flex items-center gap-2"
-            data-testid="button-share-progress"
-          >
-            <Share2 size={18} />
-            Share Progress
-          </Button>
-        )}
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -414,16 +501,19 @@ export default function Progress() {
         </div>
       </div>
 
-      <AchievementModal
-        achievement={newAchievement || selectedAchievement}
-        stats={stats}
-        onClose={() => {
-          dismissNewAchievement();
-          setSelectedAchievement(null);
-        }}
-        userName={firebaseUser?.displayName || user?.name}
-        soundEnabled={user?.soundEnabled !== false}
-      />
+      {shareContent && (
+        <ProgressShareCard
+          isOpen={shareCardOpen}
+          onClose={() => {
+            setShareCardOpen(false);
+            setShareContent(null);
+          }}
+          type={shareContent.type}
+          title={shareContent.title}
+          subtitle={shareContent.subtitle}
+          soundEnabled={user?.soundEnabled !== false}
+        />
+      )}
     </Layout>
   );
 }

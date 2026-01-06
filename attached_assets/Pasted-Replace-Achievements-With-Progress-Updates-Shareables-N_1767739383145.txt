@@ -1,0 +1,285 @@
+Replace Achievements With “Progress Updates” + Shareables (No Badges)
+
+In Olfly, the Progress screen currently has an “Achievements” section with badges and “Complete sessions to unlock achievements.” I do not want badges. Replace this entire section with a new feature set called Progress Updates, containing:
+
+Support Statements users can optionally share
+
+Journey Milestones based on time since start (not streaks)
+
+Progress Moments that highlight meaningful moments and improvements
+
+Optional share as an image card (download or share)
+
+Match the existing deep purple flat UI.
+
+1. Remove or Rename “Achievements” Section
+Current UI to Change
+
+The “Achievements” title
+
+The locked badge tile (“Next up”)
+
+The purple badge card with “Complete sessions to unlock achievements”
+
+Replace With
+
+A new section titled: Progress Updates
+
+Subtext:
+“Gentle check ins to help you notice progress over time.”
+
+2. Add Three Subsections Under “Progress Updates”
+A) Support Statements (Shareable)
+
+Create a horizontal carousel or stacked cards with short affirmations.
+
+Title: “Support statements”
+Subtitle: “Save one that fits today.”
+
+Examples (include these at minimum):
+
+“Healing is not linear.”
+
+“Small signals matter.”
+
+“Consistency over perfection.”
+
+“Progress can be quiet.”
+
+“Showing up counts.”
+
+Each card should have:
+
+The statement text
+
+Two actions:
+
+“Save” (adds to favorites)
+
+“Share” (opens share modal)
+
+Persist favorites in local storage:
+
+olflyFavoriteStatements: string[]
+
+B) Journey Milestones (Time Based)
+
+Create a milestones block that shows time since the user started smell training.
+
+You need a startDate for the user:
+
+If you already have one, use it
+
+If not, set it the first time they complete a session:
+
+olflyStartDate = ISO timestamp
+
+Display milestones as soft chips or a vertical list.
+
+Milestones:
+
+“7 days since you started”
+
+“30 days since you started”
+
+“3 months into your recovery journey”
+
+“6 months into your recovery journey”
+
+“1 year since you started”
+
+Rules:
+
+These should unlock automatically based on today minus startDate.
+
+Do not show as locked badges.
+
+If not reached, show as “Upcoming” in muted text.
+
+Add a share button:
+
+“Share milestone”
+
+C) Progress Moments (Meaningful Moments, Not Streaks)
+
+Create a block that surfaces meaningful moments based on user logs.
+
+Title: “Progress moments”
+Subtitle: “Small changes you might miss.”
+
+Moments can be generated from:
+
+Session completion data
+
+Intensity ratings
+
+Notes (optional)
+
+Implement at least these moment types:
+
+First notice moment (manual):
+
+After rating a scent above 0 for the first time, show:
+“First time noticing {scent} again.”
+
+Improvement this month (computed):
+
+Compare average intensity for last 30 days vs previous 30 days:
+“Smell clarity increased by {X}% this month.”
+If no previous data:
+“This month you built your baseline.”
+
+Scent specific highlight (computed):
+
+Find which scent increased most in the last 30 days:
+“{Scent} improved the most this month.”
+
+Consistency without streaks:
+
+Based on sessions completed in last 7 or 30 days:
+“Consistency is paying off. You practiced {N} times this month.”
+
+Each moment should show:
+
+Title line (the moment)
+
+Small supporting line: “Based on your recent sessions”
+
+Share button
+
+Persist generated moments:
+
+olflyProgressMoments with fields:
+
+id
+
+type
+
+title
+
+detail
+
+createdAt
+
+dataSnapshot (optional)
+
+3. Share Card Generator (Optional but Recommended)
+
+Implement a share modal that generates a square social image (1080x1080) for:
+
+Support statement
+
+Journey milestone
+
+Progress moment
+
+Design requirements:
+
+Background #1A0F35
+
+Card surface #2B215B
+
+Accent gradient #DF37FF to #A259FF
+
+Large headline text (the statement or moment)
+
+Small footer text:
+“Olfly • Wake up your super sniffer.”
+
+Implement export:
+
+Use html-to-image or dom-to-image to create PNG
+
+Provide actions:
+
+Download image
+
+Share using Web Share API if available
+Fallback to download only.
+
+Do not auto-post. Users choose.
+
+4. Data and Calculation Requirements
+Start Date
+
+Set olflyStartDate on first completed session if missing.
+
+Monthly intensity change
+
+Calculate avg intensity for last 30 days
+
+Calculate avg intensity for previous 30 days
+
+Percent change:
+((current - previous) / max(previous, 1)) * 100
+If previous is 0 or no data:
+
+show baseline message instead of percent.
+
+“First noticing again”
+
+Trigger when:
+
+user rates a scent above 0 AND previously that scent was always 0 or no entries
+
+5. Update the Existing Progress Screen Layout
+
+Current sections include:
+
+“Overview Weekly Analysis” card
+
+“Achievements” section
+
+“Avg Intensity” and empty chart
+
+Update layout to:
+
+Overview card stays
+
+Replace Achievements with Progress Updates
+
+Keep Avg Intensity and chart below
+
+Add a small empty state improvement:
+
+If no sessions yet:
+Show support statements anyway and a gentle prompt:
+“Start your first session to see progress moments.”
+
+6. UX Copy Updates
+
+Replace any badge language with supportive language:
+
+Remove: “unlock achievements”, “your first badge awaits”
+
+Use:
+
+“Notice progress over time”
+
+“Small signals matter”
+
+“You are building your baseline”
+
+7. Deliverables
+
+Removed badge based Achievements UI
+
+New “Progress Updates” section with:
+
+Support Statements (favorite + share)
+
+Journey Milestones (time-based + share)
+
+Progress Moments (generated insights + share)
+
+Optional share image export feature
+
+Local storage persistence for favorites, start date, moments
+
+Extra: Quick Design Notes for the UI You Shared
+
+The “Achievements” header area can remain in the same position, just rename it and swap components.
+
+The locked badge tile should become a “Support statement” card instead.
+
+The large purple unlock card becomes the “Progress moments” container with a calm empty state.
