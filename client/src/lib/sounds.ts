@@ -16,38 +16,43 @@ export function playNotification(soundEnabled: boolean = true) {
   audio.play().catch(() => {});
 }
 
-let restAudio: HTMLAudioElement | null = null;
+let restAudioInstance: HTMLAudioElement | null = null;
 
 export function playRestBreath(soundEnabled: boolean = true): HTMLAudioElement | null {
   if (!soundEnabled) return null;
-  stopRestBreath();
-  restAudio = new Audio(restBreathSound);
-  restAudio.volume = 0.5;
-  restAudio.loop = true;
-  restAudio.play().catch(() => {});
-  return restAudio;
+  
+  if (restAudioInstance) {
+    restAudioInstance.pause();
+    restAudioInstance.currentTime = 0;
+  }
+  
+  restAudioInstance = new Audio(restBreathSound);
+  restAudioInstance.volume = 0.5;
+  restAudioInstance.loop = true;
+  restAudioInstance.play().catch(() => {});
+  return restAudioInstance;
 }
 
 export function pauseRestBreath() {
-  if (restAudio) {
-    restAudio.pause();
+  if (restAudioInstance && !restAudioInstance.paused) {
+    restAudioInstance.pause();
   }
 }
 
 export function resumeRestBreath() {
-  if (restAudio) {
-    restAudio.play().catch(() => {});
+  if (restAudioInstance && restAudioInstance.paused) {
+    restAudioInstance.play().catch(() => {});
   }
 }
 
 export function stopRestBreath() {
-  if (restAudio) {
-    restAudio.pause();
-    restAudio.currentTime = 0;
-    restAudio = null;
+  if (restAudioInstance) {
+    restAudioInstance.pause();
+    restAudioInstance.currentTime = 0;
+    restAudioInstance = null;
   }
 }
 
 export function getRestAudio(): HTMLAudioElement | null {
-  return restAudio;
+  return restAudioInstance;
 }
