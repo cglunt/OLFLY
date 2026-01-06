@@ -12,7 +12,7 @@ export function playChime(soundEnabled: boolean = true) {
 export function playNotification(soundEnabled: boolean = true) {
   if (!soundEnabled) return;
   const audio = new Audio(notificationSound);
-  audio.volume = 0.54;
+  audio.volume = 0.4;
   audio.play().catch(() => {});
 }
 
