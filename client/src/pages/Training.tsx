@@ -183,9 +183,11 @@ export default function Training() {
     setTimeLeft(5);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('breathe'));
+    playRestBreath(user?.soundEnabled !== false);
   };
 
   const startSmellPhase = () => {
+    stopRestBreath();
     setPhase("smell");
     setTimeLeft(smellDuration);
     setIsActive(true);
@@ -205,11 +207,11 @@ export default function Training() {
 
   const toggleTimer = () => {
     if (isActive) {
-      if (phase === "rest") {
+      if (phase === "breathe" || phase === "rest") {
         pauseRestBreath();
       }
     } else {
-      if (phase === "rest") {
+      if (phase === "breathe" || phase === "rest") {
         resumeRestBreath();
       }
     }
