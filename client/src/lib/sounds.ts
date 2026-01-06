@@ -27,7 +27,7 @@ export function playRestBreath(soundEnabled: boolean = true): HTMLAudioElement |
   }
   
   restAudioInstance = new Audio(restBreathSound);
-  restAudioInstance.volume = 0.5;
+  restAudioInstance.volume = 0.25;
   restAudioInstance.loop = true;
   restAudioInstance.play().catch(() => {});
   return restAudioInstance;
