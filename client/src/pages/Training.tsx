@@ -182,7 +182,9 @@ export default function Training() {
     setTimeLeft(smellDuration);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('smell'));
-    playChime(user?.soundEnabled !== false);
+    setTimeout(() => {
+      playChime(user?.soundEnabled !== false);
+    }, 2000);
   };
 
   const startRestPhase = () => {
