@@ -25,7 +25,6 @@ import CookiePolicy from "@/pages/CookiePolicy";
 import Login from "@/pages/Login";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
-import { TermsModal } from "@/components/TermsModal";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
@@ -129,7 +128,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <TermsModal />
         <CookieConsentBanner />
         <Router />
       </TooltipProvider>
