@@ -28,7 +28,12 @@ Preferred communication style: Simple, everyday language.
 - **Database**: PostgreSQL via Neon serverless
 - **ORM**: Drizzle ORM with drizzle-zod for schema validation
 - **Schema Location**: `shared/schema.ts` contains all table definitions
-- **Tables**: users, userScents, sessions, symptomLogs
+- **Tables**: users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions
+
+### Audio
+- **Training Sounds**: Chime sound plays when smell phase begins (toggleable via Settings)
+- **Sound File**: `client/src/assets/sounds/chime.mp3`
+- **Attribution**: Sound by Gigi De La Ro from Pixabay (shown in Legal page)
 
 ### Key Design Patterns
 - **Shared Schema**: Database types and Zod schemas in `shared/` directory accessible by both client and server

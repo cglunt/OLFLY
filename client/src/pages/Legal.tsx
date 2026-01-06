@@ -72,6 +72,15 @@ export default function Legal() {
             </div>
           </div>
         </div>
+
+        <div className="bg-[#3b1645] rounded-2xl p-5 space-y-3">
+          <h3 className="text-white font-bold">Attribution</h3>
+          <div className="space-y-2 text-sm text-white/60">
+            <p>
+              Training chime sound by <a href="https://pixabay.com/users/gigidelaro-46661168/" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Gigi De La Ro</a> from <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Pixabay</a>.
+            </p>
+          </div>
+        </div>
       </div>
     </Layout>
   );

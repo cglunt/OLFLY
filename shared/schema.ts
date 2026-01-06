@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   name: text("name").notNull().default('Guest'),
   hasOnboarded: boolean("has_onboarded").notNull().default(false),
   remindersEnabled: boolean("reminders_enabled").notNull().default(true),
+  soundEnabled: boolean("sound_enabled").notNull().default(true),
   morningTime: text("morning_time").default('08:00'),
   eveningTime: text("evening_time").default('20:00'),
   streak: integer("streak").notNull().default(0),
@@ -89,6 +90,8 @@ export const insertSymptomLogSchema = createInsertSchema(symptomLogs).omit({
 export const insertContactSubmissionSchema = createInsertSchema(contactSubmissions).omit({
   id: true,
   createdAt: true,
+}).extend({
+  subject: z.string().optional().nullable(),
 });
 
 // Types

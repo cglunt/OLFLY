@@ -1,4 +1,4 @@
-import { users, userScents, sessions, symptomLogs, scentCollections, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection } from "@shared/schema";
+import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
@@ -33,6 +33,9 @@ export interface IStorage {
   // Symptom log operations
   createSymptomLog(log: InsertSymptomLog): Promise<SymptomLog>;
   getUserSymptomLogs(userId: string, limit?: number): Promise<SymptomLog[]>;
+  
+  // Contact submissions
+  createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -206,6 +209,15 @@ export class DatabaseStorage implements IStorage {
       .where(eq(symptomLogs.userId, userId))
       .orderBy(desc(symptomLogs.createdAt))
       .limit(limit);
+  }
+
+  // Contact submissions
+  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+    const [newSubmission] = await db
+      .insert(contactSubmissions)
+      .values(submission)
+      .returning();
+    return newSubmission;
   }
 }
 

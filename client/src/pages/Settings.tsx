@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Volume2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
@@ -206,6 +206,26 @@ export default function Settings() {
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Preferences</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
+            <div className="p-4 flex items-center gap-4 border-b border-white/5">
+              <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
+                <Volume2 size={18} className="text-[#ac41c3]" />
+              </div>
+              <div className="flex-1">
+                <p className="text-white font-medium">Training Sounds</p>
+                <p className="text-white/50 text-sm">Play chime during sniffing phase</p>
+              </div>
+              <Switch
+                checked={user.soundEnabled ?? true}
+                onCheckedChange={async (checked) => {
+                  if (user) {
+                    const updated = await updateUser(user.id, { soundEnabled: checked });
+                    queryClient.setQueryData(queryKey, updated);
+                  }
+                }}
+                className="data-[state=checked]:bg-[#ac41c3]"
+                data-testid="switch-sound"
+              />
+            </div>
             <div 
               className="p-4 flex items-center gap-4 cursor-pointer hover:bg-[#4a1c57] transition-colors"
               onClick={handleReplayOnboarding}

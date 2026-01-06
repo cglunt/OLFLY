@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema, insertScentCollectionSchema } from "@shared/schema";
+import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema, insertScentCollectionSchema, insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(
@@ -212,6 +212,17 @@ export async function registerRoutes(
       res.json(logs);
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  // Contact form submission
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const submissionData = insertContactSubmissionSchema.parse(req.body);
+      const submission = await storage.createContactSubmission(submissionData);
+      res.json({ success: true, id: submission.id });
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : "Invalid contact data" });
     }
   });
 
