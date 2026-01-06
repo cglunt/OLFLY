@@ -80,6 +80,9 @@ export default function Legal() {
               Training chime sound by <a href="https://pixabay.com/users/gigidelaro-46661168/" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Gigi De La Ro</a> from <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Pixabay</a>.
             </p>
             <p>
+              Rest phase sound by <a href="https://pixabay.com/users/gigidelaromusic-51134264/" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Gigi De La Ro</a> from <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Pixabay</a>.
+            </p>
+            <p>
               Notification sound by <a href="https://pixabay.com/users/koiroylers-44305058/" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Koi Roylers</a> from <a href="https://pixabay.com" target="_blank" rel="noopener noreferrer" className="text-[#ac41c3] hover:underline">Pixabay</a>.
             </p>
           </div>

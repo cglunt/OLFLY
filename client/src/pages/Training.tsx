@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
 import topMiaImg from '@assets/top-mia.png';
-import { playChime, playNotification } from '@/lib/sounds';
+import { playChime, playNotification, playRestBreath, stopRestBreath, pauseRestBreath, resumeRestBreath } from '@/lib/sounds';
 
 const MOTIVATION_MESSAGES = {
   breathe: [
@@ -140,6 +140,13 @@ export default function Training() {
     },
   });
 
+  // Cleanup rest audio on unmount
+  useEffect(() => {
+    return () => {
+      stopRestBreath();
+    };
+  }, []);
+
   // Timer Logic
   useEffect(() => {
     if (isActive && timeLeft > 0) {
@@ -162,6 +169,7 @@ export default function Training() {
       setPhase("rate");
       setPhaseMotivation("");
     } else if (phase === "rest") {
+      stopRestBreath();
       beginTraining();
     }
   };
@@ -192,9 +200,19 @@ export default function Training() {
     setTimeLeft(10);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('rest'));
+    playRestBreath(user?.soundEnabled !== false);
   };
 
   const toggleTimer = () => {
+    if (isActive) {
+      if (phase === "rest") {
+        pauseRestBreath();
+      }
+    } else {
+      if (phase === "rest") {
+        resumeRestBreath();
+      }
+    }
     setIsActive(!isActive);
   };
 
@@ -214,6 +232,7 @@ export default function Training() {
   const completeSession = async (finalRatings: Record<string, number>) => {
     if (!user) return;
 
+    stopRestBreath();
     setPhase("outro");
     setPhaseMotivation("");
     playNotification(user?.soundEnabled !== false);
