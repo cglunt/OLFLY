@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { getUserSessions, getUserSymptomLogs, createSymptomLog } from "@/lib/api";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Heart, Share2, Sparkles, Calendar, Star } from "lucide-react";
+import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Share2, Sparkles, Calendar, Star } from "lucide-react";
 import type { Session, SymptomLog } from "@shared/schema";
 import { useProgressUpdates } from "@/hooks/useProgressUpdates";
 import { ProgressShareCard } from "@/components/ProgressShareCard";
@@ -42,12 +42,14 @@ export default function Progress() {
 
   const {
     supportStatements,
-    favoriteStatements,
-    toggleFavorite,
     journeyMilestones,
     progressMoments,
     daysSinceStart,
   } = useProgressUpdates(sessions);
+
+  const randomAffirmation = useMemo(() => {
+    return supportStatements[Math.floor(Math.random() * supportStatements.length)];
+  }, [supportStatements]);
 
   const createLogMutation = useMutation({
     mutationFn: createSymptomLog,
@@ -166,42 +168,14 @@ export default function Progress() {
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-white/80 font-medium text-sm">Support statements</h3>
-              <span className="text-white/40 text-xs">Save one that fits today</span>
-            </div>
-            <div className="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
-              {supportStatements.map((statement, idx) => (
-                <div 
-                  key={idx} 
-                  className="bg-[#3b1645] rounded-xl p-4 min-w-[200px] flex flex-col gap-3 shrink-0"
-                  data-testid={`statement-card-${idx}`}
-                >
-                  <p className="text-white text-sm font-medium leading-relaxed">{statement}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => toggleFavorite(statement)}
-                      className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
-                        favoriteStatements.includes(statement)
-                          ? 'bg-[#ac41c3] text-white'
-                          : 'bg-white/10 text-white/70 hover:bg-white/20'
-                      }`}
-                      data-testid={`button-save-${idx}`}
-                    >
-                      <Heart size={14} className={favoriteStatements.includes(statement) ? 'fill-current' : ''} />
-                      {favoriteStatements.includes(statement) ? 'Saved' : 'Save'}
-                    </button>
-                    <button
-                      onClick={() => handleShare('statement', statement)}
-                      className="flex-1 py-2 rounded-lg text-xs font-medium bg-white/10 text-white/70 hover:bg-white/20 transition-colors flex items-center justify-center gap-1"
-                      data-testid={`button-share-statement-${idx}`}
-                    >
-                      <Share2 size={14} />
-                      Share
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <h3 className="text-white/80 font-medium text-sm">Affirmations</h3>
+            <div 
+              className="bg-[#3b1645] rounded-xl p-4"
+              data-testid="affirmation-card"
+            >
+              <p className="text-white text-sm font-medium leading-relaxed text-center italic">
+                "{randomAffirmation}"
+              </p>
             </div>
           </div>
 

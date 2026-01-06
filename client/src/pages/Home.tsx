@@ -196,7 +196,7 @@ export default function Home() {
         />
 
         <motion.a
-          href="https://olfly.com/starter-kit"
+          href="https://amzn.to/4jqeXZo"
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 10 }}
