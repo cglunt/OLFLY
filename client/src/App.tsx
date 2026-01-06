@@ -21,11 +21,14 @@ import Disclaimers from "@/pages/Disclaimers";
 import Affiliate from "@/pages/Affiliate";
 import Safety from "@/pages/Safety";
 import Contact from "@/pages/Contact";
+import CookiePolicy from "@/pages/CookiePolicy";
 import Login from "@/pages/Login";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { TermsModal } from "@/components/TermsModal";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { useEffect } from "react";
+import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
   const [location, setLocation] = useLocation();
@@ -111,17 +114,23 @@ function Router() {
       <Route path="/legal/affiliate" component={Affiliate} />
       <Route path="/legal/safety" component={Safety} />
       <Route path="/legal/contact" component={Contact} />
+      <Route path="/cookie-policy" component={CookiePolicy} />
       {!isLegalRoute && <Route component={NotFound} />}
     </Switch>
   );
 }
 
 function App() {
+  useEffect(() => {
+    initializeTrackers();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <TermsModal />
+        <CookieConsentBanner />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

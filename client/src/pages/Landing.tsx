@@ -3,10 +3,11 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, Sparkles, Timer, BarChart3, Palette,
-  BookOpen, Check, ChevronDown, Shield, Mail, Menu, X, Star, Stethoscope, ArrowRight
+  BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { CookieSettingsButton } from "@/components/CookieConsentBanner";
 
 import onboarding1 from "@/assets/onboarding1.jpg";
 import onboarding2 from "@/assets/onboarding2.jpg";
@@ -619,37 +620,7 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      {/* Safety Note */}
-      <section className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 flex gap-4">
-          <Shield size={24} className="text-[#6d45d2] shrink-0" />
-          <div>
-            <h3 className="font-bold mb-2">Safety first</h3>
-            <p className="text-white/60 text-sm mb-4">
-              Essential oils are for smelling only. Do not ingest. Stop if irritation occurs. Consult a healthcare professional for health questions.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                onClick={() => setLocation("/legal/safety")}
-                variant="outline"
-                size="sm"
-                className="border-white/20 text-white hover:bg-white/10 rounded-full text-xs"
-              >
-                Safety Guide
-              </Button>
-              <Button
-                onClick={() => setLocation("/legal/disclaimers")}
-                variant="outline"
-                size="sm"
-                className="border-white/20 text-white hover:bg-white/10 rounded-full text-xs"
-              >
-                Medical Disclaimer
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      
       {/* FAQ */}
       <section id="faq" className="max-w-3xl mx-auto px-6 py-20">
         <motion.div
@@ -737,14 +708,17 @@ export default function Landing() {
             <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
               <button onClick={() => setLocation("/clinicians")} className="hover:text-white transition-colors">For Clinicians</button>
               <button onClick={() => setLocation("/legal/terms")} className="hover:text-white transition-colors">Terms</button>
-              <button onClick={() => setLocation("/legal/privacy")} className="hover:text-white transition-colors">Privacy</button>
+              <button onClick={() => setLocation("/legal/privacy")} className="hover:text-white transition-colors">Privacy Policy</button>
+              <button onClick={() => setLocation("/cookie-policy")} className="hover:text-white transition-colors">Cookie Policy</button>
               <button onClick={() => setLocation("/legal/disclaimers")} className="hover:text-white transition-colors">Disclaimers</button>
-              <button onClick={() => setLocation("/legal/affiliate")} className="hover:text-white transition-colors">Affiliate</button>
               <button onClick={() => setLocation("/legal/contact")} className="hover:text-white transition-colors">Contact</button>
             </div>
           </div>
           
-          <p className="text-center text-white/30 text-xs mt-8">
+          <div className="flex justify-center mt-6">
+            <CookieSettingsButton />
+          </div>
+          <p className="text-center text-white/30 text-xs mt-4">
             Olfly provides educational and wellness support only. Not medical advice.
           </p>
         </div>
