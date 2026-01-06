@@ -187,7 +187,6 @@ export default function Training() {
   };
 
   const startSmellPhase = () => {
-    stopRestBreath();
     setPhase("smell");
     setTimeLeft(smellDuration);
     setIsActive(true);
@@ -207,11 +206,11 @@ export default function Training() {
 
   const toggleTimer = () => {
     if (isActive) {
-      if (phase === "breathe" || phase === "rest") {
+      if (phase === "breathe" || phase === "smell" || phase === "rest") {
         pauseRestBreath();
       }
     } else {
-      if (phase === "breathe" || phase === "rest") {
+      if (phase === "breathe" || phase === "smell" || phase === "rest") {
         resumeRestBreath();
       }
     }
@@ -425,6 +424,7 @@ export default function Training() {
                 phase === "setup" ? "Get your scents ready" :
                 phase === "outro" ? "Session Complete!" : 
                 phase === "rest" ? "Rest and reset" :
+                phase === "breathe" ? `Next: ${activeScent?.name || ""}` :
                 activeScent?.name || ""}
              </h1>
              <p className="text-xl text-white/70 font-medium tracking-wide max-w-xs" data-testid="text-phase-subtitle">
