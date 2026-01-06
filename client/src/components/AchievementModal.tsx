@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Share2, Copy, X, Check } from 'lucide-react';
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { StreakShareCard, ImprovementShareCard, MilestoneShareCard } from './ShareCard';
 import type { UnlockedAchievement, AchievementStats } from '@/lib/achievements';
+import { playNotification } from '@/lib/sounds';
 
 interface AchievementModalProps {
   achievement: UnlockedAchievement | null;
@@ -17,10 +18,24 @@ interface AchievementModalProps {
   userName?: string;
 }
 
-export function AchievementModal({ achievement, stats, onClose, userName }: AchievementModalProps) {
+export function AchievementModal({ achievement, stats, onClose, userName, soundEnabled = true }: AchievementModalProps & { soundEnabled?: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [hasPlayedSound, setHasPlayedSound] = useState(false);
+
+  useEffect(() => {
+    if (achievement && !hasPlayedSound) {
+      playNotification(soundEnabled);
+      setHasPlayedSound(true);
+    }
+  }, [achievement, hasPlayedSound, soundEnabled]);
+
+  useEffect(() => {
+    if (!achievement) {
+      setHasPlayedSound(false);
+    }
+  }, [achievement]);
 
   if (!achievement) return null;
 
@@ -102,6 +117,7 @@ export function AchievementModal({ achievement, stats, onClose, userName }: Achi
         text: achievement.description,
         files: [file],
       });
+      playNotification(soundEnabled);
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         handleDownload();

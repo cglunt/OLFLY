@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
 import topMiaImg from '@assets/top-mia.png';
-import chimeSound from '@assets/sounds/chime.mp3';
+import { playChime, playNotification } from '@/lib/sounds';
 
 const MOTIVATION_MESSAGES = {
   breathe: [
@@ -182,11 +182,7 @@ export default function Training() {
     setTimeLeft(smellDuration);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('smell'));
-    if (user?.soundEnabled !== false) {
-      const audio = new Audio(chimeSound);
-      audio.volume = 0.5;
-      audio.play().catch(() => {});
-    }
+    playChime(user?.soundEnabled !== false);
   };
 
   const startRestPhase = () => {
@@ -218,6 +214,7 @@ export default function Training() {
 
     setPhase("outro");
     setPhaseMotivation("");
+    playNotification(user?.soundEnabled !== false);
     
     // Save session to backend
     await createSessionMutation.mutateAsync({

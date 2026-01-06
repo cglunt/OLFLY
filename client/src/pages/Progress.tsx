@@ -422,6 +422,7 @@ export default function Progress() {
           setSelectedAchievement(null);
         }}
         userName={firebaseUser?.displayName || user?.name}
+        soundEnabled={user?.soundEnabled !== false}
       />
     </Layout>
   );

@@ -10,6 +10,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { ALL_SCENTS } from "@/lib/data";
 import { useQueryClient } from "@tanstack/react-query";
+import { playNotification } from "@/lib/sounds";
 
 const TERMS_VERSION = "1.0";
 
@@ -86,6 +87,7 @@ export default function Onboarding() {
       });
       
       queryClient.setQueryData(queryKey, updatedUser);
+      playNotification(user?.soundEnabled !== false);
       setLocation("/launch");
     } catch (error) {
       console.error("Failed to complete onboarding:", error);
