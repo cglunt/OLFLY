@@ -14,6 +14,7 @@ import onboarding2 from "@/assets/onboarding2.jpg";
 import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
 import lowerGina from "@assets/Lower_Gina@2x_1767069623166.png";
+import heroBanner from "@assets/Minimal_Photocentric_Job_Hunting_Blog_Banner_1767828340768.jpg";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
@@ -282,13 +283,13 @@ export default function Landing() {
             <div className="hidden md:block absolute top-0 bottom-0 -right-48 w-48 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/60 to-transparent z-30" />
           </div>
           
-          {/* Gradient Column */}
-          <div 
-            className="relative flex-1 md:basis-1/2 min-h-[50vh] md:min-h-0"
-            style={{
-              background: 'radial-gradient(circle at center, #db2faa 0%, #6d45d2 30%, #3b1645 60%, #0c0c1d 100%)',
-            }}
-          >
+          {/* Image Column */}
+          <div className="relative flex-1 md:basis-1/2 min-h-[50vh] md:min-h-0">
+            <img 
+              src={heroBanner} 
+              alt="Olfly app in use"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/20" />
           </div>
         </div>
