@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useLocation } from "wouter";
-import { Play, Zap, Moon, Activity, Bell, Clock, Package, User } from "lucide-react";
+import { Play, Zap, Activity, Bell, Clock, Package, User, Sparkles } from "lucide-react";
 import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071916008.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -219,10 +219,7 @@ export default function Home() {
         </motion.a>
 
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-             <h2 className="text-xl font-bold text-white">Top Routines</h2>
-             <span className="text-sm text-[#db2faa] font-medium cursor-pointer hover:text-[#ac41c3]">See All</span>
-          </div>
+          <h2 className="text-xl font-bold text-white">Top Routines</h2>
           
           <div className="space-y-4">
             <motion.div 
@@ -236,22 +233,22 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-white text-lg">Morning Reset</h3>
-                <p className="text-sm text-white/70">Lemon & Eucalyptus • 5 Min</p>
+                <p className="text-sm text-white/70">Lemon & Eucalyptus • 1 Min</p>
               </div>
             </motion.div>
 
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              onClick={() => setLocation("/launch/training?routine=evening")}
+              onClick={() => setLocation("/launch/training?routine=baseline")}
               className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
-              data-testid="card-routine-evening"
+              data-testid="card-routine-baseline"
             >
               <div className="h-12 w-12 rounded-full bg-[#3b1645] flex items-center justify-center text-[#db2faa] shrink-0 border border-white/5">
-                <Moon size={20} fill="currentColor" />
+                <Sparkles size={20} />
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white text-lg">Evening Calm</h3>
-                <p className="text-sm text-white/70">Lavender & Rose • 10 Min</p>
+                <h3 className="font-bold text-white text-lg">Baseline</h3>
+                <p className="text-sm text-white/70">Rose, Lemon, Eucalyptus & Clove • 2 Min</p>
               </div>
             </motion.div>
           </div>

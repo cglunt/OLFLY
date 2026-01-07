@@ -67,12 +67,12 @@ const ROUTINES = {
   morning: {
     name: "Morning Reset",
     scents: ['lemon', 'eucalyptus'],
-    smellDuration: 15,
+    smellDuration: 10,
   },
-  evening: {
-    name: "Evening Calm", 
-    scents: ['lavender', 'rose'],
-    smellDuration: 20,
+  baseline: {
+    name: "Baseline", 
+    scents: ['rose', 'lemon', 'eucalyptus', 'clove'],
+    smellDuration: 10,
   },
 };
 
@@ -82,7 +82,7 @@ export default function Training() {
   const [, setLocation] = useLocation();
   const searchString = useSearch();
   const searchParams = new URLSearchParams(searchString);
-  const routineType = searchParams.get('routine') as 'morning' | 'evening' | null;
+  const routineType = searchParams.get('routine') as 'morning' | 'baseline' | null;
   const routine = routineType ? ROUTINES[routineType] : null;
   
   const [phase, setPhase] = useState<Phase>("intro");
