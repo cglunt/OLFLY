@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2 } from 'lucide-react';
+import { X, Download, Share2, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
 import { playNotification } from '@/lib/sounds';
+import illustrationImage from '@assets/generated_images/woman_smelling_cup_illustration.png';
 
 interface ProgressShareCardProps {
   isOpen: boolean;
@@ -101,38 +102,83 @@ export function ProgressShareCard({
             <div className="flex justify-center mb-4 overflow-hidden rounded-xl">
               <div 
                 ref={cardRef}
-                className="w-[270px] h-[270px] flex flex-col items-center justify-center p-8 text-center"
+                className="w-[270px] h-[270px] relative overflow-hidden"
                 style={{
-                  background: 'linear-gradient(135deg, #1A0F35 0%, #2B215B 100%)',
+                  background: '#0c0c1d',
                 }}
               >
-                <div 
-                  className="flex-1 flex items-center justify-center"
-                  style={{ maxWidth: '90%' }}
-                >
-                  <p 
-                    className="font-bold text-white leading-tight"
-                    style={{ 
-                      fontSize: title.length > 50 ? '16px' : title.length > 30 ? '20px' : '24px' 
-                    }}
-                  >
-                    {title}
-                  </p>
-                </div>
-                {subtitle && (
-                  <p className="text-white/60 text-xs mt-2">{subtitle}</p>
-                )}
-                <div className="mt-auto pt-4">
-                  <p 
-                    className="text-xs font-medium"
-                    style={{
-                      background: 'linear-gradient(90deg, #DF37FF, #A259FF)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    Olfly • Wake up your super sniffer
-                  </p>
+                <div className="absolute inset-0 flex flex-col">
+                  <div className="flex flex-col items-center pt-6 px-4 z-10">
+                    <div className="relative mb-2">
+                      <div 
+                        className="w-10 h-10 rounded-full"
+                        style={{
+                          background: 'radial-gradient(circle at center, #0c0c1d 30%, #6d45d2 60%, #db2faa 100%)',
+                          boxShadow: '0 0 20px rgba(109, 69, 210, 0.5)',
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-0.5 mb-3">
+                      <span 
+                        className="text-sm font-bold"
+                        style={{
+                          background: 'linear-gradient(90deg, #6d45d2, #9b6dff)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}
+                      >
+                        OLF
+                      </span>
+                      <span className="text-sm font-bold text-white/90">LY</span>
+                    </div>
+                    
+                    <h2 
+                      className="text-white font-black text-center leading-none"
+                      style={{
+                        fontSize: title.length > 30 ? '22px' : title.length > 20 ? '26px' : '32px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '-0.02em',
+                      }}
+                    >
+                      {title}
+                    </h2>
+                    
+                    {subtitle && (
+                      <p 
+                        className="text-white/60 text-xs mt-1.5 uppercase tracking-widest"
+                      >
+                        {subtitle}
+                      </p>
+                    )}
+                    
+                    {!subtitle && (
+                      <p className="text-white/60 text-xs mt-1.5 uppercase tracking-widest">
+                        Smell Training
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 relative mt-2">
+                    <img 
+                      src={illustrationImage} 
+                      alt="" 
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-auto object-cover object-top"
+                      style={{
+                        maxHeight: '140px',
+                        maskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="absolute bottom-3 right-3 flex items-center gap-1 z-10">
+                    <span className="text-white/80 text-xs font-semibold uppercase tracking-wide">Share</span>
+                    <div className="flex -space-x-1">
+                      <ChevronRight size={12} className="text-white/80" />
+                      <ChevronRight size={12} className="text-white/60" />
+                      <ChevronRight size={12} className="text-white/40" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
