@@ -4,7 +4,9 @@ import { X, Download, Share2, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
 import { playNotification } from '@/lib/sounds';
-import illustrationImage from '@assets/generated_images/woman_smelling_cup_illustration.png';
+import topMiaImg from '@assets/top-mia.png';
+import lowerGinaImg from '@assets/Lower_Gina@2x_1767069623166.png';
+import lowerLiuImg from '@assets/Lower_Liu@2x_1767069623166.png';
 
 interface ProgressShareCardProps {
   isOpen: boolean;
@@ -160,13 +162,12 @@ export function ProgressShareCard({
                   
                   <div className="flex-1 relative mt-2">
                     <img 
-                      src={illustrationImage} 
+                      src={[topMiaImg, lowerGinaImg, lowerLiuImg][Math.floor(Date.now() / 1000) % 3]} 
                       alt="" 
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-auto object-cover object-top"
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 h-auto object-contain"
                       style={{
-                        maxHeight: '140px',
-                        maskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
-                        WebkitMaskImage: 'linear-gradient(to top, black 70%, transparent 100%)',
+                        maxHeight: '130px',
+                        width: 'auto',
                       }}
                     />
                   </div>
