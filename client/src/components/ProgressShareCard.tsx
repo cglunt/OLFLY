@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2, ChevronRight } from 'lucide-react';
+import { X, Download, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
 import { playNotification } from '@/lib/sounds';
-import topMiaImg from '@assets/top-mia.png';
+import lowerGinaImg from '@assets/Lower_Gina@2x_1767069623166.png';
 
 interface ProgressShareCardProps {
   isOpen: boolean;
@@ -134,19 +134,17 @@ export function ProgressShareCard({
                 {subtitle || 'Smell Training'}
               </p>
               
-              <div className="flex items-center gap-2 mt-8">
-                <span className="text-white/80 text-sm font-semibold uppercase tracking-wide">Share</span>
-                <div className="flex -space-x-1.5">
-                  <ChevronRight size={16} className="text-white/80" />
-                  <ChevronRight size={16} className="text-white/60" />
-                  <ChevronRight size={16} className="text-white/40" />
-                </div>
-              </div>
+              <button 
+                className="mt-8 px-8 py-3 bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-full text-white font-semibold text-sm uppercase tracking-wide flex items-center gap-2"
+              >
+                <Share2 size={16} />
+                Share
+              </button>
             </div>
             
             <div className="flex-1 flex items-end justify-center pb-0 overflow-hidden">
               <img 
-                src={topMiaImg} 
+                src={lowerGinaImg} 
                 alt="" 
                 className="h-auto object-contain"
                 style={{
