@@ -130,9 +130,18 @@ export function ProgressShareCard({
                 {title}
               </h2>
               
-              <p className="text-white/60 text-lg uppercase tracking-[0.3em]">
+              <p className="text-white/60 text-base mt-2">
                 {subtitle || 'Smell Training'}
               </p>
+              
+              <div className="flex items-center gap-2 mt-8">
+                <span className="text-white/80 text-sm font-semibold uppercase tracking-wide">Share</span>
+                <div className="flex -space-x-1.5">
+                  <ChevronRight size={16} className="text-white/80" />
+                  <ChevronRight size={16} className="text-white/60" />
+                  <ChevronRight size={16} className="text-white/40" />
+                </div>
+              </div>
             </div>
             
             <div className="flex-1 flex items-end justify-center pb-0 overflow-hidden">
@@ -145,15 +154,6 @@ export function ProgressShareCard({
                   width: 'auto',
                 }}
               />
-            </div>
-            
-            <div className="absolute bottom-6 right-6 flex items-center gap-2">
-              <span className="text-white/80 text-sm font-semibold uppercase tracking-wide">Share</span>
-              <div className="flex -space-x-1.5">
-                <ChevronRight size={16} className="text-white/80" />
-                <ChevronRight size={16} className="text-white/60" />
-                <ChevronRight size={16} className="text-white/40" />
-              </div>
             </div>
           </div>
 

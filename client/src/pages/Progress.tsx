@@ -183,7 +183,7 @@ export default function Progress() {
                       <span className="text-white text-sm">{milestone.label}</span>
                     </div>
                     <button
-                      onClick={() => handleShare('milestone', milestone.label, `Day ${milestone.days} milestone`)}
+                      onClick={() => handleShare('milestone', milestone.label, `${milestone.days} days of smell training`)}
                       className="text-white/40 hover:text-white/70 transition-colors"
                       data-testid={`button-share-milestone-${milestone.id}`}
                     >
@@ -227,7 +227,7 @@ export default function Progress() {
                       <p className="text-white/40 text-xs mt-0.5">{moment.detail}</p>
                     </div>
                     <button
-                      onClick={() => handleShare('moment', moment.title, moment.detail)}
+                      onClick={() => handleShare('moment', moment.title, 'Smell training progress')}
                       className="text-white/40 hover:text-white/70 transition-colors shrink-0 mt-0.5"
                       data-testid={`button-share-moment-${moment.id}`}
                     >
