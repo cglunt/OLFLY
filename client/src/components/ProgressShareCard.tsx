@@ -135,7 +135,8 @@ export function ProgressShareCard({
               </p>
               
               <button 
-                className="mt-8 px-8 py-3 bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-full text-white font-semibold text-sm uppercase tracking-wide flex items-center gap-2"
+                onClick={handleShare}
+                className="mt-8 px-8 py-3 bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-full text-white font-semibold text-sm uppercase tracking-wide flex items-center gap-2 hover:opacity-90 transition-opacity"
               >
                 <Share2 size={16} />
                 Share
