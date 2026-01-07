@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,15 +41,10 @@ export default function Progress() {
   });
 
   const {
-    supportStatements,
     journeyMilestones,
     progressMoments,
     daysSinceStart,
   } = useProgressUpdates(sessions);
-
-  const randomAffirmation = useMemo(() => {
-    return supportStatements[Math.floor(Math.random() * supportStatements.length)];
-  }, [supportStatements]);
 
   const createLogMutation = useMutation({
     mutationFn: createSymptomLog,
@@ -165,18 +160,6 @@ export default function Progress() {
               Progress Updates
             </h2>
             <p className="text-white/50 text-sm mt-1">Gentle check-ins to help you notice progress over time.</p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-white/80 font-medium text-sm">Affirmations</h3>
-            <div 
-              className="bg-[#3b1645] rounded-xl p-4"
-              data-testid="affirmation-card"
-            >
-              <p className="text-white text-sm font-medium leading-relaxed text-center italic">
-                "{randomAffirmation}"
-              </p>
-            </div>
           </div>
 
           <div className="space-y-3">
