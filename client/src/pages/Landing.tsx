@@ -14,7 +14,7 @@ import onboarding2 from "@/assets/onboarding2.jpg";
 import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
 import lowerGina from "@assets/Lower_Gina@2x_1767069623166.png";
-import heroBanner from "@assets/Minimal_Photocentric_Job_Hunting_Blog_Banner_1767828340768.jpg";
+import heroBanner from "@assets/HeroBackground_1767828614804.jpg";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
