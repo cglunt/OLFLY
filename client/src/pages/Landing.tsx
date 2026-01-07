@@ -14,7 +14,7 @@ import onboarding2 from "@/assets/onboarding2.jpg";
 import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
 import lowerGina from "@assets/Lower_Gina@2x_1767069623166.png";
-import heroBanner from "@assets/HeroBackground_(1)_1767828865023.jpg";
+import heroBanner from "@assets/HeroBackground_(2)_1767828974681.jpg";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
@@ -260,7 +260,7 @@ export default function Landing() {
                 <div className="flex flex-wrap gap-4 mb-4">
                   <Button
                     onClick={() => setLocation("/launch")}
-                    className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
+                    className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-3 text-lg shadow-lg shadow-[#6d45d2]/30"
                     data-testid="hero-cta"
                   >
                     Start free
@@ -268,7 +268,7 @@ export default function Landing() {
                   <Button
                     onClick={() => scrollTo("how-it-works")}
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 py-6 text-lg"
+                    className="border-white/30 text-white hover:bg-white/10 rounded-full px-8 py-3 text-lg"
                   >
                     See how it works
                   </Button>
@@ -514,7 +514,7 @@ export default function Landing() {
             </p>
             <Button
               onClick={() => setLocation("/launch")}
-              className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg"
+              className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-3 text-lg"
               data-testid="button-begin-training"
             >
               Begin training
@@ -578,7 +578,7 @@ export default function Landing() {
 
               <Button
                 onClick={() => setLocation("/launch")}
-                className={`w-full rounded-full font-bold py-6 ${
+                className={`w-full rounded-full font-bold py-3 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
                     : "bg-white/10 hover:bg-white/20 text-white"
@@ -674,7 +674,7 @@ export default function Landing() {
           
           <Button
             onClick={() => setLocation("/launch")}
-            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg mb-8 shadow-lg shadow-[#6d45d2]/30"
+            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-3 text-lg mb-8 shadow-lg shadow-[#6d45d2]/30"
             data-testid="final-cta"
           >
             Start free
