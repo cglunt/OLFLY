@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ALL_SCENTS, Scent } from "@/lib/data";
-import { Search, Check, X, Sparkles, Plus, Sun, Moon, Leaf, Snowflake, Flower2, TreeDeciduous, MoreHorizontal, Trash2, Star } from "lucide-react";
+import { Search, Check, X, Sparkles, Plus, Leaf, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -20,17 +20,7 @@ import {
 } from "@/components/ui/dialog";
 
 const MAX_SCENTS = 4;
-
-const CONTEXT_OPTIONS = [
-  { id: 'default', name: 'Default', icon: Star, description: 'Your main collection' },
-  { id: 'morning', name: 'Morning', icon: Sun, description: 'Fresh start scents' },
-  { id: 'evening', name: 'Evening', icon: Moon, description: 'Relaxing wind-down' },
-  { id: 'spring', name: 'Spring', icon: Flower2, description: 'Seasonal renewal' },
-  { id: 'summer', name: 'Summer', icon: Sun, description: 'Bright and warm' },
-  { id: 'fall', name: 'Fall', icon: TreeDeciduous, description: 'Cozy autumn vibes' },
-  { id: 'winter', name: 'Winter', icon: Snowflake, description: 'Warm winter scents' },
-  { id: 'custom', name: 'Custom', icon: Leaf, description: 'Your personal mix' },
-];
+const BASELINE_SCENT_IDS = ['rose', 'lemon', 'eucalyptus', 'clove'];
 
 export default function Library() {
   const { user } = useCurrentUser();
@@ -41,7 +31,6 @@ export default function Library() {
   const [activeCollectionId, setActiveCollectionId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
-  const [newCollectionContext, setNewCollectionContext] = useState("custom");
 
   const { data: collections = [] } = useQuery({
     queryKey: ["collections", user?.id],
@@ -59,9 +48,21 @@ export default function Library() {
       setActiveCollectionId(newCollection.id);
       setIsCreating(false);
       setNewCollectionName("");
-      toast({ title: "Collection created!", description: `${newCollection.name} is ready to customize.` });
+      toast({ title: "New collection saved", description: `${newCollection.name} is ready to customize.` });
     },
   });
+
+  useEffect(() => {
+    if (user && collections.length === 0) {
+      createCollectionMutation.mutate({
+        userId: user.id,
+        name: "Baseline",
+        context: "default",
+        scentIds: BASELINE_SCENT_IDS,
+        isActive: true,
+      });
+    }
+  }, [user, collections.length]);
 
   const updateCollectionMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: Partial<ScentCollection> }) => 
@@ -129,9 +130,9 @@ export default function Library() {
     createCollectionMutation.mutate({
       userId: user.id,
       name: newCollectionName.trim(),
-      context: newCollectionContext,
+      context: "custom",
       scentIds: [],
-      isActive: collections.length === 0,
+      isActive: false,
     });
   };
 
@@ -143,11 +144,6 @@ export default function Library() {
   const handleDelete = () => {
     if (!activeCollection) return;
     deleteCollectionMutation.mutate(activeCollection.id);
-  };
-
-  const getContextIcon = (context: string) => {
-    const option = CONTEXT_OPTIONS.find(o => o.id === context);
-    return option?.icon || Leaf;
   };
 
   if (!user) {
@@ -188,31 +184,14 @@ export default function Library() {
                     value={newCollectionName}
                     onChange={(e) => setNewCollectionName(e.target.value)}
                     className="bg-[#3b1645] border-transparent text-white"
+                    data-testid="input-collection-name"
                   />
-                  <div className="grid grid-cols-2 gap-2">
-                    {CONTEXT_OPTIONS.map(option => {
-                      const Icon = option.icon;
-                      return (
-                        <button
-                          key={option.id}
-                          onClick={() => setNewCollectionContext(option.id)}
-                          className={cn(
-                            "p-3 rounded-xl flex items-center gap-2 transition-colors text-left",
-                            newCollectionContext === option.id
-                              ? "bg-[#ac41c3] text-white"
-                              : "bg-[#3b1645] text-white/70 hover:bg-[#4a1c57]"
-                          )}
-                        >
-                          <Icon size={18} />
-                          <span className="text-sm font-medium">{option.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <p className="text-white/50 text-sm">You can select up to 4 scents after creating the collection.</p>
                   <Button 
                     onClick={handleCreateCollection}
                     disabled={!newCollectionName.trim()}
                     className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white"
+                    data-testid="button-create-collection"
                   >
                     Create Collection
                   </Button>
@@ -225,7 +204,6 @@ export default function Library() {
           {collections.length > 0 ? (
             <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-6 px-6 pb-2">
               {collections.map(collection => {
-                const Icon = getContextIcon(collection.context);
                 const isSelected = collection.id === (activeCollection?.id);
                 return (
                   <button
@@ -239,7 +217,7 @@ export default function Library() {
                     )}
                     data-testid={`button-collection-${collection.id}`}
                   >
-                    <Icon size={16} />
+                    <Leaf size={16} />
                     <span className="font-medium">{collection.name}</span>
                     {collection.isActive && (
                       <span className="w-2 h-2 rounded-full bg-green-400" />
@@ -265,10 +243,7 @@ export default function Library() {
           <div className="bg-gradient-to-br from-[#3b1645] to-[#2a1033] rounded-2xl p-5 space-y-4 border border-[#ac41c3]/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {(() => {
-                  const Icon = getContextIcon(activeCollection.context);
-                  return <Icon size={18} className="text-[#ac41c3]" />;
-                })()}
+                <Leaf size={18} className="text-[#ac41c3]" />
                 <h2 className="font-bold text-white">{activeCollection.name}</h2>
                 {activeCollection.isActive && (
                   <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">Active</span>

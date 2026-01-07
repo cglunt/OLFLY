@@ -52,7 +52,14 @@ import {
 } from "@/components/ui/dialog";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getActiveCollection, createSession } from "@/lib/api";
+import { createSession, getUserCollections, activateCollection } from "@/lib/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Phase = "intro" | "setup" | "breathe" | "smell" | "rest" | "rate" | "outro";
 
@@ -104,14 +111,38 @@ export default function Training() {
     return milestone ? milestones[milestone as keyof typeof milestones] : null;
   };
 
-  // Fetch user's active collection
-  const { data: activeCollection } = useQuery({
-    queryKey: ["activeCollection", user?.id],
-    queryFn: () => getActiveCollection(user!.id),
+  // Fetch all user collections
+  const { data: allCollections = [] } = useQuery({
+    queryKey: ["collections", user?.id],
+    queryFn: () => getUserCollections(user!.id),
     enabled: !!user,
   });
 
-  const activeScentIds = activeCollection?.scentIds || [];
+  // Find the active collection
+  const activeCollection = allCollections.find(c => c.isActive) || allCollections[0];
+  const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
+  
+  // Use selected collection or fall back to active collection
+  const currentCollection = selectedCollectionId 
+    ? allCollections.find(c => c.id === selectedCollectionId) 
+    : activeCollection;
+
+  const activateCollectionMutation = useMutation({
+    mutationFn: ({ userId, collectionId }: { userId: string; collectionId: string }) =>
+      activateCollection(userId, collectionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections", user?.id] });
+    },
+  });
+
+  const handleCollectionChange = (collectionId: string) => {
+    setSelectedCollectionId(collectionId);
+    if (user) {
+      activateCollectionMutation.mutate({ userId: user.id, collectionId });
+    }
+  };
+
+  const activeScentIds = currentCollection?.scentIds || [];
   const sessionScents = ALL_SCENTS.filter((s: Scent) => activeScentIds.includes(s.id));
   
   // Default scents for users with no selections or incomplete collection
@@ -119,7 +150,7 @@ export default function Training() {
   
   // Only use user's collection if they have exactly 4 scents selected
   const hasCompleteCollection = sessionScents.length === 4;
-  const collectionName = activeCollection?.name || null;
+  const collectionName = currentCollection?.name || null;
   
   // If routine is selected, use routine-specific scents
   const routineScents = routine 
@@ -516,21 +547,52 @@ export default function Training() {
 
            {phase === "intro" && (
                <>
-                 {/* Collection indicator */}
-                 <div className="flex items-center justify-center gap-2 text-white/60 text-sm mb-2">
-                   <span>{hasCompleteCollection ? (collectionName ? `Using "${collectionName}"` : "Using your collection") : "Using default set"}</span>
-                   <span className="text-white/40">•</span>
-                   <button 
-                     onClick={() => setLocation("/launch/library")}
-                     className="flex items-center gap-1 text-[#ac41c3] hover:text-[#db2faa] transition-colors"
-                     data-testid="button-edit-collection"
-                   >
-                     <Pencil size={12} />
-                     <span>Edit</span>
-                   </button>
+                 {/* Collection selector */}
+                 <div className="w-full space-y-3 mb-4">
+                   {allCollections.length > 1 ? (
+                     <div className="space-y-2">
+                       <label className="text-white/60 text-sm">Choose collection</label>
+                       <Select 
+                         value={currentCollection?.id || ''} 
+                         onValueChange={handleCollectionChange}
+                       >
+                         <SelectTrigger 
+                           className="w-full bg-[#3b1645] border-transparent text-white h-12 rounded-xl"
+                           data-testid="select-collection"
+                         >
+                           <SelectValue placeholder="Select a collection" />
+                         </SelectTrigger>
+                         <SelectContent className="bg-[#3b1645] border-[#4a1c57]">
+                           {allCollections.filter(c => c.scentIds.length === 4).map(collection => (
+                             <SelectItem 
+                               key={collection.id} 
+                               value={collection.id}
+                               className="text-white hover:bg-[#4a1c57] focus:bg-[#4a1c57] focus:text-white"
+                             >
+                               {collection.name}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                   ) : (
+                     <div className="flex items-center justify-center gap-2 text-white/60 text-sm">
+                       <span>{hasCompleteCollection ? (collectionName ? `Using "${collectionName}"` : "Using your collection") : "Using Baseline"}</span>
+                     </div>
+                   )}
+                   <div className="flex justify-center">
+                     <button 
+                       onClick={() => setLocation("/launch/library")}
+                       className="flex items-center gap-1 text-[#ac41c3] hover:text-[#db2faa] transition-colors text-sm"
+                       data-testid="button-edit-collection"
+                     >
+                       <Pencil size={12} />
+                       <span>Manage collections</span>
+                     </button>
+                   </div>
                  </div>
                  
-                 <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={startSession} data-testid="button-start-training">
+                 <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg" onClick={startSession} data-testid="button-start-training">
                    Start Training
                  </Button>
                  <button 
