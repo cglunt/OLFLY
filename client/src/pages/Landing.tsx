@@ -488,7 +488,7 @@ export default function Landing() {
       </section>
 
       {/* Character Section */}
-      <section className="bg-gradient-to-b from-[#1a1a2e]/50 to-[#0c0c1d] py-20">
+      <section className="bg-[#3c1443] py-20">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
