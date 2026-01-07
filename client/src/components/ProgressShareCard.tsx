@@ -142,15 +142,11 @@ export function ProgressShareCard({
               </button>
             </div>
             
-            <div className="flex-1 flex items-end justify-center pb-0 overflow-hidden">
+            <div className="flex-1 relative overflow-hidden">
               <img 
                 src={lowerGinaImg} 
                 alt="" 
-                className="h-auto object-contain"
-                style={{
-                  maxHeight: '55%',
-                  width: 'auto',
-                }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[280px] h-auto object-contain"
               />
             </div>
           </div>
