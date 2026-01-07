@@ -488,18 +488,18 @@ export default function Landing() {
       </section>
 
       {/* Character Section */}
-      <section className="bg-[#3c1443] py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <section className="bg-[#3c1443] py-20 relative overflow-hidden">
+        <img 
+          src={lowerGina} 
+          alt=""
+          className="absolute bottom-0 right-0 w-64 md:w-80 lg:w-96 object-contain opacity-60 pointer-events-none"
+        />
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <img 
-              src={lowerGina} 
-              alt="Training companion"
-              className="w-64 h-64 mx-auto mb-8 object-contain"
-            />
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Your journey{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
