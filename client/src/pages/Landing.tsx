@@ -13,8 +13,7 @@ import onboarding1 from "@/assets/onboarding1.jpg";
 import onboarding2 from "@/assets/onboarding2.jpg";
 import session1 from "@/assets/session1.jpg";
 import statsImg from "@/assets/stats.jpg";
-import phoneLifestyle from "@/assets/phone-lifestyle.png";
-import topMia from "@/assets/top-mia.png";
+import lowerGina from "@assets/Lower_Gina@2x_1767069623166.png";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
@@ -283,13 +282,13 @@ export default function Landing() {
             <div className="hidden md:block absolute top-0 bottom-0 -right-48 w-48 bg-gradient-to-r from-[#0c0c1d] via-[#0c0c1d]/60 to-transparent z-30" />
           </div>
           
-          {/* Image Column */}
-          <div className="relative flex-1 md:basis-1/2 min-h-[50vh] md:min-h-0">
-            <img 
-              src={phoneLifestyle} 
-              alt="Olfly app in use"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+          {/* Gradient Column */}
+          <div 
+            className="relative flex-1 md:basis-1/2 min-h-[50vh] md:min-h-0"
+            style={{
+              background: 'radial-gradient(circle at center, #db2faa 0%, #6d45d2 30%, #3b1645 60%, #0c0c1d 100%)',
+            }}
+          >
             <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/20" />
           </div>
         </div>
@@ -496,21 +495,21 @@ export default function Landing() {
             viewport={{ once: true }}
           >
             <img 
-              src={topMia} 
-              alt="Mia - your training companion"
-              className="w-48 h-48 mx-auto mb-8 object-contain"
+              src={lowerGina} 
+              alt="Training companion"
+              className="w-64 h-64 mx-auto mb-8 object-contain"
             />
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Welcome to the{" "}
+              Your journey{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6d45d2] to-[#db2faa]">
-                Sniff Squad
+                starts here
               </span>
             </h2>
             <p className="text-white/70 text-lg mb-2 max-w-lg mx-auto">
               A supportive space to stay consistent and celebrate progress.
             </p>
             <p className="text-white/50 mb-8 max-w-lg mx-auto">
-              Stay consistent. Stay patient. Sniff bravely. Olfly is with you every day.
+              Stay consistent. Stay patient. Olfly is with you every day.
             </p>
             <Button
               onClick={() => setLocation("/launch")}
