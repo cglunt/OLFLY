@@ -34,7 +34,7 @@ export function ProgressShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         width: 1080,
-        height: 1080,
+        height: 1920,
         pixelRatio: 1,
       });
       const link = document.createElement('a');
@@ -54,7 +54,7 @@ export function ProgressShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         width: 1080,
-        height: 1080,
+        height: 1920,
         pixelRatio: 1,
       });
       const blob = await (await fetch(dataUrl)).blob();
@@ -104,7 +104,7 @@ export function ProgressShareCard({
             <div className="flex justify-center mb-4 overflow-hidden rounded-xl">
               <div 
                 ref={cardRef}
-                className="w-[270px] h-[270px] relative overflow-hidden"
+                className="w-[180px] h-[320px] relative overflow-hidden"
                 style={{
                   background: '#0c0c1d',
                 }}
@@ -160,13 +160,13 @@ export function ProgressShareCard({
                     )}
                   </div>
                   
-                  <div className="flex-1 relative mt-2">
+                  <div className="flex-1 relative mt-4">
                     <img 
                       src={[topMiaImg, lowerGinaImg, lowerLiuImg][Math.floor(Date.now() / 1000) % 3]} 
                       alt="" 
                       className="absolute bottom-0 left-1/2 -translate-x-1/2 h-auto object-contain"
                       style={{
-                        maxHeight: '130px',
+                        maxHeight: '180px',
                         width: 'auto',
                       }}
                     />
