@@ -3,14 +3,11 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, Sparkles, Timer, BarChart3, Palette,
-  BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight, Loader2
+  BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { CookieSettingsButton } from "@/components/CookieConsentBanner";
-import { useCurrentUser } from "@/lib/useCurrentUser";
-import { useAuth } from "@/lib/useAuth";
-import { useCreateCheckoutSession } from "@/lib/useStripe";
 
 import onboarding1 from "@/assets/onboarding1.jpg";
 import onboarding2 from "@/assets/onboarding2.jpg";
@@ -111,22 +108,10 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
-  
-  const { user: firebaseUser } = useAuth();
-  const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
-  const checkoutMutation = useCreateCheckoutSession();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileMenuOpen(false);
-  };
-
-  const handleUpgradeClick = () => {
-    if (!user) {
-      setLocation("/launch/login");
-      return;
-    }
-    checkoutMutation.mutate({ userId: user.id });
   };
 
   return (
@@ -292,6 +277,56 @@ export default function Landing() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c1d] via-transparent to-[#0c0c1d]/20" />
           </div>
+        </div>
+      </section>
+
+      {/* App Store Announcement */}
+      <section className="bg-gradient-to-r from-[#6d45d2]/20 to-[#db2faa]/20 py-10 border-y border-[#6d45d2]/30">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6d45d2]/20 border border-[#6d45d2]/40 mb-4">
+              <Sparkles size={16} className="text-[#db2faa]" />
+              <span className="text-sm font-medium text-white">Now Available</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Download Olfly on your favorite app store
+            </h2>
+            <div className="flex flex-wrap justify-center items-center gap-4">
+              <a 
+                href="https://play.google.com/store" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+                data-testid="link-google-play"
+              >
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
+                  alt="Get it on Google Play" 
+                  className="h-14"
+                />
+              </a>
+              <a 
+                href="https://apps.apple.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+                data-testid="link-app-store"
+              >
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
+                  alt="Download on the App Store" 
+                  className="h-14"
+                />
+              </a>
+            </div>
+            <p className="text-white/50 text-sm mt-4">
+              Available on iOS and Android devices
+            </p>
+          </motion.div>
         </div>
       </section>
 
@@ -580,14 +615,7 @@ export default function Landing() {
               )}
 
               <Button
-                onClick={() => {
-                  if (plan.name === "Plus") {
-                    handleUpgradeClick();
-                  } else {
-                    setLocation("/launch");
-                  }
-                }}
-                disabled={plan.name === "Plus" && checkoutMutation.isPending}
+                onClick={() => setLocation("/launch")}
                 className={`w-full rounded-full font-bold py-3 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
@@ -595,11 +623,7 @@ export default function Landing() {
                 }`}
                 data-testid={`button-${plan.name.toLowerCase()}-cta`}
               >
-                {plan.name === "Plus" && checkoutMutation.isPending ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  plan.cta
-                )}
+                {plan.cta}
               </Button>
             </motion.div>
           ))}

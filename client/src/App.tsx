@@ -23,7 +23,6 @@ import Safety from "@/pages/Safety";
 import Contact from "@/pages/Contact";
 import CookiePolicy from "@/pages/CookiePolicy";
 import Login from "@/pages/Login";
-import BillingSuccess from "@/pages/BillingSuccess";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
@@ -115,7 +114,6 @@ function Router() {
       <Route path="/legal/safety" component={Safety} />
       <Route path="/legal/contact" component={Contact} />
       <Route path="/cookie-policy" component={CookiePolicy} />
-      <Route path="/billing/success" component={BillingSuccess} />
       <Route path="/pricing" component={Landing} />
       {!isLegalRoute && <Route component={NotFound} />}
     </Switch>

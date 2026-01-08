@@ -29,17 +29,10 @@ Preferred communication style: Simple, everyday language.
 - **ORM**: Drizzle ORM with drizzle-zod for schema validation
 - **Schema Location**: `shared/schema.ts` contains all table definitions
 - **Tables**: users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions
-- **Stripe Schema**: Managed by stripe-replit-sync (products, prices, subscriptions, customers)
 
-### Payments (Stripe)
-- **Integration**: Replit Stripe connector with stripe-replit-sync for automatic webhook management
-- **Products**: 
-  - Free: $0 (basic training features)
-  - Plus: $6.99/month (full progress history, symptom journal, custom scent library)
-- **Checkout**: Stripe Checkout for subscription purchases
-- **Portal**: Stripe Customer Portal for subscription management
-- **Webhook**: Auto-managed by stripe-replit-sync, registered at `/api/stripe/webhook`
-- **User Fields**: stripeCustomerId, plan ('free'|'plus'), plusActive (boolean), currentPeriodEnd (timestamp)
+### Payments
+- **Distribution**: App Store (iOS) and Google Play Store (Android)
+- **Pricing**: Plus tier at $6.99/month available through in-app purchases
 
 ### Audio
 - **Training Sounds**: Chime sound plays when smell phase begins (toggleable via Settings)
@@ -64,11 +57,7 @@ server/
   ├── index.ts        # Express server entry point
   ├── routes.ts       # API route definitions
   ├── storage.ts      # Database operations layer
-  ├── db.ts           # Drizzle/Neon connection
-  ├── stripeClient.ts # Stripe client and sync initialization
-  ├── stripeService.ts # Stripe API operations (checkout, portal)
-  ├── webhookHandlers.ts # Stripe webhook event processing
-  └── seed-stripe-products.ts # Script to create Stripe products
+  └── db.ts           # Drizzle/Neon connection
 
 shared/
   └── schema.ts       # Drizzle schema + Zod validation

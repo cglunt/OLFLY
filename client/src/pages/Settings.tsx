@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Volume2, CreditCard, Sparkles, Loader2 } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Volume2, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
@@ -19,7 +19,6 @@ import { Label } from "@/components/ui/label";
 import { ReminderPermissionDialog } from "@/components/ReminderPermissionDialog";
 import { useReminders } from "@/hooks/useReminders";
 import { isNotificationSupported, cancelReminders } from "@/lib/notifications";
-import { useStripeSubscription, useCreatePortalSession, useCreateCheckoutSession } from "@/lib/useStripe";
 
 export default function Settings() {
   const [, setLocation] = useLocation();
@@ -32,10 +31,6 @@ export default function Settings() {
   const [eveningTime, setEveningTime] = useState("20:00");
   
   const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
-  
-  const { data: subscriptionData, isLoading: subscriptionLoading } = useStripeSubscription(user?.id);
-  const portalMutation = useCreatePortalSession();
-  const checkoutMutation = useCreateCheckoutSession();
 
   const {
     permissionStatus,
@@ -211,68 +206,20 @@ export default function Settings() {
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Subscription</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
-            {subscriptionLoading ? (
-              <div className="p-4 flex items-center justify-center">
-                <Loader2 className="animate-spin text-white/50" size={20} />
+            <div className="p-4">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
+                  <Sparkles size={18} className="text-[#ac41c3]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-white font-medium">Free Plan</p>
+                  <p className="text-white/50 text-sm">Upgrade via app store for more features</p>
+                </div>
               </div>
-            ) : subscriptionData?.plusActive ? (
-              <>
-                <div className="p-4 flex items-center gap-4 border-b border-white/5">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center">
-                    <Sparkles size={18} className="text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="text-white font-medium">Olfly Plus</p>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white">Active</span>
-                    </div>
-                    <p className="text-white/50 text-sm">Full access to all features</p>
-                  </div>
-                </div>
-                <div 
-                  className="p-4 flex items-center gap-4 cursor-pointer hover:bg-[#4a1c57] transition-colors"
-                  onClick={() => user && portalMutation.mutate({ userId: user.id })}
-                  data-testid="button-manage-subscription"
-                >
-                  <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
-                    <CreditCard size={18} className="text-[#ac41c3]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white font-medium">Manage Subscription</p>
-                    <p className="text-white/50 text-sm">Update payment method or cancel</p>
-                  </div>
-                  {portalMutation.isPending ? (
-                    <Loader2 className="animate-spin text-white/40" size={20} />
-                  ) : (
-                    <ChevronRight size={20} className="text-white/40" />
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="p-4">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
-                    <Sparkles size={18} className="text-[#ac41c3]" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white font-medium">Free Plan</p>
-                    <p className="text-white/50 text-sm">Upgrade for more features</p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => user && checkoutMutation.mutate({ userId: user.id })}
-                  disabled={checkoutMutation.isPending}
-                  className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-medium py-3 rounded-xl"
-                  data-testid="button-upgrade-plus"
-                >
-                  {checkoutMutation.isPending ? (
-                    <Loader2 className="animate-spin" size={18} />
-                  ) : (
-                    <>Upgrade to Plus - $6.99/mo</>
-                  )}
-                </Button>
-              </div>
-            )}
+              <p className="text-white/40 text-sm text-center">
+                Upgrade to Plus through the App Store or Google Play
+              </p>
+            </div>
           </div>
         </div>
 
