@@ -1,0 +1,126 @@
+You are working in my Replit project for olfly.app (React + TypeScript). I already have Replit’s Stripe integration connected (Tools -> Stripe). Update your implementation plan so it matches Replit’s Stripe integration documentation and uses Replit Secrets instead of committing any .env files.
+
+GOAL
+Implement Stripe subscriptions for the consumer Plus plan:
+- Free: $0
+- Plus: $7.99/month subscription via Stripe Checkout
+Clinical is request-access only (no Stripe at launch)
+
+IMPORTANT (FOLLOW REPLIT STRIPE DOCS)
+1) Do not create or commit /server/.env files.
+2) Use Replit Secrets (Environment Variables) and read them via process.env on the server.
+3) Use Stripe Checkout for purchase and Stripe Customer Portal for management.
+4) Use Stripe webhooks as the source of truth for access control.
+5) Ensure webhook signature verification is implemented correctly using the raw request body.
+
+REPLIT SECRETS YOU MUST EXPECT (DO NOT HARDCODE)
+- STRIPE_SECRET_KEY
+- STRIPE_WEBHOOK_SECRET
+- STRIPE_PLUS_PRICE_ID
+- APP_URL (the deployed URL for success and cancel redirects)
+
+If any of these are missing, add clear console instructions telling me exactly which Secret name to add in Replit and where.
+
+SERVER IMPLEMENTATION (EXPRESS)
+A) Create or reuse an Express server:
+- If the project already has a server, reuse it.
+- Otherwise create /server/index.ts and mount API routes under /api.
+
+B) Add required deps:
+- stripe
+- express
+- cors
+- If TypeScript: relevant @types packages and a TS runner already used by the project
+
+C) Webhook raw body handling (required for Stripe signature verification):
+- The webhook route must use raw body parsing, not json parsing.
+- Example approach:
+  - app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), handler)
+  - Keep app.use(express.json()) for other routes, but not for the webhook route.
+
+API ENDPOINTS (MATCH DOC STYLE)
+1) POST /api/stripe/create-checkout-session
+- Requires authenticated user context.
+- If Firebase Auth is already used, verify the Firebase ID token from:
+  Authorization: Bearer <token>
+- Create or reuse a Stripe Customer for the user.
+- Create a Checkout Session:
+  - mode: "subscription"
+  - line_items: [{ price: process.env.STRIPE_PLUS_PRICE_ID, quantity: 1 }]
+  - success_url: `${process.env.APP_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`
+  - cancel_url: `${process.env.APP_URL}/pricing`
+- Return: { url: session.url }
+
+2) POST /api/stripe/create-portal-session
+- Requires authenticated user.
+- Create a Stripe Billing Portal session using the stored stripeCustomerId.
+- Return: { url: portalSession.url }
+
+3) POST /api/stripe/webhook
+- Verify signature using process.env.STRIPE_WEBHOOK_SECRET
+- Handle these events:
+  - checkout.session.completed
+  - customer.subscription.created
+  - customer.subscription.updated
+  - customer.subscription.deleted
+- Update user entitlements in the database (Firestore preferred):
+  - plan: "plus" or "free"
+  - plusActive: boolean
+  - currentPeriodEnd: timestamp from subscription.current_period_end
+
+DATA MODEL (FIRESTORE)
+users/{uid}
+- email
+- stripeCustomerId
+- plan: "free" | "plus"
+- plusActive: boolean
+- currentPeriodEnd: timestamp
+
+FRONTEND IMPLEMENTATION
+A) Pricing page
+- Only 2 consumer plans: Free and Plus
+- Plus CTA button calls /api/stripe/create-checkout-session and redirects to session.url
+
+B) Billing success page
+- Route: /billing/success
+- Simple confirmation UI
+- Do not rely on client verification for access. Webhook sets access.
+
+C) Manage subscription
+- If plusActive true, show “Manage subscription”
+- Clicking calls /api/stripe/create-portal-session and redirects to portal url
+
+D) Gating
+- Create a reusable <PlusGate> wrapper that blocks Plus-only features when plusActive is false and shows an upgrade CTA.
+
+CLINICAL (NO STRIPE)
+- Keep /clinicians “Request access” form.
+- Save requests to Firestore collection clinicianRequests.
+- No payments and no pricing checkout for clinical at launch.
+
+LOCAL TESTING AND REPLIT WORKFLOW NOTES
+- Ensure the app runs with Stripe test mode first.
+- Use Stripe test card: 4242 4242 4242 4242, any future exp date, any CVC.
+- Print clear logs when:
+  - checkout session is created
+  - webhook is received and verified
+  - entitlement fields are updated
+- If Replit requires a public webhook URL, output it clearly in the console and in README notes:
+  `${process.env.APP_URL}/api/stripe/webhook`
+
+SECURITY CHECKLIST
+- Never expose STRIPE_SECRET_KEY on the client.
+- Only store Stripe customer id and entitlement state in Firestore.
+- Do not log secrets.
+- Webhook must reject invalid signatures.
+
+ACCEPTANCE CHECKLIST
+- Free users can access free features.
+- Plus features are gated by plusActive.
+- Upgrade redirects to Stripe Checkout.
+- After successful purchase, plusActive becomes true via webhook.
+- Cancel keeps access until currentPeriodEnd, then plusActive becomes false.
+- Manage subscription opens Stripe Customer Portal.
+- Clinical request form works without Stripe.
+
+Implement this using the project’s existing routing (Wouter or React Router) and existing Firebase setup if present. If auth is missing, add Firebase email/password auth with minimal UI and store users in Firestore.
