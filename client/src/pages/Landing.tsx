@@ -250,11 +250,8 @@ export default function Landing() {
                   </li>
                 </ul>
 
-                <p className="text-xs text-white/50 mb-4">
+                <p className="text-xs text-[#db2faa] mb-6">
                   Inspired by research-backed smell training protocols used for olfactory recovery.
-                </p>
-                <p className="text-xs text-[#db2faa]/80 mb-6">
-                  Trusted by thousands working on their smell recovery journey.
                 </p>
 
                 <div className="flex flex-wrap gap-4 mb-4">
