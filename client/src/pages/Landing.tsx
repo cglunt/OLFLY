@@ -204,7 +204,6 @@ export default function Landing() {
                 transition={{ duration: 0.6 }}
               >
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3b1645] border border-[#6d45d2]/30 mb-6">
-                  <Sparkles size={14} className="text-[#db2faa]" />
                   <span className="text-sm text-white/80">Smell training made simple</span>
                 </div>
                 
