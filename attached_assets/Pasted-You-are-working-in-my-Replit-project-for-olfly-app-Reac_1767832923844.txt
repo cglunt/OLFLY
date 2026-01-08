@@ -1,0 +1,111 @@
+You are working in my Replit project for olfly.app (React + TypeScript). I want to simplify pricing at launch based on the final recommendation.
+
+GOAL
+Reduce pricing to a clear, low-friction launch setup:
+- Consumer: 2 plans only (Free + Plus)
+- Clinical: 1 gated plan (Clinic) + Enterprise via contact
+- No Premium consumer tier at launch
+
+This should support early growth, organic traffic, and future scaling.
+
+–––––––––––––––––
+CONSUMER PRICING (PUBLIC)
+–––––––––––––––––
+
+1) Update the main pricing section on the landing page to show ONLY TWO consumer plans.
+
+Plan 1: Free
+- Price: $0
+- CTA: “Start free”
+- Purpose: habit building and belief
+
+Include copy similar to:
+- Guided smell training sessions
+- Classic four-scent routine
+- Daily reminders
+- Limited progress view (first 7 days)
+- Designed to help you get started and feel early progress
+
+Avoid feature-heavy language. Keep it outcome-focused and lightweight.
+
+Plan 2: Plus
+- Price: $6.99 or $7.99 per month (use whichever is easier to configure now)
+- Badge: “Most popular”
+- CTA: “Upgrade to Plus”
+
+Include:
+- Full progress history and charts
+- Recovery timeline
+- Symptom journal
+- Custom scent library
+- Exportable personal reports
+- Cloud sync
+
+Position Plus as:
+“Unlock deeper insight into your recovery over time.”
+
+2) REMOVE the following from consumer pricing:
+- Premium plan
+- Any 3-tier consumer comparison
+- Any feature language implying medical or clinical use
+
+–––––––––––––––––
+CLINICAL PRICING (GATED)
+–––––––––––––––––
+
+3) Do NOT show clinical pricing as a third column next to consumer plans.
+
+4) Clinical pricing should live on a separate page (/clinicians).
+
+Create ONE visible clinical plan at launch:
+
+Plan name: Clinic
+- Price: $79 to $99 per month (pick one value for now)
+- CTA: “Request access”
+
+Includes:
+- Up to 25 active patients
+- Clinician dashboard
+- Patient adherence tracking
+- Progress summaries
+- Exportable PDF reports
+- Program templates
+- Priority email support
+
+5) Enterprise:
+- Do NOT list features in a table
+- Show only:
+  - Title: “Enterprise”
+  - Subtext: “Custom plans for larger organizations and research teams.”
+  - CTA: “Contact us”
+
+–––––––––––––––––
+COPY + UX RULES
+–––––––––––––––––
+
+- Do not mix consumer and clinical language in the same pricing table
+- Do not show clinical prices on the consumer landing page
+- Use “Request access” instead of “Subscribe” or “Upgrade” for clinicians
+- Keep consumer pricing simple enough to choose in under 3 seconds
+
+–––––––––––––––––
+FILES TO UPDATE / CREATE
+–––––––––––––––––
+
+- Update consumer pricing section:
+  - src/pages/Landing.tsx (or equivalent)
+- Update or create clinician pricing page:
+  - src/pages/Clinicians.tsx
+- Ensure routing exists:
+  - /clinicians
+
+–––––––––––––––––
+ACCEPTANCE CHECKLIST
+–––––––––––––––––
+
+- Landing page shows only Free + Plus for consumers
+- No Premium consumer tier visible anywhere
+- Clinical pricing is gated on /clinicians
+- Clinic plan uses “Request access”
+- Enterprise is contact-only
+- Language focuses on progress and recovery, not features

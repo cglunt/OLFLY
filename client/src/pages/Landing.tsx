@@ -49,43 +49,31 @@ const PRICING = [
     price: "$0",
     period: "",
     features: [
-      "Guided sessions",
-      "Classic four scent routine",
+      "Guided smell training sessions",
+      "Classic four-scent routine",
       "Daily reminders",
-      "Basic streaks",
-      "7 day progress view",
+      "7-day progress view",
     ],
+    desc: "Get started and feel early progress",
     cta: "Start free",
     highlight: false,
   },
   {
     name: "Plus",
-    price: "$4.99",
+    price: "$6.99",
     period: "/month",
     features: [
-      "Full history and charts",
+      "Full progress history and charts",
+      "Recovery timeline",
       "Symptom journal",
       "Custom scent library",
-      "Recovery timeline",
+      "Exportable personal reports",
       "Cloud sync",
-      "Export reports",
     ],
+    desc: "Deeper insight into your recovery",
     cta: "Upgrade to Plus",
     note: "Most popular",
     highlight: true,
-  },
-  {
-    name: "Premium",
-    price: "$9.99",
-    period: "/month",
-    features: [
-      "Everything in Plus",
-      "Advanced insights",
-      "Adaptive suggestions",
-      "Early feature access",
-    ],
-    cta: "Go Premium",
-    highlight: false,
   },
 ];
 
@@ -534,7 +522,7 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {PRICING.map((plan, i) => (
             <motion.div
               key={i}
@@ -555,10 +543,13 @@ export default function Landing() {
                 </div>
               )}
               <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-              <div className="mb-6">
+              <div className="mb-2">
                 <span className="text-4xl font-bold">{plan.price}</span>
                 {plan.period && <span className="text-white/50">{plan.period}</span>}
               </div>
+              {plan.desc && (
+                <p className="text-white/50 text-sm mb-6">{plan.desc}</p>
+              )}
               
               <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, fi) => (
@@ -570,7 +561,7 @@ export default function Landing() {
               </ul>
 
               {plan.price !== "$0" && (
-                <p className="text-xs text-white/40 mb-4">Cancel anytime. No long-term commitment.</p>
+                <p className="text-xs text-white/40 mb-4">Cancel anytime.</p>
               )}
 
               <Button

@@ -22,77 +22,14 @@ const CLINICIAN_FEATURES = [
   { icon: Building2, title: "Branded exports and CSV/EHR-friendly options", desc: "Customize reports for your practice" },
 ];
 
-const CLINICIAN_PRICING = [
-  {
-    name: "Starter",
-    price: "$39–$59",
-    period: "/month",
-    features: {
-      patients: "Up to 10 active patients",
-      dashboard: true,
-      adherence: true,
-      progress: true,
-      pdfExport: true,
-      templates: false,
-      branded: false,
-      csv: false,
-      team: false,
-      priority: false,
-    },
-    cta: "Request access",
-    highlight: false,
-  },
-  {
-    name: "Plus",
-    price: "$99–$149",
-    period: "/month",
-    features: {
-      patients: "25–50 active patients",
-      dashboard: true,
-      adherence: true,
-      progress: true,
-      pdfExport: true,
-      templates: true,
-      branded: true,
-      csv: false,
-      team: false,
-      priority: true,
-    },
-    cta: "Request access",
-    highlight: true,
-  },
-  {
-    name: "Clinic/Enterprise",
-    price: "Custom",
-    period: "",
-    features: {
-      patients: "Unlimited patients",
-      dashboard: true,
-      adherence: true,
-      progress: true,
-      pdfExport: true,
-      templates: true,
-      branded: true,
-      csv: true,
-      team: true,
-      priority: true,
-    },
-    cta: "Contact us",
-    highlight: false,
-  },
-];
-
-const FEATURE_ROWS = [
-  { key: "patients", label: "Active patients included" },
-  { key: "dashboard", label: "Clinician dashboard" },
-  { key: "adherence", label: "Patient adherence tracking" },
-  { key: "progress", label: "Progress summaries" },
-  { key: "pdfExport", label: "Exportable PDF reports per patient" },
-  { key: "templates", label: "Program templates" },
-  { key: "branded", label: "Branded PDF exports" },
-  { key: "csv", label: "CSV export / EHR-friendly export" },
-  { key: "team", label: "Team accounts" },
-  { key: "priority", label: "Priority support" },
+const CLINIC_FEATURES = [
+  "Up to 25 active patients",
+  "Clinician dashboard",
+  "Patient adherence tracking",
+  "Progress summaries",
+  "Exportable PDF reports",
+  "Program templates",
+  "Priority email support",
 ];
 
 const CLINICIAN_FAQS = [
@@ -283,8 +220,8 @@ export default function Clinicians() {
         </div>
       </section>
 
-      {/* Pricing Table */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      {/* Pricing */}
+      <section className="max-w-4xl mx-auto px-6 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -293,138 +230,69 @@ export default function Clinicians() {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Clinician plans</h2>
           <p className="text-white/60 max-w-xl mx-auto">
-            Choose the right plan for your practice size
+            Simple pricing to support your practice
           </p>
         </motion.div>
 
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-6">
-          {CLINICIAN_PRICING.map((plan, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`rounded-3xl p-6 border ${
-                plan.highlight 
-                  ? "bg-gradient-to-b from-[#3b1645] to-[#1a1a2e] border-[#6d45d2]" 
-                  : "bg-[#1a1a2e] border-white/5"
-              }`}
-            >
-              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-              <div className="mb-4">
-                <span className="text-3xl font-bold">{plan.price}</span>
-                {plan.period && <span className="text-white/50">{plan.period}</span>}
-              </div>
-              
-              <ul className="space-y-2 mb-6">
-                {FEATURE_ROWS.map((row) => {
-                  const value = plan.features[row.key as keyof typeof plan.features];
-                  if (typeof value === 'string') {
-                    return (
-                      <li key={row.key} className="flex items-start gap-3 text-white/70 text-sm">
-                        <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
-                        <span>{value}</span>
-                      </li>
-                    );
-                  }
-                  return (
-                    <li key={row.key} className={`flex items-start gap-3 text-sm ${value ? 'text-white/70' : 'text-white/30'}`}>
-                      {value ? (
-                        <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
-                      ) : (
-                        <X size={16} className="shrink-0 mt-0.5" />
-                      )}
-                      <span>{row.label}</span>
-                    </li>
-                  );
-                })}
-              </ul>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Clinic Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-3xl p-8 bg-gradient-to-b from-[#3b1645] to-[#1a1a2e] border border-[#6d45d2]"
+          >
+            <h3 className="text-2xl font-bold mb-2">Clinic</h3>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">$89</span>
+              <span className="text-white/50">/month</span>
+            </div>
+            
+            <ul className="space-y-3 mb-8">
+              {CLINIC_FEATURES.map((feature, i) => (
+                <li key={i} className="flex items-start gap-3 text-white/70 text-sm">
+                  <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
 
-              <Button
-                onClick={scrollToForm}
-                className={`w-full rounded-full font-bold py-6 ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
-                    : "bg-white/10 hover:bg-white/20 text-white"
-                }`}
-              >
-                {plan.cta}
-              </Button>
-            </motion.div>
-          ))}
+            <Button
+              onClick={scrollToForm}
+              className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full py-3"
+            >
+              Request access
+            </Button>
+          </motion.div>
+
+          {/* Enterprise */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="rounded-3xl p-8 bg-[#1a1a2e] border border-white/5 flex flex-col"
+          >
+            <h3 className="text-2xl font-bold mb-2">Enterprise</h3>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">Custom</span>
+            </div>
+            
+            <p className="text-white/60 mb-8 flex-1">
+              Custom plans for larger organizations and research teams.
+            </p>
+
+            <Button
+              onClick={() => window.open("mailto:support@olfly.app?subject=Enterprise%20Inquiry", "_blank")}
+              className="w-full bg-white/10 hover:bg-white/20 text-white font-bold rounded-full py-3"
+            >
+              Contact us
+            </Button>
+          </motion.div>
         </div>
 
-        {/* Desktop Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="hidden md:block overflow-x-auto"
-        >
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="text-left p-4 border-b border-white/10"></th>
-                {CLINICIAN_PRICING.map((plan, i) => (
-                  <th key={i} className={`text-center p-4 border-b ${plan.highlight ? 'border-[#6d45d2]' : 'border-white/10'}`}>
-                    <div className={`rounded-2xl p-4 ${plan.highlight ? 'bg-gradient-to-b from-[#3b1645] to-transparent' : ''}`}>
-                      <div className="text-xl font-bold mb-1">{plan.name}</div>
-                      <div className="text-2xl font-bold">
-                        {plan.price}
-                        {plan.period && <span className="text-sm text-white/50 font-normal">{plan.period}</span>}
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {FEATURE_ROWS.map((row, ri) => (
-                <tr key={row.key} className={ri % 2 === 0 ? 'bg-white/[0.02]' : ''}>
-                  <td className="text-left p-4 text-white/70 text-sm border-b border-white/5">
-                    {row.label}
-                  </td>
-                  {CLINICIAN_PRICING.map((plan, pi) => {
-                    const value = plan.features[row.key as keyof typeof plan.features];
-                    return (
-                      <td key={pi} className={`text-center p-4 border-b border-white/5 ${plan.highlight ? 'bg-[#6d45d2]/5' : ''}`}>
-                        {typeof value === 'string' ? (
-                          <span className="text-white/80 text-sm">{value}</span>
-                        ) : value ? (
-                          <Check size={20} className="text-[#db2faa] mx-auto" />
-                        ) : (
-                          <span className="text-white/20">—</span>
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-              <tr>
-                <td className="p-4"></td>
-                {CLINICIAN_PRICING.map((plan, i) => (
-                  <td key={i} className="text-center p-4">
-                    <Button
-                      onClick={scrollToForm}
-                      className={`rounded-full font-bold px-8 py-3 ${
-                        plan.highlight
-                          ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
-                          : "bg-white/10 hover:bg-white/20 text-white"
-                      }`}
-                    >
-                      {plan.cta}
-                    </Button>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </motion.div>
-
         <p className="text-center text-white/40 text-xs mt-8">
-          Pricing ranges reflect launch pricing and may change.
+          Launch pricing. May change as features evolve.
         </p>
       </section>
 
