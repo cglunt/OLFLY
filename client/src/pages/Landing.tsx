@@ -604,14 +604,14 @@ export default function Landing() {
           <div className="flex-1 text-center md:text-left">
             <h3 className="text-xl font-bold mb-2">For clinicians and care teams</h3>
             <p className="text-white/60 text-sm">
-              Support multiple patients with a dashboard, adherence tracking, and exportable progress reports.
+              Support patient recovery with a clinician dashboard, adherence tracking, and exportable progress reports.
             </p>
           </div>
           <Button
             onClick={() => setLocation("/clinicians")}
-            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-6 whitespace-nowrap"
+            className="bg-white/10 hover:bg-white/20 text-white font-bold rounded-full px-6 whitespace-nowrap"
           >
-            View clinician plans
+            Request clinician access
             <ArrowRight size={16} className="ml-2" />
           </Button>
         </motion.div>

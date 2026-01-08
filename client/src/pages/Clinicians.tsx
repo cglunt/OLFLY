@@ -7,6 +7,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import clinicianHero from "@assets/iphone-mockup-featuring-a-female-doctor-at-a-hospital-a6130_1767140328069.png";
 
@@ -114,10 +117,22 @@ const CLINICIAN_FAQS = [
 export default function Clinicians() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    workEmail: "",
+    organization: "",
+    patientCount: "",
+    notes: "",
+  });
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleRequestAccess = () => {
-    window.open("mailto:support@olfly.app?subject=Clinician%20Access%20Request", "_blank");
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormSubmitted(true);
+  };
+
+  const scrollToForm = () => {
+    document.getElementById("request-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -139,7 +154,7 @@ export default function Clinicians() {
           
           <div className="hidden md:block">
             <Button
-              onClick={handleRequestAccess}
+              onClick={scrollToForm}
               className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-6"
             >
               Request access
@@ -167,7 +182,7 @@ export default function Clinicians() {
               Back to Olfly
             </button>
             <Button
-              onClick={handleRequestAccess}
+              onClick={scrollToForm}
               className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full"
             >
               Request access
@@ -207,8 +222,8 @@ export default function Clinicians() {
 
               <div className="flex flex-wrap gap-4">
                 <Button
-                  onClick={handleRequestAccess}
-                  className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-6 text-lg shadow-lg shadow-[#6d45d2]/30"
+                  onClick={scrollToForm}
+                  className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-8 py-3 text-lg shadow-lg shadow-[#6d45d2]/30"
                 >
                   Request clinician access
                 </Button>
@@ -328,7 +343,7 @@ export default function Clinicians() {
               </ul>
 
               <Button
-                onClick={handleRequestAccess}
+                onClick={scrollToForm}
                 className={`w-full rounded-full font-bold py-6 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
@@ -392,7 +407,7 @@ export default function Clinicians() {
                 {CLINICIAN_PRICING.map((plan, i) => (
                   <td key={i} className="text-center p-4">
                     <Button
-                      onClick={handleRequestAccess}
+                      onClick={scrollToForm}
                       className={`rounded-full font-bold px-8 py-3 ${
                         plan.highlight
                           ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
@@ -449,31 +464,135 @@ export default function Clinicians() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="max-w-4xl mx-auto px-6 py-20">
+      {/* Request Form */}
+      <section id="request-form" className="max-w-2xl mx-auto px-6 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-[#3b1645] to-[#1a1a2e] rounded-3xl p-8 md:p-12 text-center border border-[#6d45d2]/30"
+          className="bg-gradient-to-r from-[#3b1645] to-[#1a1a2e] rounded-3xl p-8 md:p-12 border border-[#6d45d2]/30"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to support your patients?
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+            Clinician access
           </h2>
-          <p className="text-white/60 mb-8 max-w-md mx-auto">
-            Request clinician access and start helping patients on their smell recovery journey.
+          <p className="text-white/60 mb-8 text-center">
+            Get Olfly for your clinic or care team.
           </p>
-          
-          <Button
-            onClick={handleRequestAccess}
-            className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full px-10 py-6 text-lg mb-8 shadow-lg shadow-[#6d45d2]/30"
-          >
-            <Mail size={20} className="mr-2" />
-            Request clinician access
-          </Button>
 
-          <div className="max-w-sm mx-auto">
-            <p className="text-white/50 text-sm mb-3">Or email us directly</p>
+          <ul className="space-y-2 mb-8 text-white/70">
+            <li className="flex items-center gap-3">
+              <Check size={16} className="text-[#db2faa] shrink-0" />
+              Clinician dashboard for multiple patients
+            </li>
+            <li className="flex items-center gap-3">
+              <Check size={16} className="text-[#db2faa] shrink-0" />
+              Adherence tracking and progress summaries
+            </li>
+            <li className="flex items-center gap-3">
+              <Check size={16} className="text-[#db2faa] shrink-0" />
+              Exportable PDF reports
+            </li>
+          </ul>
+
+          {formSubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-8"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-[#6d45d2] to-[#db2faa] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check size={32} className="text-white" />
+              </div>
+              <p className="text-xl font-bold mb-2">Thanks. We'll reach out soon.</p>
+              <p className="text-white/60 text-sm">Check your email for next steps.</p>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="fullName" className="text-white/70 text-sm">Full name</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  required
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                  placeholder="Dr. Jane Smith"
+                  data-testid="input-clinician-name"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="workEmail" className="text-white/70 text-sm">Work email</Label>
+                <Input
+                  id="workEmail"
+                  type="email"
+                  required
+                  value={formData.workEmail}
+                  onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
+                  className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                  placeholder="jane@clinic.com"
+                  data-testid="input-clinician-email"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="organization" className="text-white/70 text-sm">Organization / clinic name</Label>
+                <Input
+                  id="organization"
+                  type="text"
+                  required
+                  value={formData.organization}
+                  onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
+                  className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                  placeholder="City ENT Clinic"
+                  data-testid="input-clinician-org"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="patientCount" className="text-white/70 text-sm">Approx. patient count</Label>
+                <Select
+                  value={formData.patientCount}
+                  onValueChange={(value) => setFormData({ ...formData, patientCount: value })}
+                >
+                  <SelectTrigger className="mt-1 bg-white/10 border-white/20 text-white" data-testid="select-patient-count">
+                    <SelectValue placeholder="Select range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1–10 patients</SelectItem>
+                    <SelectItem value="11-25">11–25 patients</SelectItem>
+                    <SelectItem value="26-50">26–50 patients</SelectItem>
+                    <SelectItem value="51+">51+ patients</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="notes" className="text-white/70 text-sm">Notes (optional)</Label>
+                <Input
+                  id="notes"
+                  type="text"
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+                  placeholder="Any questions or comments"
+                  data-testid="input-clinician-notes"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full py-3 text-lg mt-6"
+                data-testid="button-clinician-submit"
+              >
+                Request access
+              </Button>
+            </form>
+          )}
+
+          <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <p className="text-white/50 text-sm mb-2">Or email us directly</p>
             <a 
               href="mailto:support@olfly.app" 
               className="text-[#db2faa] hover:underline"

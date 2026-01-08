@@ -1,0 +1,70 @@
+You are working in my Replit project for olfly.app (React + TypeScript). I need you to update the main landing page to keep the “For clinicians and care teams” banner, but make the recommended copy and CTA changes.
+
+GOAL
+Keep this clinical CTA secondary and opt-in (it must not compete with the main consumer CTA). Update the banner copy and button label, and route it to a clinician access page.
+
+REQUIRED CHANGES (Landing Page)
+1) Find the existing banner section that currently displays:
+   - Title: “For clinicians and care teams”
+   - Subtext: “Support multiple patients with a dashboard, adherence tracking, and exportable progress reports.”
+   - Button: “View clinician plans”
+
+2) Update only the copy and CTA:
+   - Keep title as: “For clinicians and care teams”
+   - Change subtext to:
+     “Support patient recovery with a clinician dashboard, adherence tracking, and exportable progress reports.”
+   - Change button label to:
+     “Request clinician access”
+   - Keep the arrow icon if present
+
+3) Keep the banner visually secondary:
+   - It should remain below the primary consumer pricing and primary CTAs
+   - Do not increase its size
+   - Do not make it the highest-contrast element on the page
+   - Keep current styling (dark glass card, magenta accent button) but ensure it does not look more prominent than the main “Start free” or consumer plan CTA
+
+ROUTING + PAGE
+4) Create a new route and page for clinician access:
+   - Route: /clinicians (preferred) or /clinician-access if routing already exists
+   - Add a simple clinician access page with:
+     - H1: “Clinician access”
+     - Subhead: “Get Olfly for your clinic or care team.”
+     - A short bullet list of benefits:
+       - Clinician dashboard for multiple patients
+       - Adherence tracking and progress summaries
+       - Exportable PDF reports
+     - A simple request form (no backend required):
+       - Full name
+       - Work email
+       - Organization / clinic name
+       - Approx patient count (dropdown: 1–10, 11–25, 26–50, 51+)
+       - Optional notes
+       - Submit button: “Request access”
+     - On submit, show an inline success state (no network call):
+       “Thanks. We’ll reach out soon.”
+
+5) Update the banner button click to navigate to the clinician access route.
+
+IMPLEMENTATION DETAILS
+- Use existing design system/components if present (Button, Card, Input, etc.).
+- If there’s Tailwind, match current classes and spacing.
+- If the project uses Wouter:
+  - Add a Route for /clinicians
+  - Use a Link or navigate() for the CTA button.
+- If the project uses React Router:
+  - Add a Route for /clinicians
+  - Use useNavigate() for the CTA.
+
+FILES
+- Make the smallest change set possible.
+- Likely files:
+  - src/pages/Landing.tsx (or similar)
+  - src/App.tsx or src/main.tsx for routes
+  - Create: src/pages/Clinicians.tsx (or similar)
+
+ACCEPTANCE CHECKLIST
+- Landing page banner now says “Request clinician access”
+- Subtext updated to “Support patient recovery…”
+- Clicking CTA takes me to /clinicians
+- Clinician page exists with the request form and a local success message
+- Banner remains visually secondary and below primary consumer CTAs
