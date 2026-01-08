@@ -685,7 +685,7 @@ export default function Landing() {
                 <span className="font-medium pr-4">{faq.q}</span>
                 <ChevronDown 
                   size={20} 
-                  className="text-[#db2faa] shrink-0 transition-transform group-open:rotate-180" 
+                  className="text-[#3c1443] shrink-0 transition-transform group-open:rotate-180" 
                 />
               </summary>
               <div className="px-5 pb-5 text-white/60 text-sm">
