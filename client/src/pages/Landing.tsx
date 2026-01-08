@@ -578,7 +578,7 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`rounded-3xl p-8 border ${
+              className={`rounded-3xl p-8 border flex flex-col ${
                 plan.highlight 
                   ? "bg-gradient-to-b from-[#3b1645] to-[#1a1a2e] border-[#6d45d2]" 
                   : "bg-[#1a1a2e] border-white/5"
@@ -590,6 +590,7 @@ export default function Landing() {
                   {plan.note}
                 </div>
               )}
+              {!plan.note && <div className="h-[26px] mb-4" />}
               <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
               <div className="mb-2">
                 <span className="text-4xl font-bold">{plan.price}</span>
@@ -599,7 +600,7 @@ export default function Landing() {
                 <p className="text-white/50 text-sm mb-6">{plan.desc}</p>
               )}
               
-              <ul className="space-y-3 mb-6">
+              <ul className="space-y-3 mb-6 flex-1">
                 {plan.features.map((feature, fi) => (
                   <li key={fi} className="flex items-start gap-3 text-white/70 text-sm">
                     <Check size={16} className="text-[#db2faa] shrink-0 mt-0.5" />
@@ -608,21 +609,24 @@ export default function Landing() {
                 ))}
               </ul>
 
-              {plan.price !== "$0" && (
-                <p className="text-xs text-white/40 mb-4">Cancel anytime.</p>
-              )}
+              <div className="mt-auto">
+                {plan.price !== "$0" && (
+                  <p className="text-xs text-white/40 mb-4">Cancel anytime.</p>
+                )}
+                {plan.price === "$0" && <div className="h-[20px] mb-4" />}
 
-              <Button
-                onClick={() => setLocation("/launch")}
-                className={`w-full rounded-full font-bold py-3 ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
-                    : "bg-white/10 hover:bg-white/20 text-white"
-                }`}
-                data-testid={`button-${plan.name.toLowerCase()}-cta`}
-              >
-                {plan.cta}
-              </Button>
+                <Button
+                  onClick={() => setLocation("/launch")}
+                  className={`w-full rounded-full font-bold py-3 ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
+                      : "bg-white/10 hover:bg-white/20 text-white"
+                  }`}
+                  data-testid={`button-${plan.name.toLowerCase()}-cta`}
+                >
+                  {plan.cta}
+                </Button>
+              </div>
             </motion.div>
           ))}
         </div>
