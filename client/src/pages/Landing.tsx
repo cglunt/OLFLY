@@ -289,7 +289,6 @@ export default function Landing() {
             viewport={{ once: true }}
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6d45d2]/20 border border-[#6d45d2]/40 mb-4">
-              <Sparkles size={16} className="text-[#db2faa]" />
               <span className="text-sm font-medium text-white">Now Available</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-6">
