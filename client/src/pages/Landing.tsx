@@ -72,7 +72,7 @@ const PRICING = [
     ],
     desc: "Deeper insight into your recovery",
     cta: "Upgrade to Plus",
-    note: "Most popular",
+    note: "Most Value",
     highlight: true,
   },
 ];
@@ -564,7 +564,7 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple pricing</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Plan Pricing</h2>
           <p className="text-white/60 max-w-xl mx-auto">
             Start free and upgrade only if you want more guidance and tracking.
           </p>
