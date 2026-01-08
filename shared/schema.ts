@@ -6,6 +6,7 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull().default('Guest'),
+  email: text("email"),
   hasOnboarded: boolean("has_onboarded").notNull().default(false),
   remindersEnabled: boolean("reminders_enabled").notNull().default(true),
   soundEnabled: boolean("sound_enabled").notNull().default(true),
@@ -13,6 +14,10 @@ export const users = pgTable("users", {
   eveningTime: text("evening_time").default('20:00'),
   streak: integer("streak").notNull().default(0),
   lastSessionDate: timestamp("last_session_date"),
+  stripeCustomerId: text("stripe_customer_id"),
+  plan: text("plan").notNull().default('free'),
+  plusActive: boolean("plus_active").notNull().default(false),
+  currentPeriodEnd: timestamp("current_period_end"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

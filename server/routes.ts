@@ -3,6 +3,8 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema, insertScentCollectionSchema, insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
+import { stripeService } from "./stripeService";
+import { getStripePublishableKey } from "./stripeClient";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -223,6 +225,116 @@ export async function registerRoutes(
       res.json({ success: true, id: submission.id });
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : "Invalid contact data" });
+    }
+  });
+
+  // Stripe routes
+  app.get("/api/stripe/publishable-key", async (_req, res) => {
+    try {
+      const key = await getStripePublishableKey();
+      res.json({ publishableKey: key });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get Stripe key" });
+    }
+  });
+
+  app.post("/api/stripe/create-checkout-session", async (req, res) => {
+    try {
+      const { userId, priceId } = z.object({
+        userId: z.string(),
+        priceId: z.string(),
+      }).parse(req.body);
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripeService.createCustomer(user.email || `${userId}@olfly.app`, userId);
+        await storage.updateUser(userId, { stripeCustomerId: customer.id });
+        customerId = customer.id;
+      }
+
+      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+      const session = await stripeService.createCheckoutSession(
+        customerId,
+        priceId,
+        `${baseUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+        `${baseUrl}/pricing`
+      );
+
+      console.log("Checkout session created:", session.id);
+      res.json({ url: session.url });
+    } catch (error) {
+      console.error("Checkout error:", error);
+      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to create checkout session" });
+    }
+  });
+
+  app.post("/api/stripe/create-portal-session", async (req, res) => {
+    try {
+      const { userId } = z.object({
+        userId: z.string(),
+      }).parse(req.body);
+
+      const user = await storage.getUser(userId);
+      if (!user || !user.stripeCustomerId) {
+        return res.status(404).json({ error: "No subscription found" });
+      }
+
+      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+      const portalSession = await stripeService.createCustomerPortalSession(
+        user.stripeCustomerId,
+        `${baseUrl}/progress`
+      );
+
+      res.json({ url: portalSession.url });
+    } catch (error) {
+      console.error("Portal error:", error);
+      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to create portal session" });
+    }
+  });
+
+  app.get("/api/stripe/subscription/:userId", async (req, res) => {
+    try {
+      const user = await storage.getUser(req.params.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (!user.stripeCustomerId) {
+        return res.json({ subscription: null, plusActive: false });
+      }
+
+      const subscription = await stripeService.getSubscriptionByCustomerId(user.stripeCustomerId);
+      res.json({
+        subscription,
+        plusActive: user.plusActive,
+        plan: user.plan,
+        currentPeriodEnd: user.currentPeriodEnd,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.get("/api/stripe/products", async (_req, res) => {
+    try {
+      const products = await stripeService.listProducts();
+      res.json({ products });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
+    }
+  });
+
+  app.get("/api/stripe/prices", async (_req, res) => {
+    try {
+      const prices = await stripeService.listPrices();
+      res.json({ prices });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "Server error" });
     }
   });
 

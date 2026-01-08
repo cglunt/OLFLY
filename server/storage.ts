@@ -1,6 +1,6 @@
 import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -36,6 +36,10 @@ export interface IStorage {
   
   // Contact submissions
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
+  
+  // Subscription operations
+  getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined>;
+  updateUserSubscription(userId: string, updates: { plan: string; plusActive: boolean; currentPeriodEnd: Date | null; stripeCustomerId?: string }): Promise<User | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -218,6 +222,21 @@ export class DatabaseStorage implements IStorage {
       .values(submission)
       .returning();
     return newSubmission;
+  }
+
+  // Subscription operations
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.stripeCustomerId, stripeCustomerId));
+    return user || undefined;
+  }
+
+  async updateUserSubscription(userId: string, updates: { plan: string; plusActive: boolean; currentPeriodEnd: Date | null; stripeCustomerId?: string }): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, userId))
+      .returning();
+    return user || undefined;
   }
 }
 

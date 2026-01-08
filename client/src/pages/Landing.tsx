@@ -3,11 +3,14 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, Sparkles, Timer, BarChart3, Palette,
-  BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight
+  BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { CookieSettingsButton } from "@/components/CookieConsentBanner";
+import { useCurrentUser } from "@/lib/useCurrentUser";
+import { useAuth } from "@/lib/useAuth";
+import { useCreateCheckoutSession } from "@/lib/useStripe";
 
 import onboarding1 from "@/assets/onboarding1.jpg";
 import onboarding2 from "@/assets/onboarding2.jpg";
@@ -108,10 +111,22 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
+  
+  const { user: firebaseUser } = useAuth();
+  const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
+  const checkoutMutation = useCreateCheckoutSession();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileMenuOpen(false);
+  };
+
+  const handleUpgradeClick = () => {
+    if (!user) {
+      setLocation("/launch/login");
+      return;
+    }
+    checkoutMutation.mutate({ userId: user.id });
   };
 
   return (
@@ -565,14 +580,26 @@ export default function Landing() {
               )}
 
               <Button
-                onClick={() => setLocation("/launch")}
+                onClick={() => {
+                  if (plan.name === "Plus") {
+                    handleUpgradeClick();
+                  } else {
+                    setLocation("/launch");
+                  }
+                }}
+                disabled={plan.name === "Plus" && checkoutMutation.isPending}
                 className={`w-full rounded-full font-bold py-3 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white"
                     : "bg-white/10 hover:bg-white/20 text-white"
                 }`}
+                data-testid={`button-${plan.name.toLowerCase()}-cta`}
               >
-                {plan.cta}
+                {plan.name === "Plus" && checkoutMutation.isPending ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  plan.cta
+                )}
               </Button>
             </motion.div>
           ))}
