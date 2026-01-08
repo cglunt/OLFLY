@@ -679,7 +679,7 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="bg-[#2a2a45] rounded-2xl border border-white/10 overflow-hidden group"
+              className="bg-[#ac41c3] rounded-2xl border border-white/10 overflow-hidden group"
             >
               <summary className="w-full p-5 flex items-center justify-between text-left cursor-pointer list-none">
                 <span className="font-medium pr-4">{faq.q}</span>
