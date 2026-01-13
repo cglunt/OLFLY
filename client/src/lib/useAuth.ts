@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,, handleRedirectResult isFirebaseConfigured, User } from "./firebase";
+import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut, handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
