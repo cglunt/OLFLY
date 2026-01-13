@@ -11,26 +11,40 @@ export function useAuth() {
       setError("Firebase is not configured. Please add your Firebase credentials.");
       setLoading(false);
       return;
-          }
+    }
 
-    // Handle redirect result from OAuth
-    handleRedirectResult()
-      .then((user) => {
-        if (user) {
-          setUser(user);
+    // Handle redirect result from OAuth first, then set up auth listener
+    const initAuth = async () => {
+      try {
+        // Wait for redirect result to complete first
+        const redirectUser = await handleRedirectResult();
+        if (redirectUser) {
+          setUser(redirectUser);
         }
-      })
-      .catch((err) => {
+      } catch (err: any) {
         console.error("Redirect error:", err);
         setError(err.message);
+      }
+
+      // Now set up the auth state listener after redirect is handled
+      const unsubscribe = onAuthChange((firebaseUser) => {
+        setUser(firebaseUser);
+        setLoading(false);
       });
 
-    const unsubscribe = onAuthChange((firebaseUser) => {
-      setUser(firebaseUser);
-      setLoading(false);
+      return unsubscribe;
+    };
+
+    let unsubscribe: (() => void) | undefined;
+    initAuth().then((unsub) => {
+      unsubscribe = unsub;
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   return {
