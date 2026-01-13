@@ -4,7 +4,7 @@ import {
   getAuth, 
   GoogleAuthProvider, 
   signInWithPopup,
-    signInWithRedirect,
+  signInWithRedirect,
   getRedirectResult,
   signOut, 
   onAuthStateChanged, 
@@ -59,9 +59,11 @@ export async function signInWithGoogle() {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+  
   try {
-    const result = await signInWithPopup(auth, googleProvider);  } catch (error) {
-        return result.user;
+    const result = await signInWithPopup(auth, googleProvider);
+    return result.user;
+  } catch (error) {
     console.error("Error signing in with Google:", error);
     throw error;
   }
@@ -71,6 +73,7 @@ export async function handleRedirectResult() {
   if (!auth) {
     return null;
   }
+  
   try {
     const result = await getRedirectResult(auth);
     if (result) {
@@ -87,6 +90,7 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+  
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (displayName) {
@@ -103,6 +107,7 @@ export async function signInWithEmail(email: string, password: string) {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+  
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     return result.user;
@@ -116,6 +121,7 @@ export async function logOut() {
   if (!auth) {
     return;
   }
+  
   try {
     await signOut(auth);
   } catch (error) {
@@ -129,6 +135,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
     callback(null);
     return () => {};
   }
+  
   return onAuthStateChanged(auth, callback);
 }
 
