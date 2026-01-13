@@ -23,6 +23,7 @@ export default function Login() {
     try {
       setSignInError(null);
       await signInWithGoogle();
+          setLocation("/launch");
     } catch (err: any) {
       if (err.code === "auth/popup-closed-by-user") {
         return;
@@ -47,6 +48,7 @@ export default function Login() {
       } else {
         await signInWithEmail(email, password);
       }
+            setLocation("/launch");
     } catch (err: any) {
       let message = err.message || "Authentication failed";
       if (err.code === "auth/email-already-in-use") {
