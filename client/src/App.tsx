@@ -49,7 +49,7 @@ function AppRouter() {
   }, [authLoading, firebaseUser, location, setLocation]);
 
   useEffect(() => {
-        if (isLoading || !firebaseUser) return;
+            if (isLoading || !firebaseUser || !user) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
       setLocation("/launch/onboarding");
