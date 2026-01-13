@@ -18,12 +18,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      setLocation("/launch");
-    }
-  }, [loading, isAuthenticated, setLocation]);
-
+  
   const handleGoogleSignIn = async () => {
     try {
       setSignInError(null);
