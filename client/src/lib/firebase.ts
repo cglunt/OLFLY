@@ -2,7 +2,9 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider, 
-  signInWithPopup, 
+  signInWithPopup,
+    signInWithRedirect,
+  getRedirectResult,
   signOut, 
   onAuthStateChanged, 
   createUserWithEmailAndPassword,
@@ -57,10 +59,25 @@ export async function signInWithGoogle() {
     throw new Error("Firebase not configured");
   }
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    return result.user;
+    await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
+    throw error;
+  }
+}
+
+export async function handleRedirectResult() {
+  if (!auth) {
+    return null;
+  }
+  try {
+    const result = await getRedirectResult(auth);
+    if (result) {
+      return result.user;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error handling redirect:", error);
     throw error;
   }
 }
