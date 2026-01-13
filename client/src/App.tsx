@@ -48,7 +48,6 @@ function AppRouter() {
   // User is authenticated, render app routes
   return (
     <Switch>
-      <Route path="/launch/login" component={Login} />
       <Route path="/launch/onboarding" component={Onboarding} />
       <Route path="/launch" component={Home} />
       <Route path="/launch/training" component={Training} />
@@ -64,7 +63,7 @@ function AppRouter() {
 
 function Router() {
   const [location] = useLocation();
-  const isAppRoute = location.startsWith("/launch");
+  const isAppRoute = location.startsWith("/launch")) && location !== "/launch/login";
 
   if (isAppRoute) {
     return <AppRouter />;
