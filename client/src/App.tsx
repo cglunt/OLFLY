@@ -49,7 +49,7 @@ function AppRouter() {
   }, [authLoading, firebaseUser, location, setLocation]);
 
   useEffect(() => {
-    if (isLoading || !user || !firebaseUser) return;
+        if (isLoading || !firebaseUser) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
       setLocation("/launch/onboarding");
@@ -68,7 +68,8 @@ function AppRouter() {
     return <Login />;
   }
 
-  if (isLoading || !user) {
+    if (isLoading) {52
+                    
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
