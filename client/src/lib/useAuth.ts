@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut, handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
+import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut, isFirebaseConfigured, User } from "./firebase";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -13,41 +13,14 @@ export function useAuth() {
       return;
     }
 
-    let unsubscribe: (() => void) | undefined;
-    let redirectHandled = false;
+    // Set up auth state listener
+    const unsubscribe = onAuthChange((firebaseUser) => {
+      console.log("Auth state changed:", firebaseUser?.email || "No user");
+      setUser(firebaseUser);
+      setLoading(false);
+    });
 
-    // Handle redirect result from OAuth first
-    handleRedirectResult()
-      .then((redirectUser) => {
-        redirectHandled = true;
-        if (redirectUser) {
-          console.log("Redirect user found:", redirectUser.email);
-          setUser(redirectUser);
-        }
-        // Only set up listener after redirect is handled
-        unsubscribe = onAuthChange((firebaseUser) => {
-          console.log("Auth state changed:", firebaseUser?.email);
-          setUser(firebaseUser);
-          setLoading(false);
-        });
-      })
-      .catch((err: any) => {
-        console.error("Redirect error:", err);
-        setError(err.message);
-        redirectHandled = true;
-        // Still set up listener even if redirect fails
-        unsubscribe = onAuthChange((firebaseUser) => {
-          console.log("Auth state changed:", firebaseUser?.email);
-          setUser(firebaseUser);
-          setLoading(false);
-        });
-      });
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
+    return () => unsubscribe();
   }, []);
 
   return {
