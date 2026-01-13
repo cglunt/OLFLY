@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut, isFirebaseConfigured, User } from "./firebase";
+import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
+        handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -12,6 +13,18 @@ export function useAuth() {
       setLoading(false);
       return;
     }
+
+    // Handle redirect result from OAuth
+    handleRedirectResult()
+      .then((user) => {
+        if (user) {
+          setUser(user);
+        }
+      })
+      .catch((err) => {
+        console.error("Redirect error:", err);
+        setError(err.message);
+      });
 
     const unsubscribe = onAuthChange((firebaseUser) => {
       setUser(firebaseUser);
