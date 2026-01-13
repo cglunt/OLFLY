@@ -60,14 +60,9 @@ export async function signInWithGoogle() {
     throw new Error("Firebase not configured");
   }
   
-  try {
-    await signInWithRedirect(auth, googleProvider);
-    // Function will not return as page redirects
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
-    throw error;
-  }
-}
+  // signInWithRedirect immediately redirects the page
+  return signInWithRedirect(auth, googleProvider);
+}}
 export async function handleRedirectResult() {
   if (!auth) {
     return null;
