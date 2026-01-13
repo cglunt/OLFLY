@@ -13,32 +13,35 @@ export function useAuth() {
       return;
     }
 
-    // Handle redirect result from OAuth first, then set up auth listener
-    const initAuth = async () => {
-      try {
-        // Wait for redirect result to complete first
-        const redirectUser = await handleRedirectResult();
+    let unsubscribe: (() => void) | undefined;
+    let redirectHandled = false;
+
+    // Handle redirect result from OAuth first
+    handleRedirectResult()
+      .then((redirectUser) => {
+        redirectHandled = true;
         if (redirectUser) {
+          console.log("Redirect user found:", redirectUser.email);
           setUser(redirectUser);
         }
-      } catch (err: any) {
+        // Only set up listener after redirect is handled
+        unsubscribe = onAuthChange((firebaseUser) => {
+          console.log("Auth state changed:", firebaseUser?.email);
+          setUser(firebaseUser);
+          setLoading(false);
+        });
+      })
+      .catch((err: any) => {
         console.error("Redirect error:", err);
         setError(err.message);
-      }
-
-      // Now set up the auth state listener after redirect is handled
-      const unsubscribe = onAuthChange((firebaseUser) => {
-        setUser(firebaseUser);
-        setLoading(false);
+        redirectHandled = true;
+        // Still set up listener even if redirect fails
+        unsubscribe = onAuthChange((firebaseUser) => {
+          console.log("Auth state changed:", firebaseUser?.email);
+          setUser(firebaseUser);
+          setLoading(false);
+        });
       });
-
-      return unsubscribe;
-    };
-
-    let unsubscribe: (() => void) | undefined;
-    initAuth().then((unsub) => {
-      unsubscribe = unsub;
-    });
 
     return () => {
       if (unsubscribe) {
