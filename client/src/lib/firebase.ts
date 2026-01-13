@@ -1,4 +1,5 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
+// Firebase configuration and authentication
 import { 
   getAuth, 
   GoogleAuthProvider, 
