@@ -61,10 +61,9 @@ export async function signInWithGoogle() {
   }
   
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    return result.user;
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
+  await signInWithRedirect(auth, googleProvider);
+    // Function will not return as page redirects
+    return null;    console.error("Error signing in with Google:", error);
     throw error;
   }
 }
