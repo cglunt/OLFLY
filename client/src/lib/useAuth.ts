@@ -24,7 +24,6 @@ export function useAuth() {
         console.error("Redirect error:", err);
         setError(err.message);
       });
-    }
 
     const unsubscribe = onAuthChange((firebaseUser) => {
       setUser(firebaseUser);
