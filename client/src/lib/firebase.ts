@@ -61,13 +61,13 @@ export async function signInWithGoogle() {
   }
   
   try {
-  await signInWithRedirect(auth, googleProvider);
+    await signInWithRedirect(auth, googleProvider);
     // Function will not return as page redirects
-    return null;    console.error("Error signing in with Google:", error);
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
     throw error;
   }
 }
-
 export async function handleRedirectResult() {
   if (!auth) {
     return null;
