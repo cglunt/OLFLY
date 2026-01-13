@@ -23,39 +23,15 @@ import Safety from "@/pages/Safety";
 import Contact from "@/pages/Contact";
 import CookiePolicy from "@/pages/CookiePolicy";
 import Login from "@/pages/Login";
-import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
-  const [location, setLocation] = useLocation();
   const { user: firebaseUser, loading: authLoading } = useAuth();
-  const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
 
-  useEffect(() => {
-    if (authLoading) return;
-    
-    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
-      setLocation("/launch/login");
-      return;
-    }
-    
-    if (firebaseUser && location === "/launch/login") {
-      setLocation("/launch");
-      return;
-    }
-  }, [authLoading, firebaseUser, location, setLocation]);
-
-  useEffect(() => {
-            if (isLoading || !firebaseUser || !user) return;
-    
-    if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
-      setLocation("/launch/onboarding");
-    }
-  }, [location, setLocation, user, isLoading, firebaseUser]);
-
+  // Show loading spinner while checking auth
   if (authLoading) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
@@ -64,19 +40,12 @@ function AppRouter() {
     );
   }
 
+  // If not authenticated, show Login page
   if (!firebaseUser) {
     return <Login />;
   }
 
-    if (isLoading) {52
-                    
-    return (
-      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
+  // User is authenticated, render app routes
   return (
     <Switch>
       <Route path="/launch/login" component={Login} />
@@ -95,9 +64,7 @@ function AppRouter() {
 
 function Router() {
   const [location] = useLocation();
-
   const isAppRoute = location.startsWith("/launch");
-  const isLegalRoute = location.startsWith("/legal");
 
   if (isAppRoute) {
     return <AppRouter />;
@@ -116,7 +83,7 @@ function Router() {
       <Route path="/legal/contact" component={Contact} />
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/pricing" component={Landing} />
-      {!isLegalRoute && <Route component={NotFound} />}
+      <Route component={NotFound} />
     </Switch>
   );
 }
