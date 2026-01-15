@@ -28,13 +28,9 @@ export default function Login() {
     try {
       setSignInError(null);
       await signInWithGoogle();
-      console.log("LOGIN COMPLETE, SHOULD REDIRECT NOW");
-      setLocation("/launch");
     } catch (err: any) {
-      if (err.code === "auth/popup-closed-by-user") {
-        return;
-      }
-      setSignInError(err.message || "Failed to sign in");
+      console.error("Google sign-in error:", err);
+      setSignInError(err.message || "Failed to sign in with Google");
     }
   };
 
