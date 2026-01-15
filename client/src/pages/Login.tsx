@@ -28,6 +28,8 @@ export default function Login() {
     try {
       setSignInError(null);
       await signInWithGoogle();
+      console.log("LOGIN COMPLETE, SHOULD REDIRECT NOW");
+      setLocation("/launch");
     } catch (err: any) {
       if (err.code === "auth/popup-closed-by-user") {
         return;

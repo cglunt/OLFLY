@@ -27,6 +27,7 @@ export function useAuth() {
       });
 
     const unsubscribe = onAuthChange((firebaseUser) => {
+      console.log("AUTH STATE CHANGED:", firebaseUser);
       setUser(firebaseUser);
       setLoading(false);
     });

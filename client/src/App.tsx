@@ -37,6 +37,7 @@ function AppRouter() {
   useEffect(() => {
     if (authLoading) return;
     
+    console.log("ROUTER AUTH CHECK:", firebaseUser);
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
       setLocation("/launch/login");
       return;
