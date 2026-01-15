@@ -25,10 +25,8 @@ export default function Login() {
       await signInWithGoogle();
           setLocation("/launch");
     } catch (err: any) {
-      if (err.code === "auth/popup-closed-by-user") {
-        return;
-      }
-      setSignInError(err.message || "Failed to sign in");
+      console.error("Google sign-in error:", err);
+      setSignInError(err.message || "Failed to sign in with Google");
     }
   };
 

@@ -30,6 +30,30 @@ import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading } = useAuth();
+  const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
+
+  useEffect(() => {
+    if (authLoading) return;
+    
+    console.log("ROUTER AUTH CHECK:", firebaseUser);
+    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
+      setLocation("/launch/login");
+      return;
+    }
+    
+    if (firebaseUser && location === "/launch/login") {
+      setLocation("/launch");
+      return;
+    }
+  }, [authLoading, firebaseUser, location, setLocation]);
+
+  useEffect(() => {
+    if (isLoading || !user || !firebaseUser) return;
+    
+    if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
+      setLocation("/launch/onboarding");
+    }
+  }, [location, setLocation, user, isLoading, firebaseUser]);
 
   // Show loading spinner while checking auth
   if (authLoading) {
@@ -63,8 +87,7 @@ function AppRouter() {
 
 function Router() {
   const [location] = useLocation();
-  const isAppRoute = location.startsWith("/launch")) && location !== "/launch/login";
-
+  const isAppRoute = location.startsWith("/launch") && location !== "/launch/login";
   if (isAppRoute) {
     return <AppRouter />;
   }

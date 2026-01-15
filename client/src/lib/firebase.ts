@@ -3,7 +3,6 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider, 
-  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   signOut, 
@@ -60,8 +59,7 @@ export async function signInWithGoogle() {
     throw new Error("Firebase not configured");
   }
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    return result.user;
+    await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
     throw error;
@@ -72,7 +70,6 @@ export async function handleRedirectResult() {
   if (!auth) {
     return null;
   }
-  
   try {
     const result = await getRedirectResult(auth);
     if (result) {
