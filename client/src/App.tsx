@@ -24,6 +24,7 @@ import Contact from "@/pages/Contact";
 import CookiePolicy from "@/pages/CookiePolicy";
 import Login from "@/pages/Login";
 import { useAuth } from "@/lib/useAuth";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
