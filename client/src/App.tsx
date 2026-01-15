@@ -87,8 +87,7 @@ function AppRouter() {
 
 function Router() {
   const [location] = useLocation();
-  const isAppRoute = location.startsWith("/launch")) && location !== "/launch/login";
-
+  const isAppRoute = location.startsWith("/launch") && location !== "/launch/login";
   if (isAppRoute) {
     return <AppRouter />;
   }
