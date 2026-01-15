@@ -59,7 +59,6 @@ export async function signInWithGoogle() {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
-  
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
