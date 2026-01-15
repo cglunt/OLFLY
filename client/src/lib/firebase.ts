@@ -1,8 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup,
+  GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
   signOut, 
@@ -58,6 +57,7 @@ export async function signInWithGoogle() {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+
   try {
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {
