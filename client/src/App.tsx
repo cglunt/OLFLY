@@ -32,6 +32,7 @@ import { initializeTrackers } from "@/lib/cookieConsent";
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading } = useAuth();
   const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
+    const [location, setLocation] = useLocation();
 
   useEffect(() => {
     if (authLoading) return;
