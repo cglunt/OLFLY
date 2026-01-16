@@ -1,13 +1,9 @@
 import type { Express } from "express";
-import type { Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertUserScentSchema, insertSessionSchema, insertSymptomLogSchema, insertScentCollectionSchema, insertContactSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
 
-export async function registerRoutes(
-  httpServer: Server,
-  app: Express
-): Promise<Server> {
+export async function registerRoutes(app: Express): Promise<void> {
   
   // User routes
   app.post("/api/users", async (req, res) => {
@@ -226,5 +222,4 @@ export async function registerRoutes(
     }
   });
 
-  return httpServer;
 }
