@@ -6,5 +6,10 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ]
+,
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    }
+  ]]
 }
