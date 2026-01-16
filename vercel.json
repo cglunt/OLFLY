@@ -1,5 +1,8 @@
-import server from "../dist/index.cjs";
-
-export default function handler(req, res) {
-  return server(req, res);
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/public",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
 }
