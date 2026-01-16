@@ -1,4 +1,5 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
+// Firebase configuration and authentication
 import { 
   getAuth, 
   GoogleAuthProvider,
@@ -86,6 +87,7 @@ export async function signUpWithEmail(email: string, password: string, displayNa
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+  
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (displayName) {
@@ -102,6 +104,7 @@ export async function signInWithEmail(email: string, password: string) {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
+  
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     return result.user;
@@ -115,6 +118,7 @@ export async function logOut() {
   if (!auth) {
     return;
   }
+  
   try {
     await signOut(auth);
   } catch (error) {
@@ -128,6 +132,7 @@ export function onAuthChange(callback: (user: User | null) => void) {
     callback(null);
     return () => {};
   }
+  
   return onAuthStateChanged(auth, callback);
 }
 
