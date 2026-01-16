@@ -1,3 +1,3 @@
-import app from '../dist/server/index.js';
+import app from '../server/app';
 
-export default (req, res) => app(req, res);
+export default app;
