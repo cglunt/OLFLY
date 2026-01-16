@@ -97,6 +97,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
+              <Route path="/launch/login" component={Login} />
       <Route path="/clinicians" component={Clinicians} />
       <Route path="/legal" component={Legal} />
       <Route path="/legal/terms" component={Terms} />
