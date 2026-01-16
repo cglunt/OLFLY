@@ -44,31 +44,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes and middleware
-(async () => {
-  try {
-    await registerRoutes(httpServer, app);
+// Initialize app (will be called by serverless function or server)
+let initialized = false;
+export async function initializeApp() {
+  if (initialized) return app;
+  
+  await registerRoutes(httpServer, app);
 
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-      res.status(status).json({ message });
-      console.error("Request error:", err);
-    });
+    res.status(status).json({ message });
+    console.error("Request error:", err);
+  });
 
-    // Only serve static in production (Vercel will be production)
-    if (process.env.NODE_ENV === "production") {
-      serveStatic(app);
-    } else if (process.env.VERCEL !== "1") {
-      // Only setup Vite in local development
-      const { setupVite } = await import("./vite");
-      await setupVite(httpServer, app);
-    }
-  } catch (error) {
-    console.error("Failed to initialize app:", error);
-    throw error;
+  if (process.env.NODE_ENV === "production") {
+    serveStatic(app);
   }
-})();
+  
+  initialized = true;
+  return app;
+}
 
 export default app;
