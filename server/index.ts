@@ -68,5 +68,11 @@ app.use((req, res, next) => {
       await setupVite(httpServer, app);
     }
 
+  } catch (error) {
+    console.error("Failed to initialize server:", error);
+    process.exit(1);
+  }
+})();
+
 // Export the app for Vercel serverless function
 module.exports = app;
