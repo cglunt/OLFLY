@@ -14,23 +14,28 @@ export function useAuth() {
       return;
     }
 
-    // Handle redirect result from OAuth
-    handleRedirectResult()
-      .then((user) => {
-        if (user) {
-          setUser(user);
-        }
-      })
-      .catch((err) => {
-        console.error("Redirect error:", err);
-        setError(err.message);
-      });
+    let unsubscribe: (() => void) | null = null;
 
-    const unsubscribe = onAuthChange((firebaseUser) => {
-      console.log("AUTH STATE CHANGED:", firebaseUser);
+    // Set up auth state listener first
+    unsubscribe = onAuthChange((firebaseUser) => {
+      console.log("[useAuth] AUTH STATE CHANGED:", firebaseUser?.email || "null");
       setUser(firebaseUser);
       setLoading(false);
     });
+
+    // Then check for redirect result (for returning from Google sign-in)
+    handleRedirectResult()
+      .then((redirectUser) => {
+        if (redirectUser) {
+          console.log("[useAuth] Got user from redirect:", redirectUser.email);
+          setUser(redirectUser);
+          setLoading(false);
+        }
+      })
+      .catch((err: any) => {
+        console.error("[useAuth] Redirect error:", err);
+        // Don't block on redirect errors - auth state listener will handle it
+      });
 
     return () => {
       if (unsubscribe) {

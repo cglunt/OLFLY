@@ -69,16 +69,20 @@ export async function signInWithGoogle() {
 
 export async function handleRedirectResult() {
   if (!auth) {
+    console.log("[Firebase] handleRedirectResult: auth not initialized");
     return null;
   }
   try {
+    console.log("[Firebase] Checking for redirect result...");
     const result = await getRedirectResult(auth);
-    if (result) {
+    console.log("[Firebase] Redirect result:", result ? "User found" : "No redirect result");
+    if (result && result.user) {
+      console.log("[Firebase] User from redirect:", result.user.email);
       return result.user;
     }
     return null;
-  } catch (error) {
-    console.error("Error handling redirect:", error);
+  } catch (error: any) {
+    console.error("[Firebase] Error handling redirect:", error.code, error.message);
     throw error;
   }
 }
