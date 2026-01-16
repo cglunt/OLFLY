@@ -1,4 +1,4 @@
-import { initializeApp } from '../server/app';
+import { initializeApp } from '../../server/app.ts';
 
 let appPromise = null;
 
