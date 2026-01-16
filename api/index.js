@@ -1,4 +1,4 @@
-import { initializeApp } from "../dist/server/app.js";
+import { initializeApp } from "../server/app";
 
 let appPromise = null;
 
