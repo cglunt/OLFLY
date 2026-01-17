@@ -18,12 +18,19 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Redirect to /launch if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      console.log("[Login] User is authenticated, redirecting to /launch");
+      setLocation("/launch");
+    }
+  }, [isAuthenticated, loading, setLocation]);
+
   
   const handleGoogleSignIn = async () => {
     try {
       setSignInError(null);
       await signInWithGoogle();
-          setLocation("/launch");
     } catch (err: any) {
       console.error("Google sign-in error:", err);
       setSignInError(err.message || "Failed to sign in with Google");
@@ -46,7 +53,6 @@ export default function Login() {
       } else {
         await signInWithEmail(email, password);
       }
-            setLocation("/launch");
     } catch (err: any) {
       let message = err.message || "Authentication failed";
       if (err.code === "auth/email-already-in-use") {
