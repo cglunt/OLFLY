@@ -68,10 +68,6 @@ app.use((req, res, next) => {
       await setupVite(httpServer, app);
     }
 
-    const port = 5000;
-    httpServer.listen(port, "0.0.0.0", () => {
-      log(`serving on port ${port}`);
-    });
 
   } catch (error) {
     console.error("Failed to initialize server:", error);
