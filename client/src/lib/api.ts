@@ -1,10 +1,36 @@
-import type { User, InsertUser, UserScent, Session, InsertSession, SymptomLog, InsertSymptomLog, ScentCollection, InsertScentCollection } from "@shared/schema";
+import type {
+  User,
+  InsertUser,
+  UserScent,
+  Session,
+  InsertSession,
+  SymptomLog,
+  InsertSymptomLog,
+  ScentCollection,
+  InsertScentCollection,
+} from "@shared/schema";
+
+import { auth } from "./firebase";
+
+// Helper function to get auth headers
+async function getAuthHeaders(): Promise<HeadersInit> {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const token = await user.getIdToken();
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
 
 // User API
 export async function createUser(userData: InsertUser): Promise<User> {
   const res = await fetch("/api/users", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(userData),
   });
   if (!res.ok) throw new Error("Failed to create user");
@@ -17,10 +43,13 @@ export async function getUser(id: string): Promise<User> {
   return res.json();
 }
 
-export async function updateUser(id: string, updates: Partial<InsertUser>): Promise<User> {
+export async function updateUser(
+  id: string,
+  updates: Partial<InsertUser>,
+): Promise<User> {
   const res = await fetch(`/api/users/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update user");
@@ -34,10 +63,13 @@ export async function getUserScents(userId: string): Promise<UserScent[]> {
   return res.json();
 }
 
-export async function setUserScents(userId: string, scentIds: string[]): Promise<UserScent[]> {
+export async function setUserScents(
+  userId: string,
+  scentIds: string[],
+): Promise<UserScent[]> {
   const res = await fetch(`/api/users/${userId}/scents`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify({ scentIds }),
   });
   if (!res.ok) throw new Error("Failed to update user scents");
@@ -45,72 +77,101 @@ export async function setUserScents(userId: string, scentIds: string[]): Promise
 }
 
 // Scent Collections API
-export async function getUserCollections(userId: string): Promise<ScentCollection[]> {
+export async function getUserCollections(
+  userId: string,
+): Promise<ScentCollection[]> {
   const res = await fetch(`/api/users/${userId}/collections`);
   if (!res.ok) throw new Error("Failed to fetch collections");
   return res.json();
 }
 
-export async function getActiveCollection(userId: string): Promise<ScentCollection | null> {
+export async function getActiveCollection(
+  userId: string,
+): Promise<ScentCollection | null> {
   const res = await fetch(`/api/users/${userId}/collections/active`);
   if (!res.ok) throw new Error("Failed to fetch active collection");
   return res.json();
 }
 
-export async function getCollectionByContext(userId: string, context: string): Promise<ScentCollection | null> {
-  const res = await fetch(`/api/users/${userId}/collections/context/${context}`);
+export async function getCollectionByContext(
+  userId: string,
+  context: string,
+): Promise<ScentCollection | null> {
+  const res = await fetch(
+    `/api/users/${userId}/collections/context/${context}`,
+  );
   if (!res.ok) throw new Error("Failed to fetch collection by context");
   return res.json();
 }
 
-export async function createCollection(collectionData: InsertScentCollection): Promise<ScentCollection> {
+export async function createCollection(
+  collectionData: InsertScentCollection,
+): Promise<ScentCollection> {
   const res = await fetch("/api/collections", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(collectionData),
   });
   if (!res.ok) throw new Error("Failed to create collection");
   return res.json();
 }
 
-export async function updateCollection(userId: string, id: string, updates: Partial<InsertScentCollection>): Promise<ScentCollection> {
+export async function updateCollection(
+  userId: string,
+  id: string,
+  updates: Partial<InsertScentCollection>,
+): Promise<ScentCollection> {
   const res = await fetch(`/api/users/${userId}/collections/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update collection");
   return res.json();
 }
 
-export async function deleteCollection(userId: string, id: string): Promise<void> {
+export async function deleteCollection(
+  userId: string,
+  id: string,
+): Promise<void> {
   const res = await fetch(`/api/users/${userId}/collections/${id}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete collection");
 }
 
-export async function activateCollection(userId: string, collectionId: string): Promise<ScentCollection> {
-  const res = await fetch(`/api/users/${userId}/collections/${collectionId}/activate`, {
-    method: "POST",
-  });
+export async function activateCollection(
+  userId: string,
+  collectionId: string,
+): Promise<ScentCollection> {
+  const res = await fetch(
+    `/api/users/${userId}/collections/${collectionId}/activate`,
+    {
+      method: "POST",
+    },
+  );
   if (!res.ok) throw new Error("Failed to activate collection");
   return res.json();
 }
 
 // Session API
-export async function createSession(sessionData: InsertSession): Promise<Session> {
+export async function createSession(
+  sessionData: InsertSession,
+): Promise<Session> {
   const res = await fetch("/api/sessions", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(sessionData),
   });
   if (!res.ok) throw new Error("Failed to create session");
   return res.json();
 }
 
-export async function getUserSessions(userId: string, limit?: number): Promise<Session[]> {
-  const url = `/api/users/${userId}/sessions${limit ? `?limit=${limit}` : ''}`;
+export async function getUserSessions(
+  userId: string,
+  limit?: number,
+): Promise<Session[]> {
+  const url = `/api/users/${userId}/sessions${limit ? `?limit=${limit}` : ""}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch sessions");
   return res.json();
@@ -122,10 +183,13 @@ export async function getSession(id: string): Promise<Session> {
   return res.json();
 }
 
-export async function updateSession(id: string, updates: Partial<InsertSession>): Promise<Session> {
+export async function updateSession(
+  id: string,
+  updates: Partial<InsertSession>,
+): Promise<Session> {
   const res = await fetch(`/api/sessions/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update session");
@@ -133,18 +197,23 @@ export async function updateSession(id: string, updates: Partial<InsertSession>)
 }
 
 // Symptom Log API
-export async function createSymptomLog(logData: InsertSymptomLog): Promise<SymptomLog> {
+export async function createSymptomLog(
+  logData: InsertSymptomLog,
+): Promise<SymptomLog> {
   const res = await fetch("/api/symptom-logs", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: await getAuthHeaders(),
     body: JSON.stringify(logData),
   });
   if (!res.ok) throw new Error("Failed to create symptom log");
   return res.json();
 }
 
-export async function getUserSymptomLogs(userId: string, limit?: number): Promise<SymptomLog[]> {
-  const url = `/api/users/${userId}/symptom-logs${limit ? `?limit=${limit}` : ''}`;
+export async function getUserSymptomLogs(
+  userId: string,
+  limit?: number,
+): Promise<SymptomLog[]> {
+  const url = `/api/users/${userId}/symptom-logs${limit ? `?limit=${limit}` : ""}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch symptom logs");
   return res.json();
