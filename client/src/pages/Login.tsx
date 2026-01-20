@@ -18,14 +18,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Redirect to /launch if user is already authenticated
-  useEffect(() => {
-    if (isAuthenticated && !loading) {
-      console.log("[Login] User is authenticated, redirecting to /launch");
-      setLocation("/launch");
-    }
-  }, [isAuthenticated, loading, setLocation]);
-
   
   const handleGoogleSignIn = async () => {
     try {

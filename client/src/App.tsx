@@ -35,7 +35,24 @@ function AppRouter() {
     const [location, setLocation] = useLocation();
 
   useEffect(() => {
+    // DO NOTHING until Firebase finishes restoring session
     if (authLoading) return;
+
+    console.log("ROUTER AUTH CHECK:", firebaseUser, location);
+
+    // Not logged in → protect /launch/*
+    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
+      setLocation("/launch/login");
+      return;
+    }
+
+    // Logged in → keep them out of login page
+    if (firebaseUser && location === "/launch/login") {
+      setLocation("/launch");
+      return;
+    }
+  }, [authLoading, firebaseUser, location, setLocation]);
+
     
     console.log("ROUTER AUTH CHECK:", firebaseUser);
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
@@ -67,9 +84,10 @@ function AppRouter() {
   }
 
   // If not authenticated, show Login page
-  if (!firebaseUser) {
-    return <Login />;
-  }
+if (!firebaseUser && location.startsWith("/launch")) {
+  return <Login />;
+}
+
 
   // User is authenticated, render app routes
   return (
