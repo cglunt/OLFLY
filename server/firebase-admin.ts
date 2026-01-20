@@ -1,14 +1,22 @@
-import * as admin from 'firebase-admin';
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 
-// Initialize Firebase Admin SDK
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+function requireEnv(name: string): string {
+  const val = process.env[name];
+  if (!val) throw new Error(`Missing env var: ${name}`);
+  return val;
 }
 
-export default admin;
+export function getFirebaseAuth() {
+  if (!getApps().length) {
+    const projectId = requireEnv("FIREBASE_PROJECT_ID");
+    const clientEmail = requireEnv("FIREBASE_CLIENT_EMAIL");
+    const privateKey = requireEnv("FIREBASE_PRIVATE_KEY").replace(/\\n/g, "\n");
+
+    initializeApp({
+      credential: cert({ projectId, clientEmail, privateKey }),
+    });
+  }
+
+  return getAuth();
+}

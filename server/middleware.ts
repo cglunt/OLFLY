@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import admin from "./firebase-admin";
+import { getFirebaseAuth } from "./firebase-admin";
+import type { DecodedIdToken } from "firebase-admin/auth";
+
 
 declare global {
   namespace Express {
     interface Request {
-      user?: admin.auth.DecodedIdToken;
+      user?: DecodedIdToken;
+
     }
   }
 }
@@ -29,7 +32,8 @@ export async function requireAuth(
   }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    const decodedToken = await getFirebaseAuth().verifyIdToken(token);
+
     req.user = decodedToken;
     next();
   } catch (error) {
