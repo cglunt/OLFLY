@@ -26,12 +26,16 @@ import Login from "@/pages/Login";
 import { useAuth } from "@/lib/useAuth";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading, authResolved } = useAuth();
-  const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
+  const { user, isLoading, error: currentUserError } = useCurrentUser(
+    firebaseUser?.displayName || undefined,
+    { enabled: !!firebaseUser }
+  );
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
@@ -79,20 +83,35 @@ function AppRouter() {
     );
   }
 
+  if (currentUserError) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <div className="text-center text-white space-y-2 max-w-sm">
+          <p className="text-lg font-semibold">We couldn’t load your profile.</p>
+          <p className="text-white/70 text-sm">
+            Please refresh the page or try again in a moment.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
 
   // User is authenticated, render app routes
   return (
-    <Switch>
-      <Route path="/launch/onboarding" component={Onboarding} />
-      <Route path="/launch" component={Home} />
-      <Route path="/launch/training" component={Training} />
-      <Route path="/launch/library" component={Library} />
-      <Route path="/launch/progress" component={Progress} />
-      <Route path="/launch/learn" component={Learn} />
-      <Route path="/launch/article/restoring-smell" component={Article} />
-      <Route path="/launch/settings" component={Settings} />
-      <Route component={NotFound} />
-    </Switch>
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/launch/onboarding" component={Onboarding} />
+        <Route path="/launch" component={Home} />
+        <Route path="/launch/training" component={Training} />
+        <Route path="/launch/library" component={Library} />
+        <Route path="/launch/progress" component={Progress} />
+        <Route path="/launch/learn" component={Learn} />
+        <Route path="/launch/article/restoring-smell" component={Article} />
+        <Route path="/launch/settings" component={Settings} />
+        <Route component={NotFound} />
+      </Switch>
+    </ErrorBoundary>
   );
 }
 
