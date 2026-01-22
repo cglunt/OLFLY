@@ -30,13 +30,13 @@ import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
-  const { user: firebaseUser, loading: authLoading } = useAuth();
+  const { user: firebaseUser, loading: authLoading, authResolved } = useAuth();
   const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
-    const [location, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
-    if (authLoading) return;
+    if (!authResolved) return;
 
     console.log("ROUTER AUTH CHECK:", firebaseUser, location);
 
@@ -51,31 +51,18 @@ function AppRouter() {
       setLocation("/launch");
       return;
     }
-  }, [authLoading, firebaseUser, location, setLocation]);
-
-    
-    console.log("ROUTER AUTH CHECK:", firebaseUser);
-    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
-      setLocation("/launch/login");
-      return;
-    }
-    
-    if (firebaseUser && location === "/launch/login") {
-      setLocation("/launch");
-      return;
-    }
-  }, [authLoading, firebaseUser, location, setLocation]);
+  }, [authResolved, firebaseUser, location, setLocation]);
 
   useEffect(() => {
-    if (isLoading || !user || !firebaseUser) return;
+    if (!authResolved || isLoading || !user || !firebaseUser) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
       setLocation("/launch/onboarding");
     }
-  }, [location, setLocation, user, isLoading, firebaseUser]);
+  }, [authResolved, location, setLocation, user, isLoading, firebaseUser]);
 
   // Show loading spinner while checking auth
-  if (authLoading) {
+  if (!authResolved || authLoading) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
@@ -84,9 +71,13 @@ function AppRouter() {
   }
 
   // If not authenticated, show Login page
-if (!firebaseUser && location.startsWith("/launch")) {
-  return <Login />;
-}
+  if (!firebaseUser && location.startsWith("/launch")) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <div className="animate-pulse text-white/70">Redirecting to login...</div>
+      </div>
+    );
+  }
 
 
   // User is authenticated, render app routes
@@ -115,7 +106,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
-              <Route path="/launch/login" component={Login} />
+      <Route path="/launch/login" component={Login} />
       <Route path="/clinicians" component={Clinicians} />
       <Route path="/legal" component={Legal} />
       <Route path="/legal/terms" component={Terms} />
