@@ -44,7 +44,7 @@ export function useCurrentUser(displayName?: string, options?: { enabled?: boole
     queryKey: ["currentUser", displayName],
     queryFn: () => getOrCreateUser(displayName),
     staleTime: 5 * 60 * 1000,
-    retry: 1,
+    retry: 0,
     enabled: options?.enabled ?? true,
   });
 
