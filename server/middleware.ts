@@ -18,8 +18,15 @@ export async function requireAuth(
   next: NextFunction
 ): Promise<void> {
   const authHeader = req.headers.authorization;
+  const shouldLog = req.path.startsWith("/api/users");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (shouldLog) {
+      console.warn("[auth] missing/invalid authorization header", {
+        path: req.path,
+        hasAuthHeader: !!authHeader,
+      });
+    }
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
@@ -37,7 +44,12 @@ export async function requireAuth(
     req.user = decodedToken;
     next();
   } catch (error) {
-    console.error("Token verification failed:", error);
+    if (shouldLog) {
+      console.error("[auth] token verification failed", {
+        path: req.path,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
     res.status(401).json({ message: "Unauthorized" });
   }
 }
