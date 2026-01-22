@@ -32,10 +32,10 @@ import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
-  const { user: firebaseUser, loading: authLoading, authResolved } = useAuth();
+  const { user: firebaseUser, loading: authLoading, authResolved, logOut } = useAuth();
   const { user, isLoading, error: currentUserError, refetch } = useCurrentUser(
     firebaseUser?.displayName || undefined,
-    { enabled: !!firebaseUser }
+    { enabled: authResolved && !!firebaseUser }
   );
   const [location, setLocation] = useLocation();
 
@@ -82,20 +82,36 @@ function AppRouter() {
     );
   }
 
+  const currentUserStatus = (currentUserError as { status?: number } | null)?.status;
+
   if (currentUserError) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="text-center text-white space-y-2 max-w-sm">
           <p className="text-lg font-semibold">We couldn’t load your profile.</p>
           <p className="text-white/70 text-sm">
-            Please refresh the page or try again in a moment.
+            {currentUserStatus === 401
+              ? "Your session expired. Please sign in again."
+              : "Please refresh the page or try again in a moment."}
           </p>
-          <Button
-            onClick={() => refetch()}
-            className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
-          >
-            Retry
-          </Button>
+          {currentUserStatus === 401 ? (
+            <Button
+              onClick={async () => {
+                await logOut();
+                setLocation("/launch/login");
+              }}
+              className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
+            >
+              Sign in again
+            </Button>
+          ) : (
+            <Button
+              onClick={() => refetch()}
+              className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
+            >
+              Retry
+            </Button>
+          )}
         </div>
       </div>
     );

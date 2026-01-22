@@ -20,28 +20,49 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   }
 
   const token = await user.getIdToken();
-  return {
+  const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
+  return headers;
+}
+
+async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
+  const headers = await getAuthHeaders();
+  if (import.meta.env.DEV) {
+    const authHeader = headers.Authorization ? "set" : "missing";
+    console.debug("[api] authFetch", { url: String(input), authHeader });
+  }
+  return fetch(input, {
+    ...init,
+    headers: {
+      ...headers,
+      ...(init.headers ?? {}),
+    },
+  });
 }
 
 // User API
 export async function createUser(userData: InsertUser): Promise<User> {
-  const res = await fetch("/api/users", {
+  const res = await authFetch("/api/users", {
     method: "POST",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(userData),
   });
-  if (!res.ok) throw new Error("Failed to create user");
+  if (!res.ok) {
+    const error = new Error("Failed to create user");
+    (error as { status?: number }).status = res.status;
+    throw error;
+  }
   return res.json();
 }
 
 export async function getUser(id: string): Promise<User> {
-  const res = await fetch(`/api/users/${id}`, {
-    headers: await getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error("Failed to fetch user");
+  const res = await authFetch(`/api/users/${id}`);
+  if (!res.ok) {
+    const error = new Error("Failed to fetch user");
+    (error as { status?: number }).status = res.status;
+    throw error;
+  }
   return res.json();
 }
 
