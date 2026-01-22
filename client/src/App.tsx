@@ -26,17 +26,21 @@ import Login from "@/pages/Login";
 import { useAuth } from "@/lib/useAuth";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
-  const { user: firebaseUser, loading: authLoading } = useAuth();
-  const { user, isLoading } = useCurrentUser(firebaseUser?.displayName || undefined);
-    const [location, setLocation] = useLocation();
+  const { user: firebaseUser, loading: authLoading, authResolved } = useAuth();
+  const { user, isLoading, error: currentUserError } = useCurrentUser(
+    firebaseUser?.displayName || undefined,
+    { enabled: !!firebaseUser }
+  );
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
-    if (authLoading) return;
+    if (!authResolved) return;
 
     console.log("ROUTER AUTH CHECK:", firebaseUser, location);
 
@@ -51,31 +55,18 @@ function AppRouter() {
       setLocation("/launch");
       return;
     }
-  }, [authLoading, firebaseUser, location, setLocation]);
-
-    
-    console.log("ROUTER AUTH CHECK:", firebaseUser);
-    if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
-      setLocation("/launch/login");
-      return;
-    }
-    
-    if (firebaseUser && location === "/launch/login") {
-      setLocation("/launch");
-      return;
-    }
-  }, [authLoading, firebaseUser, location, setLocation]);
+  }, [authResolved, firebaseUser, location, setLocation]);
 
   useEffect(() => {
-    if (isLoading || !user || !firebaseUser) return;
+    if (!authResolved || isLoading || !user || !firebaseUser) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
       setLocation("/launch/onboarding");
     }
-  }, [location, setLocation, user, isLoading, firebaseUser]);
+  }, [authResolved, location, setLocation, user, isLoading, firebaseUser]);
 
   // Show loading spinner while checking auth
-  if (authLoading) {
+  if (!authResolved || authLoading) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
@@ -84,24 +75,43 @@ function AppRouter() {
   }
 
   // If not authenticated, show Login page
-if (!firebaseUser && location.startsWith("/launch")) {
-  return <Login />;
-}
+  if (!firebaseUser && location.startsWith("/launch")) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <div className="animate-pulse text-white/70">Redirecting to login...</div>
+      </div>
+    );
+  }
+
+  if (currentUserError) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
+        <div className="text-center text-white space-y-2 max-w-sm">
+          <p className="text-lg font-semibold">We couldn’t load your profile.</p>
+          <p className="text-white/70 text-sm">
+            Please refresh the page or try again in a moment.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
 
   // User is authenticated, render app routes
   return (
-    <Switch>
-      <Route path="/launch/onboarding" component={Onboarding} />
-      <Route path="/launch" component={Home} />
-      <Route path="/launch/training" component={Training} />
-      <Route path="/launch/library" component={Library} />
-      <Route path="/launch/progress" component={Progress} />
-      <Route path="/launch/learn" component={Learn} />
-      <Route path="/launch/article/restoring-smell" component={Article} />
-      <Route path="/launch/settings" component={Settings} />
-      <Route component={NotFound} />
-    </Switch>
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/launch/onboarding" component={Onboarding} />
+        <Route path="/launch" component={Home} />
+        <Route path="/launch/training" component={Training} />
+        <Route path="/launch/library" component={Library} />
+        <Route path="/launch/progress" component={Progress} />
+        <Route path="/launch/learn" component={Learn} />
+        <Route path="/launch/article/restoring-smell" component={Article} />
+        <Route path="/launch/settings" component={Settings} />
+        <Route component={NotFound} />
+      </Switch>
+    </ErrorBoundary>
   );
 }
 
@@ -115,7 +125,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
-              <Route path="/launch/login" component={Login} />
+      <Route path="/launch/login" component={Login} />
       <Route path="/clinicians" component={Clinicians} />
       <Route path="/legal" component={Legal} />
       <Route path="/legal/terms" component={Terms} />
