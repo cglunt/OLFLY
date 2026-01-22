@@ -26,13 +26,14 @@ import Login from "@/pages/Login";
 import { useAuth } from "@/lib/useAuth";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { Button } from "@/components/ui/button";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading, authResolved } = useAuth();
-  const { user, isLoading, error: currentUserError } = useCurrentUser(
+  const { user, isLoading, error: currentUserError, refetch } = useCurrentUser(
     firebaseUser?.displayName || undefined,
     { enabled: !!firebaseUser }
   );
@@ -41,8 +42,6 @@ function AppRouter() {
   useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
     if (!authResolved) return;
-
-    console.log("ROUTER AUTH CHECK:", firebaseUser, location);
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
@@ -91,6 +90,12 @@ function AppRouter() {
           <p className="text-white/70 text-sm">
             Please refresh the page or try again in a moment.
           </p>
+          <Button
+            onClick={() => refetch()}
+            className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
+          >
+            Retry
+          </Button>
         </div>
       </div>
     );
