@@ -38,7 +38,9 @@ export async function createUser(userData: InsertUser): Promise<User> {
 }
 
 export async function getUser(id: string): Promise<User> {
-  const res = await fetch(`/api/users/${id}`);
+  const res = await fetch(`/api/users/${id}`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch user");
   return res.json();
 }
@@ -58,7 +60,9 @@ export async function updateUser(
 
 // User Scents API (legacy)
 export async function getUserScents(userId: string): Promise<UserScent[]> {
-  const res = await fetch(`/api/users/${userId}/scents`);
+  const res = await fetch(`/api/users/${userId}/scents`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch user scents");
   return res.json();
 }
@@ -68,7 +72,7 @@ export async function setUserScents(
   scentIds: string[],
 ): Promise<UserScent[]> {
   const res = await fetch(`/api/users/${userId}/scents`, {
-    method: "POST",
+    method: "PUT",
     headers: await getAuthHeaders(),
     body: JSON.stringify({ scentIds }),
   });
@@ -80,7 +84,9 @@ export async function setUserScents(
 export async function getUserCollections(
   userId: string,
 ): Promise<ScentCollection[]> {
-  const res = await fetch(`/api/users/${userId}/collections`);
+  const res = await fetch(`/api/users/${userId}/collections`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch collections");
   return res.json();
 }
@@ -88,7 +94,9 @@ export async function getUserCollections(
 export async function getActiveCollection(
   userId: string,
 ): Promise<ScentCollection | null> {
-  const res = await fetch(`/api/users/${userId}/collections/active`);
+  const res = await fetch(`/api/users/${userId}/collections/active`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch active collection");
   return res.json();
 }
@@ -99,6 +107,9 @@ export async function getCollectionByContext(
 ): Promise<ScentCollection | null> {
   const res = await fetch(
     `/api/users/${userId}/collections/context/${context}`,
+    {
+      headers: await getAuthHeaders(),
+    },
   );
   if (!res.ok) throw new Error("Failed to fetch collection by context");
   return res.json();
@@ -136,6 +147,7 @@ export async function deleteCollection(
 ): Promise<void> {
   const res = await fetch(`/api/users/${userId}/collections/${id}`, {
     method: "DELETE",
+    headers: await getAuthHeaders(),
   });
   if (!res.ok) throw new Error("Failed to delete collection");
 }
@@ -148,6 +160,7 @@ export async function activateCollection(
     `/api/users/${userId}/collections/${collectionId}/activate`,
     {
       method: "POST",
+      headers: await getAuthHeaders(),
     },
   );
   if (!res.ok) throw new Error("Failed to activate collection");
@@ -172,7 +185,9 @@ export async function getUserSessions(
   limit?: number,
 ): Promise<Session[]> {
   const url = `/api/users/${userId}/sessions${limit ? `?limit=${limit}` : ""}`;
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch sessions");
   return res.json();
 }
@@ -214,7 +229,9 @@ export async function getUserSymptomLogs(
   limit?: number,
 ): Promise<SymptomLog[]> {
   const url = `/api/users/${userId}/symptom-logs${limit ? `?limit=${limit}` : ""}`;
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to fetch symptom logs");
   return res.json();
 }
