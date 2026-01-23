@@ -114,6 +114,14 @@ export async function createUser(userData: InsertUser): Promise<User> {
   if (!res.ok) {
     const error = new Error("Failed to create user");
     (error as { status?: number }).status = res.status;
+    try {
+      const body = await res.clone().json();
+      if (body?.code) {
+        setLastAuthError(`${body.code} ${body.message ?? ""}`.trim());
+      }
+    } catch {
+      // ignore parse errors
+    }
     authDebugState = {
       ...authDebugState,
       lastUsersError: error.message,
