@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getFirebaseAuth } from "./firebase-admin";
+import { getRequestBase } from "./request-url";
 import type { DecodedIdToken } from "firebase-admin/auth";
 
 
@@ -22,6 +23,7 @@ export async function requireAuth(
   const shouldLog = req.path.startsWith("/api/users");
   const proto = req.headers["x-forwarded-proto"] ?? "https";
   const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  const base = getRequestBase(req);
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const expectedIss = projectId ? `https://securetoken.google.com/${projectId}` : undefined;
   const expectedAud = projectId;
@@ -33,12 +35,9 @@ export async function requireAuth(
   };
 
   if (shouldLog && debugAuth) {
-    console.info("[auth] request", {
-      method: req.method,
-      originalUrl: req.originalUrl,
-      host,
-      proto,
-    });
+    console.info(
+      `[auth] request method=${req.method} originalUrl=${req.originalUrl} proto=${proto} host=${host} base=${base}`
+    );
   }
 
   const decodeSegment = (segment?: string) => {

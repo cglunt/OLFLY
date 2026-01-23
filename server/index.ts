@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { getSafeRequestUrl } from "./request-url";
 
 const app = express();
 const httpServer = createServer(app);
@@ -32,24 +33,6 @@ export function log(message: string, source = "express") {
   });
 
   console.log(`${formattedTime} [${source}] ${message}`);
-}
-
-function getRequestBase(req: Request): string | undefined {
-  const proto = req.headers["x-forwarded-proto"] ?? "https";
-  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
-  return host ? `${proto}://${host}` : undefined;
-}
-
-function getSafeRequestUrl(req: Request): string | undefined {
-  const rawUrl = req.originalUrl ?? req.url;
-  const base = getRequestBase(req);
-  if (!rawUrl) return undefined;
-  if (!base) return rawUrl;
-  try {
-    return new URL(rawUrl, base).toString();
-  } catch {
-    return rawUrl;
-  }
 }
 
 function logServerError(err: any, req: Request) {
