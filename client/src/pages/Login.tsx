@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/useAuth";
 import { Mail, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-  const { loading, signInWithGoogle, signInWithEmail, signUpWithEmail, isAuthenticated, error, isConfigured, authResolved } = useAuth();
+  const { loading, signInWithGoogle, signInWithEmail, signUpWithEmail, isAuthenticated, error, isConfigured, authReady } = useAuth();
   const [, setLocation] = useLocation();
   const [signInError, setSignInError] = useState<string | null>(null);
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -19,10 +19,10 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (authResolved && isAuthenticated) {
+    if (authReady && isAuthenticated) {
       setLocation("/launch");
     }
-  }, [authResolved, isAuthenticated, setLocation]);
+  }, [authReady, isAuthenticated, setLocation]);
 
   
   const handleGoogleSignIn = async () => {

@@ -34,16 +34,16 @@ import { initializeTrackers } from "@/lib/cookieConsent";
 import { setLoginRedirectReason } from "@/lib/api";
 
 function AppRouter() {
-  const { user: firebaseUser, loading: authLoading, authResolved, logOut } = useAuth();
+  const { user: firebaseUser, loading: authLoading, authReady, logOut } = useAuth();
   const { user, isLoading, error: currentUserError, refetch } = useCurrentUser(
     firebaseUser?.displayName || undefined,
-    { enabled: authResolved && !!firebaseUser }
+    { enabled: authReady && !!firebaseUser }
   );
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
-    if (!authResolved) return;
+    if (!authReady) return;
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
@@ -57,18 +57,18 @@ function AppRouter() {
       setLocation("/launch");
       return;
     }
-  }, [authResolved, firebaseUser, location, setLocation]);
+  }, [authReady, firebaseUser, location, setLocation]);
 
   useEffect(() => {
-    if (!authResolved || isLoading || !user || !firebaseUser) return;
+    if (!authReady || isLoading || !user || !firebaseUser) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
       setLocation("/launch/onboarding");
     }
-  }, [authResolved, location, setLocation, user, isLoading, firebaseUser]);
+  }, [authReady, location, setLocation, user, isLoading, firebaseUser]);
 
   // Show loading spinner while checking auth
-  if (!authResolved || authLoading) {
+  if (!authReady || authLoading) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />

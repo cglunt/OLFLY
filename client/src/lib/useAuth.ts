@@ -6,12 +6,16 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authResolved, setAuthResolved] = useState(false);
+  const [hasSeenAuthStateChangedOnce, setHasSeenAuthStateChangedOnce] = useState(false);
+  const [redirectResultDone, setRedirectResultDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isFirebaseConfigured()) {
       setError("Firebase is not configured. Please add your Firebase credentials.");
       setLoading(false);
+      setHasSeenAuthStateChangedOnce(true);
+      setRedirectResultDone(true);
       setAuthResolved(true);
       return;
     }
@@ -22,8 +26,7 @@ export function useAuth() {
     unsubscribe = onAuthChange((firebaseUser) => {
       console.log("[useAuth] AUTH STATE CHANGED:", firebaseUser?.email || "null");
       setUser(firebaseUser);
-      setLoading(false);
-      setAuthResolved(true);
+      setHasSeenAuthStateChangedOnce(true);
     });
 
     // Then check for redirect result (for returning from Google sign-in)
@@ -32,14 +35,15 @@ export function useAuth() {
         if (redirectUser) {
           console.log("[useAuth] Got user from redirect:", redirectUser.email);
           setUser(redirectUser);
-          setLoading(false);
-          setAuthResolved(true);
         }
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);
         setAuthResolved(true);
         // Don't block on redirect errors - auth state listener will handle it
+      })
+      .finally(() => {
+        setRedirectResultDone(true);
       });
 
     return () => {
@@ -49,10 +53,20 @@ export function useAuth() {
     };
   }, []);
 
+  const authReady = hasSeenAuthStateChangedOnce && redirectResultDone;
+
+  useEffect(() => {
+    if (authReady) {
+      setLoading(false);
+      setAuthResolved(true);
+    }
+  }, [authReady]);
+
   return {
     user,
     loading,
     authResolved,
+    authReady,
     error,
     signInWithGoogle,
     signInWithEmail,

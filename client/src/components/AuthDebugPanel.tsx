@@ -7,7 +7,7 @@ const isDebugEnabled = import.meta.env.VITE_DEBUG_AUTH === "true";
 
 export function AuthDebugPanel() {
   const [location] = useLocation();
-  const { user, loading, authResolved } = useAuth();
+  const { user, loading, authReady } = useAuth();
   const [snapshot, setSnapshot] = useState(getAuthDebugState());
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export function AuthDebugPanel() {
   const debugPayload = useMemo(
     () => ({
       path: location,
-      authResolved,
+      authReady,
       loading,
       hasUser: !!user,
       uid: user?.uid,
@@ -31,7 +31,7 @@ export function AuthDebugPanel() {
       didSetAuthHeader: snapshot.didSetAuthHeader,
       lastLoginRedirectReason: snapshot.lastLoginRedirectReason,
     }),
-    [location, authResolved, loading, user, snapshot],
+    [location, authReady, loading, user, snapshot],
   );
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export function AuthDebugPanel() {
       <div className="font-semibold text-white/90 mb-2">Auth Debug</div>
       <div className="space-y-1">
         <div>path: {debugPayload.path}</div>
-        <div>authResolved: {String(debugPayload.authResolved)}</div>
+        <div>authReady: {String(debugPayload.authReady)}</div>
         <div>loading: {String(debugPayload.loading)}</div>
         <div>hasUser: {String(debugPayload.hasUser)}</div>
         <div>uid: {debugPayload.uid ?? "—"}</div>
