@@ -20,6 +20,8 @@ export async function requireAuth(
   const authHeader = req.headers.authorization;
   const debugAuth = process.env.DEBUG_AUTH === "true";
   const shouldLog = req.path.startsWith("/api/users");
+  const proto = req.headers["x-forwarded-proto"] ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const expectedIss = projectId ? `https://securetoken.google.com/${projectId}` : undefined;
   const expectedAud = projectId;
@@ -29,6 +31,15 @@ export async function requireAuth(
       console.info("[auth] diagnostics", payload);
     }
   };
+
+  if (shouldLog && debugAuth) {
+    console.info("[auth] request", {
+      method: req.method,
+      originalUrl: req.originalUrl,
+      host,
+      proto,
+    });
+  }
 
   const decodeSegment = (segment?: string) => {
     if (!segment) return null;
