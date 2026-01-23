@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
-        handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
+        isFirebaseConfigured, User, initAuthPersistence } from "./firebase";
+import { debugAuthLog } from "./debugAuth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authResolved, setAuthResolved] = useState(false);
+  const [hasSeenAuthStateChangedOnce, setHasSeenAuthStateChangedOnce] = useState(false);
+  const [redirectResultDone, setRedirectResultDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const authEventRef = useState({ count: 0 })[0];
 
   useEffect(() => {
     if (!isFirebaseConfigured()) {
       setError("Firebase is not configured. Please add your Firebase credentials.");
       setLoading(false);
+      setHasSeenAuthStateChangedOnce(true);
+      setRedirectResultDone(true);
+      setAuthResolved(true);
       return;
     }
 
@@ -18,23 +26,30 @@ export function useAuth() {
 
     // Set up auth state listener first
     unsubscribe = onAuthChange((firebaseUser) => {
-      console.log("[useAuth] AUTH STATE CHANGED:", firebaseUser?.email || "null");
+      authEventRef.count += 1;
+      debugAuthLog("AUTH:onAuthStateChanged", {
+        ts: Date.now(),
+        count: authEventRef.count,
+        uid: firebaseUser?.uid ?? null,
+        isAnonymous: firebaseUser?.isAnonymous ?? null,
+        emailDomain: firebaseUser?.email ? firebaseUser.email.split("@")[1] : null,
+        providerIds: firebaseUser?.providerData?.map((p) => p.providerId) ?? [],
+      });
       setUser(firebaseUser);
-      setLoading(false);
+      setHasSeenAuthStateChangedOnce(true);
     });
 
-    // Then check for redirect result (for returning from Google sign-in)
-    handleRedirectResult()
-      .then((redirectUser) => {
-        if (redirectUser) {
-          console.log("[useAuth] Got user from redirect:", redirectUser.email);
-          setUser(redirectUser);
-          setLoading(false);
-        }
+    // Ensure persistence has been applied before marking authReady.
+    debugAuthLog("AUTH:persistence:start", { ts: Date.now() });
+    initAuthPersistence()
+      .then(() => {
+        debugAuthLog("AUTH:persistence:done", { ts: Date.now() });
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);
-        // Don't block on redirect errors - auth state listener will handle it
+      })
+      .finally(() => {
+        setRedirectResultDone(true);
       });
 
     return () => {
@@ -44,9 +59,25 @@ export function useAuth() {
     };
   }, []);
 
+  const authReady = hasSeenAuthStateChangedOnce && redirectResultDone;
+
+  useEffect(() => {
+    if (authReady) {
+      setLoading(false);
+      setAuthResolved(true);
+      debugAuthLog("AUTH:authReady:set", {
+        ts: Date.now(),
+        redirectResultDone,
+        hasSeenAuthStateChangedOnce,
+      });
+    }
+  }, [authReady, redirectResultDone, hasSeenAuthStateChangedOnce]);
+
   return {
     user,
     loading,
+    authResolved,
+    authReady,
     error,
     signInWithGoogle,
     signInWithEmail,
