@@ -56,7 +56,7 @@ function AppRouter() {
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
-      setLoginRedirectReason("AppRouter: unauthenticated on /launch, redirect to /launch/login");
+      setLoginRedirectReason("client/src/App.tsx:49 unauthenticated on /launch");
       debugAuthLog("ROUTE:redirect", {
         fromPath: location,
         toPath: "/launch/login",
@@ -131,7 +131,7 @@ function AppRouter() {
             <Button
               onClick={async () => {
                 await logOut();
-                setLoginRedirectReason("AppRouter: session expired action, redirect to /launch/login");
+                setLoginRedirectReason("client/src/App.tsx:104 session expired action");
                 setLocation("/launch/login");
               }}
               className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,14 @@ export default function Login() {
   const [displayName, setDisplayName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const postLoginRedirectDone = useRef(false);
+
+  useEffect(() => {
+    if (authReady && isAuthenticated && !postLoginRedirectDone.current) {
+      postLoginRedirectDone.current = true;
+      setLocation("/launch");
+    }
+  }, [authReady, isAuthenticated, setLocation]);
 
   useEffect(() => {
     if (authReady && isAuthenticated) {

@@ -47,7 +47,7 @@ if (isConfigured) {
     auth = getAuth(app);
     setPersistence(auth, browserLocalPersistence)
       .then(() => {
-        if (import.meta.env.VITE_DEBUG_AUTH === "true") {
+        if (import.meta.env.DEV) {
           console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
         }
       })

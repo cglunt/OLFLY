@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/useAuth";
 import { getAuthDebugState } from "@/lib/api";
-
-const isDebugEnabled = import.meta.env.VITE_DEBUG_AUTH === "true";
+import { isAuthDebugEnabled } from "@/lib/debugAuth";
 
 export function AuthDebugPanel() {
   const [location] = useLocation();
@@ -11,7 +10,7 @@ export function AuthDebugPanel() {
   const [snapshot, setSnapshot] = useState(getAuthDebugState());
 
   useEffect(() => {
-    if (!isDebugEnabled) return;
+    if (!isAuthDebugEnabled()) return;
     const interval = setInterval(() => {
       setSnapshot(getAuthDebugState());
     }, 1000);
@@ -30,16 +29,17 @@ export function AuthDebugPanel() {
       lastUsersError: snapshot.lastUsersError,
       didSetAuthHeader: snapshot.didSetAuthHeader,
       lastLoginRedirectReason: snapshot.lastLoginRedirectReason,
+      lastLoginRedirectAt: snapshot.lastLoginRedirectAt,
     }),
     [location, authReady, loading, user, snapshot],
   );
 
   useEffect(() => {
-    if (!isDebugEnabled) return;
+    if (!isAuthDebugEnabled()) return;
     console.log("[AUTH_DEBUG]", debugPayload);
   }, [debugPayload]);
 
-  if (!isDebugEnabled) return null;
+  if (!isAuthDebugEnabled()) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-[100] max-w-xs rounded-lg border border-white/10 bg-[#0c0c1d]/95 p-3 text-xs text-white shadow-lg">
@@ -55,6 +55,7 @@ export function AuthDebugPanel() {
         <div>last /api/users error: {debugPayload.lastUsersError ?? "—"}</div>
         <div>didSetAuthHeader: {String(debugPayload.didSetAuthHeader)}</div>
         <div>last login redirect: {debugPayload.lastLoginRedirectReason ?? "—"}</div>
+        <div>last login redirect at: {debugPayload.lastLoginRedirectAt ?? "—"}</div>
       </div>
     </div>
   );

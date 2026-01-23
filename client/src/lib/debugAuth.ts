@@ -1,5 +1,4 @@
 export function isAuthDebugEnabled(): boolean {
-  if (import.meta.env.DEV) return true;
   try {
     return window.localStorage.getItem("DEBUG_AUTH") === "1";
   } catch {
