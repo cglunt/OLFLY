@@ -10,36 +10,138 @@ import type {
   InsertScentCollection,
 } from "@shared/schema";
 
-import { auth } from "./firebase";
+import { auth, waitForAuthReady } from "./firebase";
+import { debugAuthLog } from "./debugAuth";
+
+type ApiAuthDebug = {
+  didSetAuthHeader: boolean;
+  lastUsersStatus?: number;
+  lastUsersError?: string;
+  lastLoginRedirectReason?: string;
+  lastLoginRedirectAt?: number;
+  lastAuthError?: string;
+};
+
+let authDebugState: ApiAuthDebug = {
+  didSetAuthHeader: false,
+};
+
+export function getAuthDebugState() {
+  return authDebugState;
+}
+
+export function setLoginRedirectReason(reason: string) {
+  authDebugState = {
+    ...authDebugState,
+    lastLoginRedirectReason: reason,
+    lastLoginRedirectAt: Date.now(),
+  };
+}
+
+export function setLastAuthError(error: string) {
+  authDebugState = {
+    ...authDebugState,
+    lastAuthError: error,
+  };
+}
 
 // Helper function to get auth headers
 async function getAuthHeaders(): Promise<HeadersInit> {
+  await waitForAuthReady();
   const user = auth.currentUser;
   if (!user) {
     throw new Error("User not authenticated");
   }
 
   const token = await user.getIdToken();
-  return {
+  const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
+  authDebugState = {
+    ...authDebugState,
+    didSetAuthHeader: !!headers.Authorization,
+  };
+  if (import.meta.env.DEV) {
+    console.debug("[api] auth headers", {
+      hasUser: !!user,
+      tokenLength: token.length,
+      hasAuthorization: !!headers.Authorization,
+    });
+  }
+  return headers;
+}
+
+async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
+  const headers = await getAuthHeaders();
+  if (import.meta.env.DEV) {
+    const authHeader = headers.Authorization ? "set" : "missing";
+    console.debug("[api] authFetch", { url: String(input), authHeader });
+  }
+  if (String(input).includes("/api/users")) {
+    debugAuthLog("API:/api/users:request", {
+      ts: Date.now(),
+      url: String(input),
+      didSetAuthHeader: authDebugState.didSetAuthHeader,
+    });
+  }
+  const response = await fetch(input, {
+    ...init,
+    headers: {
+      ...headers,
+      ...(init.headers ?? {}),
+    },
+  });
+  if (String(input).includes("/api/users")) {
+    authDebugState = {
+      ...authDebugState,
+      lastUsersStatus: response.status,
+    };
+    debugAuthLog("API:/api/users:response", {
+      ts: Date.now(),
+      status: response.status,
+    });
+  }
+  return response;
 }
 
 // User API
 export async function createUser(userData: InsertUser): Promise<User> {
-  const res = await fetch("/api/users", {
+  const res = await authFetch("/api/users", {
     method: "POST",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(userData),
   });
-  if (!res.ok) throw new Error("Failed to create user");
+  if (!res.ok) {
+    const error = new Error("Failed to create user");
+    (error as { status?: number }).status = res.status;
+    try {
+      const body = await res.clone().json();
+      if (body?.code) {
+        setLastAuthError(`${body.code} ${body.message ?? ""}`.trim());
+      }
+    } catch {
+      // ignore parse errors
+    }
+    authDebugState = {
+      ...authDebugState,
+      lastUsersError: error.message,
+    };
+    throw error;
+  }
   return res.json();
 }
 
 export async function getUser(id: string): Promise<User> {
-  const res = await fetch(`/api/users/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch user");
+  const res = await authFetch(`/api/users/${id}`);
+  if (!res.ok) {
+    const error = new Error("Failed to fetch user");
+    (error as { status?: number }).status = res.status;
+    authDebugState = {
+      ...authDebugState,
+      lastUsersError: error.message,
+    };
+    throw error;
+  }
   return res.json();
 }
 
@@ -47,9 +149,8 @@ export async function updateUser(
   id: string,
   updates: Partial<InsertUser>,
 ): Promise<User> {
-  const res = await fetch(`/api/users/${id}`, {
+  const res = await authFetch(`/api/users/${id}`, {
     method: "PATCH",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update user");
@@ -58,7 +159,7 @@ export async function updateUser(
 
 // User Scents API (legacy)
 export async function getUserScents(userId: string): Promise<UserScent[]> {
-  const res = await fetch(`/api/users/${userId}/scents`);
+  const res = await authFetch(`/api/users/${userId}/scents`);
   if (!res.ok) throw new Error("Failed to fetch user scents");
   return res.json();
 }
@@ -67,9 +168,8 @@ export async function setUserScents(
   userId: string,
   scentIds: string[],
 ): Promise<UserScent[]> {
-  const res = await fetch(`/api/users/${userId}/scents`, {
-    method: "POST",
-    headers: await getAuthHeaders(),
+  const res = await authFetch(`/api/users/${userId}/scents`, {
+    method: "PUT",
     body: JSON.stringify({ scentIds }),
   });
   if (!res.ok) throw new Error("Failed to update user scents");
@@ -80,7 +180,7 @@ export async function setUserScents(
 export async function getUserCollections(
   userId: string,
 ): Promise<ScentCollection[]> {
-  const res = await fetch(`/api/users/${userId}/collections`);
+  const res = await authFetch(`/api/users/${userId}/collections`);
   if (!res.ok) throw new Error("Failed to fetch collections");
   return res.json();
 }
@@ -88,7 +188,7 @@ export async function getUserCollections(
 export async function getActiveCollection(
   userId: string,
 ): Promise<ScentCollection | null> {
-  const res = await fetch(`/api/users/${userId}/collections/active`);
+  const res = await authFetch(`/api/users/${userId}/collections/active`);
   if (!res.ok) throw new Error("Failed to fetch active collection");
   return res.json();
 }
@@ -97,7 +197,7 @@ export async function getCollectionByContext(
   userId: string,
   context: string,
 ): Promise<ScentCollection | null> {
-  const res = await fetch(
+  const res = await authFetch(
     `/api/users/${userId}/collections/context/${context}`,
   );
   if (!res.ok) throw new Error("Failed to fetch collection by context");
@@ -107,9 +207,8 @@ export async function getCollectionByContext(
 export async function createCollection(
   collectionData: InsertScentCollection,
 ): Promise<ScentCollection> {
-  const res = await fetch("/api/collections", {
+  const res = await authFetch("/api/collections", {
     method: "POST",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(collectionData),
   });
   if (!res.ok) throw new Error("Failed to create collection");
@@ -121,9 +220,8 @@ export async function updateCollection(
   id: string,
   updates: Partial<InsertScentCollection>,
 ): Promise<ScentCollection> {
-  const res = await fetch(`/api/users/${userId}/collections/${id}`, {
+  const res = await authFetch(`/api/users/${userId}/collections/${id}`, {
     method: "PATCH",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update collection");
@@ -134,7 +232,7 @@ export async function deleteCollection(
   userId: string,
   id: string,
 ): Promise<void> {
-  const res = await fetch(`/api/users/${userId}/collections/${id}`, {
+  const res = await authFetch(`/api/users/${userId}/collections/${id}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete collection");
@@ -144,7 +242,7 @@ export async function activateCollection(
   userId: string,
   collectionId: string,
 ): Promise<ScentCollection> {
-  const res = await fetch(
+  const res = await authFetch(
     `/api/users/${userId}/collections/${collectionId}/activate`,
     {
       method: "POST",
@@ -158,9 +256,8 @@ export async function activateCollection(
 export async function createSession(
   sessionData: InsertSession,
 ): Promise<Session> {
-  const res = await fetch("/api/sessions", {
+  const res = await authFetch("/api/sessions", {
     method: "POST",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(sessionData),
   });
   if (!res.ok) throw new Error("Failed to create session");
@@ -172,13 +269,13 @@ export async function getUserSessions(
   limit?: number,
 ): Promise<Session[]> {
   const url = `/api/users/${userId}/sessions${limit ? `?limit=${limit}` : ""}`;
-  const res = await fetch(url);
+  const res = await authFetch(url);
   if (!res.ok) throw new Error("Failed to fetch sessions");
   return res.json();
 }
 
 export async function getSession(id: string): Promise<Session> {
-  const res = await fetch(`/api/sessions/${id}`);
+  const res = await authFetch(`/api/sessions/${id}`);
   if (!res.ok) throw new Error("Failed to fetch session");
   return res.json();
 }
@@ -187,9 +284,8 @@ export async function updateSession(
   id: string,
   updates: Partial<InsertSession>,
 ): Promise<Session> {
-  const res = await fetch(`/api/sessions/${id}`, {
+  const res = await authFetch(`/api/sessions/${id}`, {
     method: "PATCH",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update session");
@@ -200,9 +296,8 @@ export async function updateSession(
 export async function createSymptomLog(
   logData: InsertSymptomLog,
 ): Promise<SymptomLog> {
-  const res = await fetch("/api/symptom-logs", {
+  const res = await authFetch("/api/symptom-logs", {
     method: "POST",
-    headers: await getAuthHeaders(),
     body: JSON.stringify(logData),
   });
   if (!res.ok) throw new Error("Failed to create symptom log");
@@ -214,7 +309,7 @@ export async function getUserSymptomLogs(
   limit?: number,
 ): Promise<SymptomLog[]> {
   const url = `/api/users/${userId}/symptom-logs${limit ? `?limit=${limit}` : ""}`;
-  const res = await fetch(url);
+  const res = await authFetch(url);
   if (!res.ok) throw new Error("Failed to fetch symptom logs");
   return res.json();
 }
