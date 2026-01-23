@@ -18,16 +18,33 @@ function getSafeRequestUrl(req) {
   }
 }
 
-const mockReq = {
-  originalUrl: "/api/users",
-  headers: {
-    host: "olfly.app",
-    "x-forwarded-proto": "https",
+const scenarios = [
+  {
+    name: "originalUrl with query",
+    req: {
+      originalUrl: "/api/users?path=users",
+      headers: {
+        host: "olfly.app",
+        "x-forwarded-proto": "https",
+      },
+    },
   },
-};
+  {
+    name: "url fallback",
+    req: {
+      url: "/api/users?path=users",
+      headers: {
+        host: "olfly.app",
+        "x-forwarded-proto": "https",
+      },
+    },
+  },
+];
 
-const url = getSafeRequestUrl(mockReq);
-if (!url || !url.startsWith("https://olfly.app")) {
-  throw new Error(`Unexpected URL: ${url}`);
+for (const scenario of scenarios) {
+  const url = getSafeRequestUrl(scenario.req);
+  if (!url || !url.startsWith("https://olfly.app")) {
+    throw new Error(`${scenario.name}: Unexpected URL: ${url}`);
+  }
+  console.log("OK", scenario.name, url);
 }
-console.log("OK", url);

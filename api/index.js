@@ -10,8 +10,27 @@ let app;
 const shouldDebug =
   process.env.DEBUG_AUTH === "true" || process.env.DEBUG_SERVER === "true";
 
+function getRequestBase(req) {
+  const proto = req?.headers?.["x-forwarded-proto"] ?? "https";
+  const host = req?.headers?.["x-forwarded-host"] ?? req?.headers?.host;
+  return host ? `${proto}://${host}` : null;
+}
+
+function getSafeRequestUrl(req) {
+  const rawUrl = req?.originalUrl ?? req?.url;
+  const base = getRequestBase(req);
+  if (!rawUrl) return undefined;
+  if (!base) return rawUrl;
+  try {
+    return new URL(rawUrl, base).toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
 function logServerError(err, req) {
   if (!shouldDebug) return;
+  const base = getRequestBase(req);
   console.error("[server] unhandled error", {
     name: err?.name,
     message: err?.message,
@@ -19,6 +38,8 @@ function logServerError(err, req) {
     method: req?.method,
     url: req?.url,
     originalUrl: req?.originalUrl,
+    fullUrl: getSafeRequestUrl(req),
+    base,
     host: req?.headers?.host,
     forwardedHost: req?.headers?.["x-forwarded-host"],
     forwardedProto: req?.headers?.["x-forwarded-proto"],
