@@ -3,6 +3,8 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider,
+  setPersistence,
+  browserLocalPersistence,
   signInWithRedirect,
   getRedirectResult,
   signOut, 
@@ -24,6 +26,8 @@ const firebaseConfig = {
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
+let authReadyPromise: Promise<User | null> | null = null;
+let redirectInitPromise: Promise<void> | null = null;
 
 const isConfigured = !!(
   firebaseConfig.apiKey &&
@@ -87,6 +91,36 @@ export async function handleRedirectResult() {
   }
 }
 
+export async function initRedirectResult(): Promise<void> {
+  if (!auth) {
+    console.log("[Firebase] initRedirectResult: auth not initialized");
+    return;
+  }
+
+  if (!redirectInitPromise) {
+    redirectInitPromise = (async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        if (import.meta.env.DEV) {
+          console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
+        }
+      } catch (error) {
+        console.error("[Firebase] Persistence error:", error);
+      }
+
+      try {
+        await handleRedirectResult();
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.warn("[AUTH_DEBUG] redirect result failed", error);
+        }
+      }
+    })();
+  }
+
+  await redirectInitPromise;
+}
+
 export async function signUpWithEmail(email: string, password: string, displayName: string) {
   if (!auth) {
     throw new Error("Firebase not configured");
@@ -138,6 +172,23 @@ export function onAuthChange(callback: (user: User | null) => void) {
   }
   
   return onAuthStateChanged(auth, callback);
+}
+
+export function waitForAuthReady(): Promise<User | null> {
+  if (!auth) {
+    return Promise.resolve(null);
+  }
+
+  if (!authReadyPromise) {
+    authReadyPromise = new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+  }
+
+  return authReadyPromise;
 }
 
 export function isFirebaseConfigured() {
