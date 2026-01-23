@@ -3,6 +3,8 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider,
+  setPersistence,
+  browserLocalPersistence,
   signInWithRedirect,
   getRedirectResult,
   signOut, 
@@ -24,6 +26,7 @@ const firebaseConfig = {
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
+let authReadyPromise: Promise<User | null> | null = null;
 
 const isConfigured = !!(
   firebaseConfig.apiKey &&
@@ -42,6 +45,9 @@ if (isConfigured) {
   try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence).catch((error) => {
+      console.error("[Firebase] Persistence error:", error);
+    });
     console.log("[Firebase] Initialized successfully");
   } catch (error) {
     console.error("[Firebase] Initialization error:", error);
@@ -138,6 +144,23 @@ export function onAuthChange(callback: (user: User | null) => void) {
   }
   
   return onAuthStateChanged(auth, callback);
+}
+
+export function waitForAuthReady(): Promise<User | null> {
+  if (!auth) {
+    return Promise.resolve(null);
+  }
+
+  if (!authReadyPromise) {
+    authReadyPromise = new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+  }
+
+  return authReadyPromise;
 }
 
 export function isFirebaseConfigured() {

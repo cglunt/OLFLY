@@ -28,6 +28,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { Button } from "@/components/ui/button";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthDebugPanel } from "@/components/AuthDebugPanel";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 
@@ -172,6 +173,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <CookieConsentBanner />
+        <AuthDebugPanel />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

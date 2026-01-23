@@ -10,10 +10,25 @@ import type {
   InsertScentCollection,
 } from "@shared/schema";
 
-import { auth } from "./firebase";
+import { auth, waitForAuthReady } from "./firebase";
+
+type ApiAuthDebug = {
+  didSetAuthHeader: boolean;
+  lastUsersStatus?: number;
+  lastUsersError?: string;
+};
+
+let authDebugState: ApiAuthDebug = {
+  didSetAuthHeader: false,
+};
+
+export function getAuthDebugState() {
+  return authDebugState;
+}
 
 // Helper function to get auth headers
 async function getAuthHeaders(): Promise<HeadersInit> {
+  await waitForAuthReady();
   const user = auth.currentUser;
   if (!user) {
     throw new Error("User not authenticated");
@@ -23,6 +38,10 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
+  };
+  authDebugState = {
+    ...authDebugState,
+    didSetAuthHeader: !!headers.Authorization,
   };
   if (import.meta.env.DEV) {
     console.debug("[api] auth headers", {
@@ -40,13 +59,20 @@ async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
     const authHeader = headers.Authorization ? "set" : "missing";
     console.debug("[api] authFetch", { url: String(input), authHeader });
   }
-  return fetch(input, {
+  const response = await fetch(input, {
     ...init,
     headers: {
       ...headers,
       ...(init.headers ?? {}),
     },
   });
+  if (String(input).includes("/api/users")) {
+    authDebugState = {
+      ...authDebugState,
+      lastUsersStatus: response.status,
+    };
+  }
+  return response;
 }
 
 // User API
@@ -58,6 +84,10 @@ export async function createUser(userData: InsertUser): Promise<User> {
   if (!res.ok) {
     const error = new Error("Failed to create user");
     (error as { status?: number }).status = res.status;
+    authDebugState = {
+      ...authDebugState,
+      lastUsersError: error.message,
+    };
     throw error;
   }
   return res.json();
@@ -68,6 +98,10 @@ export async function getUser(id: string): Promise<User> {
   if (!res.ok) {
     const error = new Error("Failed to fetch user");
     (error as { status?: number }).status = res.status;
+    authDebugState = {
+      ...authDebugState,
+      lastUsersError: error.message,
+    };
     throw error;
   }
   return res.json();
