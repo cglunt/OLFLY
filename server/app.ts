@@ -3,6 +3,8 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 
 const app = express();
+const shouldDebug =
+  process.env.DEBUG_AUTH === "true" || process.env.DEBUG_SERVER === "true";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -20,6 +22,40 @@ export function log(message: string, source = "express") {
     hour12: true,
   });
   console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+function getRequestBase(req: Request): string | undefined {
+  const proto = req.headers["x-forwarded-proto"] ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  return host ? `${proto}://${host}` : undefined;
+}
+
+function getSafeRequestUrl(req: Request): string | undefined {
+  const rawUrl = req.originalUrl ?? req.url;
+  const base = getRequestBase(req);
+  if (!rawUrl) return undefined;
+  if (!base) return rawUrl;
+  try {
+    return new URL(rawUrl, base).toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
+function logServerError(err: any, req: Request) {
+  if (!shouldDebug) return;
+  console.error("[server] request error", {
+    name: err?.name,
+    message: err?.message,
+    stack: err?.stack,
+    method: req.method,
+    url: req.url,
+    originalUrl: req.originalUrl,
+    fullUrl: getSafeRequestUrl(req),
+    host: req.headers.host,
+    forwardedHost: req.headers["x-forwarded-host"],
+    forwardedProto: req.headers["x-forwarded-proto"],
+  });
 }
 
 app.use((req, res, next) => {
@@ -62,8 +98,10 @@ async function ensureInitialized() {
       app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
         const status = err.status || err.statusCode || 500;
         const message = err.message || "Internal Server Error";
-        console.error("Request error:", err);
-        res.status(status).json({ message });
+        if (_req) {
+          logServerError(err, _req);
+        }
+        res.status(status).json({ code: "SERVER_ERROR", message });
       });
 
       if (process.env.NODE_ENV === "production") {
