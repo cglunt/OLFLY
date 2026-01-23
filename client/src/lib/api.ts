@@ -16,6 +16,7 @@ type ApiAuthDebug = {
   didSetAuthHeader: boolean;
   lastUsersStatus?: number;
   lastUsersError?: string;
+  lastLoginRedirectReason?: string;
 };
 
 let authDebugState: ApiAuthDebug = {
@@ -24,6 +25,13 @@ let authDebugState: ApiAuthDebug = {
 
 export function getAuthDebugState() {
   return authDebugState;
+}
+
+export function setLoginRedirectReason(reason: string) {
+  authDebugState = {
+    ...authDebugState,
+    lastLoginRedirectReason: reason,
+  };
 }
 
 // Helper function to get auth headers

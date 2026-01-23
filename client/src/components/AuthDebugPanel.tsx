@@ -29,6 +29,7 @@ export function AuthDebugPanel() {
       lastUsersStatus: snapshot.lastUsersStatus,
       lastUsersError: snapshot.lastUsersError,
       didSetAuthHeader: snapshot.didSetAuthHeader,
+      lastLoginRedirectReason: snapshot.lastLoginRedirectReason,
     }),
     [location, authResolved, loading, user, snapshot],
   );
@@ -53,6 +54,7 @@ export function AuthDebugPanel() {
         <div>last /api/users status: {debugPayload.lastUsersStatus ?? "—"}</div>
         <div>last /api/users error: {debugPayload.lastUsersError ?? "—"}</div>
         <div>didSetAuthHeader: {String(debugPayload.didSetAuthHeader)}</div>
+        <div>last login redirect: {debugPayload.lastLoginRedirectReason ?? "—"}</div>
       </div>
     </div>
   );

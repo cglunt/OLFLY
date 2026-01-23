@@ -45,9 +45,15 @@ if (isConfigured) {
   try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    setPersistence(auth, browserLocalPersistence).catch((error) => {
-      console.error("[Firebase] Persistence error:", error);
-    });
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        if (import.meta.env.VITE_DEBUG_AUTH === "true") {
+          console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
+        }
+      })
+      .catch((error) => {
+        console.error("[Firebase] Persistence error:", error);
+      });
     console.log("[Firebase] Initialized successfully");
   } catch (error) {
     console.error("[Firebase] Initialization error:", error);

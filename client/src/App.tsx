@@ -31,6 +31,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthDebugPanel } from "@/components/AuthDebugPanel";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
+import { setLoginRedirectReason } from "@/lib/api";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading, authResolved, logOut } = useAuth();
@@ -46,6 +47,7 @@ function AppRouter() {
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
+      setLoginRedirectReason("AppRouter: unauthenticated on /launch, redirect to /launch/login");
       setLocation("/launch/login");
       return;
     }
@@ -99,6 +101,7 @@ function AppRouter() {
             <Button
               onClick={async () => {
                 await logOut();
+                setLoginRedirectReason("AppRouter: session expired action, redirect to /launch/login");
                 setLocation("/launch/login");
               }}
               className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
