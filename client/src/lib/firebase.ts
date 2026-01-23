@@ -3,8 +3,9 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  setPersistence,
+  browserLocalPersistence,
+  signInWithPopup,
   signOut, 
   onAuthStateChanged, 
   createUserWithEmailAndPassword,
@@ -24,6 +25,8 @@ const firebaseConfig = {
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
+let authReadyPromise: Promise<User | null> | null = null;
+let authInitPromise: Promise<void> | null = null;
 
 const isConfigured = !!(
   firebaseConfig.apiKey &&
@@ -60,31 +63,33 @@ export async function signInWithGoogle() {
   }
 
   try {
-    await signInWithRedirect(auth, googleProvider);
+    await signInWithPopup(auth, googleProvider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
     throw error;
   }
 }
 
-export async function handleRedirectResult() {
+export async function initAuthPersistence(): Promise<void> {
   if (!auth) {
-    console.log("[Firebase] handleRedirectResult: auth not initialized");
-    return null;
+    console.log("[Firebase] initAuthPersistence: auth not initialized");
+    return;
   }
-  try {
-    console.log("[Firebase] Checking for redirect result...");
-    const result = await getRedirectResult(auth);
-    console.log("[Firebase] Redirect result:", result ? "User found" : "No redirect result");
-    if (result && result.user) {
-      console.log("[Firebase] User from redirect:", result.user.email);
-      return result.user;
-    }
-    return null;
-  } catch (error: any) {
-    console.error("[Firebase] Error handling redirect:", error.code, error.message);
-    throw error;
+
+  if (!authInitPromise) {
+    authInitPromise = (async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        if (import.meta.env.DEV) {
+          console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
+        }
+      } catch (error) {
+        console.error("[Firebase] Persistence error:", error);
+      }
+    })();
   }
+
+  await authInitPromise;
 }
 
 export async function signUpWithEmail(email: string, password: string, displayName: string) {
@@ -138,6 +143,23 @@ export function onAuthChange(callback: (user: User | null) => void) {
   }
   
   return onAuthStateChanged(auth, callback);
+}
+
+export function waitForAuthReady(): Promise<User | null> {
+  if (!auth) {
+    return Promise.resolve(null);
+  }
+
+  if (!authReadyPromise) {
+    authReadyPromise = new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+  }
+
+  return authReadyPromise;
 }
 
 export function isFirebaseConfigured() {

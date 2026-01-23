@@ -5,13 +5,21 @@ import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+const shouldDebug =
+  process.env.DEBUG_AUTH === "true" || process.env.DEBUG_SERVER === "true";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Always-available health route (no DB, no auth)
 app.get("/api/health", (_req, res) => {
-  res.status(200).json({ ok: true });
+  res.status(200).json({
+    ok: true,
+    version:
+      process.env.VERCEL_GIT_COMMIT_SHA ??
+      process.env.BUILD_ID ??
+      new Date().toISOString(),
+  });
 });
 
 
@@ -24,6 +32,40 @@ export function log(message: string, source = "express") {
   });
 
   console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+function getRequestBase(req: Request): string | undefined {
+  const proto = req.headers["x-forwarded-proto"] ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host;
+  return host ? `${proto}://${host}` : undefined;
+}
+
+function getSafeRequestUrl(req: Request): string | undefined {
+  const rawUrl = req.originalUrl ?? req.url;
+  const base = getRequestBase(req);
+  if (!rawUrl) return undefined;
+  if (!base) return rawUrl;
+  try {
+    return new URL(rawUrl, base).toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
+function logServerError(err: any, req: Request) {
+  if (!shouldDebug) return;
+  console.error("[server] request error", {
+    name: err?.name,
+    message: err?.message,
+    stack: err?.stack,
+    method: req.method,
+    url: req.url,
+    originalUrl: req.originalUrl,
+    fullUrl: getSafeRequestUrl(req),
+    host: req.headers.host,
+    forwardedHost: req.headers["x-forwarded-host"],
+    forwardedProto: req.headers["x-forwarded-proto"],
+  });
 }
 
 app.use((req, res, next) => {
@@ -60,8 +102,14 @@ app.use((req, res, next) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
 
-      res.status(status).json({ message });
-      console.error("Request error:", err);
+      if (_req) {
+        logServerError(err, _req);
+      }
+
+      res.status(status).json({
+        code: "SERVER_ERROR",
+        message,
+      });
     });
 
     // importantly only setup vite in development and after
