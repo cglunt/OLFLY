@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { auth, onAuthChange, initRedirectResult } from "./lib/firebase";
+import { auth, onAuthChange, initRedirectResult, waitForAuthReady } from "./lib/firebase";
 
 console.log("[AUTH_PROBE] location=", window.location.pathname);
 
@@ -25,12 +25,17 @@ onAuthChange((user) => {
   });
 });
 
-initRedirectResult()
-  .catch((error) => {
+async function startApp() {
+  try {
+    await initRedirectResult();
+    await waitForAuthReady();
+  } catch (error) {
     if (import.meta.env.DEV) {
       console.warn("[AUTH_DEBUG] initRedirectResult failed", error);
     }
-  })
-  .finally(() => {
+  } finally {
     createRoot(document.getElementById("root")!).render(<App />);
-  });
+  }
+}
+
+void startApp();
