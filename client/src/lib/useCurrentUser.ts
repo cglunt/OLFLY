@@ -37,14 +37,15 @@ async function getOrCreateUser(displayName?: string): Promise<User> {
   return newUser;
 }
 
-export function useCurrentUser(displayName?: string) {
+export function useCurrentUser(displayName?: string, options?: { enabled?: boolean }) {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, error } = useQuery({
+  const { data: user, isLoading, error, refetch } = useQuery({
     queryKey: ["currentUser", displayName],
     queryFn: () => getOrCreateUser(displayName),
     staleTime: 5 * 60 * 1000,
-    retry: 1,
+    retry: 0,
+    enabled: options?.enabled ?? true,
   });
 
   const updateUserMutation = useMutation({
@@ -61,6 +62,7 @@ export function useCurrentUser(displayName?: string) {
     user,
     isLoading,
     error,
+    refetch,
     updateUser: updateUserMutation.mutate,
     updateUserAsync: updateUserMutation.mutateAsync,
   };
