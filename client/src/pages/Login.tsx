@@ -26,6 +26,12 @@ export default function Login() {
     }
   }, [authReady, isAuthenticated, setLocation]);
 
+  useEffect(() => {
+    if (authReady && isAuthenticated) {
+      setLocation("/launch");
+    }
+  }, [authReady, isAuthenticated, setLocation]);
+
   
   const handleGoogleSignIn = async () => {
     try {
