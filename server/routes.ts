@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { storage } from "./storage";
 import {
-  insertUserSchema,
   insertUserScentSchema,
   insertSessionSchema,
   insertSymptomLogSchema,
@@ -14,24 +13,6 @@ import { requireAuth, requireOwnership } from "./middleware";
 export async function registerRoutes(app: Express) {
   // User routes
   app.post("/api/users", requireAuth, async (req, res) => {
-    const bodyKeys = req.body && typeof req.body === "object" ? Object.keys(req.body) : [];
-    console.info("[users] create-or-load", {
-      auth: !!req.user,
-      bodyKeys,
-    });
-
-    const parsed = insertUserSchema.partial().safeParse(req.body ?? {});
-    if (!parsed.success) {
-      res.status(400).json({
-        message: "Invalid user payload",
-        issues: parsed.error.issues.map((issue) => ({
-          path: issue.path.join("."),
-          message: issue.message,
-        })),
-      });
-      return;
-    }
-
     try {
       const existingUser = await storage.getUser(req.user!.uid);
       if (existingUser) {
@@ -40,10 +21,12 @@ export async function registerRoutes(app: Express) {
       }
 
       const userData = {
-        ...parsed.data,
         id: req.user!.uid,
-        email: req.user?.email ?? parsed.data.email ?? null,
-        name: parsed.data.name ?? req.user?.name ?? "User",
+        email: req.user?.email ?? null,
+        name: req.user?.name ?? "User",
+        hasOnboarded: false,
+        remindersEnabled: true,
+        streak: 0,
       };
 
       const user = await storage.createUser(userData as any);
