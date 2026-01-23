@@ -55,6 +55,7 @@ export function useAuth() {
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);
+        setAuthResolved(true);
         // Don't block on redirect errors - auth state listener will handle it
       })
       .finally(() => {

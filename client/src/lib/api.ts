@@ -181,6 +181,9 @@ export async function getCollectionByContext(
 ): Promise<ScentCollection | null> {
   const res = await authFetch(
     `/api/users/${userId}/collections/context/${context}`,
+    {
+      headers: await getAuthHeaders(),
+    },
   );
   if (!res.ok) throw new Error("Failed to fetch collection by context");
   return res.json();
@@ -216,6 +219,7 @@ export async function deleteCollection(
 ): Promise<void> {
   const res = await authFetch(`/api/users/${userId}/collections/${id}`, {
     method: "DELETE",
+    headers: await getAuthHeaders(),
   });
   if (!res.ok) throw new Error("Failed to delete collection");
 }
@@ -228,6 +232,7 @@ export async function activateCollection(
     `/api/users/${userId}/collections/${collectionId}/activate`,
     {
       method: "POST",
+      headers: await getAuthHeaders(),
     },
   );
   if (!res.ok) throw new Error("Failed to activate collection");
