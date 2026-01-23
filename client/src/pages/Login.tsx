@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/useAuth";
+import { setLastAuthError } from "@/lib/api";
 import { Mail, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
@@ -32,8 +33,10 @@ export default function Login() {
       setSignInError(null);
       await signInWithGoogle();
     } catch (err: any) {
-      console.error("Google sign-in error:", err);
-      setSignInError(err.message || "Failed to sign in with Google");
+      console.error("[AUTH_DEBUG] login error", err);
+      const errorMessage = `${err.code ?? "unknown"} ${err.message ?? "Failed to sign in with Google"}`;
+      setSignInError(errorMessage);
+      setLastAuthError(errorMessage);
     }
   };
 

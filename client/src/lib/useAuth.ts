@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
-        handleRedirectResult, isFirebaseConfigured, User, initRedirectResult } from "./firebase";
+        isFirebaseConfigured, User, initAuthPersistence } from "./firebase";
 import { debugAuthLog } from "./debugAuth";
 
 export function useAuth() {
@@ -39,11 +39,11 @@ export function useAuth() {
       setHasSeenAuthStateChangedOnce(true);
     });
 
-    // Ensure redirect result has been processed before marking authReady.
-    debugAuthLog("AUTH:getRedirectResult:start", { ts: Date.now() });
-    initRedirectResult()
+    // Ensure persistence has been applied before marking authReady.
+    debugAuthLog("AUTH:persistence:start", { ts: Date.now() });
+    initAuthPersistence()
       .then(() => {
-        debugAuthLog("AUTH:getRedirectResult:done", { ts: Date.now() });
+        debugAuthLog("AUTH:persistence:done", { ts: Date.now() });
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);

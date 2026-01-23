@@ -19,6 +19,7 @@ type ApiAuthDebug = {
   lastUsersError?: string;
   lastLoginRedirectReason?: string;
   lastLoginRedirectAt?: number;
+  lastAuthError?: string;
 };
 
 let authDebugState: ApiAuthDebug = {
@@ -34,6 +35,13 @@ export function setLoginRedirectReason(reason: string) {
     ...authDebugState,
     lastLoginRedirectReason: reason,
     lastLoginRedirectAt: Date.now(),
+  };
+}
+
+export function setLastAuthError(error: string) {
+  authDebugState = {
+    ...authDebugState,
+    lastAuthError: error,
   };
 }
 
