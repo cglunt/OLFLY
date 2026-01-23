@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
-        handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
+        handleRedirectResult, isFirebaseConfigured, User, initRedirectResult } from "./firebase";
 import { debugAuthLog } from "./debugAuth";
 
 export function useAuth() {
@@ -39,24 +39,14 @@ export function useAuth() {
       setHasSeenAuthStateChangedOnce(true);
     });
 
-    // Then check for redirect result (for returning from Google sign-in)
+    // Ensure redirect result has been processed before marking authReady.
     debugAuthLog("AUTH:getRedirectResult:start", { ts: Date.now() });
-    handleRedirectResult()
-      .then((redirectUser) => {
-        if (redirectUser) {
-          debugAuthLog("AUTH:getRedirectResult:done", {
-            ts: Date.now(),
-            uid: redirectUser.uid,
-          });
-          setUser(redirectUser);
-          return;
-        }
-        debugAuthLog("AUTH:getRedirectResult:done", { ts: Date.now(), uid: null });
+    initRedirectResult()
+      .then(() => {
+        debugAuthLog("AUTH:getRedirectResult:done", { ts: Date.now() });
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);
-        setAuthResolved(true);
-        // Don't block on redirect errors - auth state listener will handle it
       })
       .finally(() => {
         setRedirectResultDone(true);

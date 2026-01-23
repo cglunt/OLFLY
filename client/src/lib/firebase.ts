@@ -27,6 +27,7 @@ const firebaseConfig = {
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let authReadyPromise: Promise<User | null> | null = null;
+let redirectInitPromise: Promise<void> | null = null;
 
 const isConfigured = !!(
   firebaseConfig.apiKey &&
@@ -97,6 +98,36 @@ export async function handleRedirectResult() {
     console.error("[Firebase] Error handling redirect:", error.code, error.message);
     throw error;
   }
+}
+
+export async function initRedirectResult(): Promise<void> {
+  if (!auth) {
+    console.log("[Firebase] initRedirectResult: auth not initialized");
+    return;
+  }
+
+  if (!redirectInitPromise) {
+    redirectInitPromise = (async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        if (import.meta.env.DEV) {
+          console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
+        }
+      } catch (error) {
+        console.error("[Firebase] Persistence error:", error);
+      }
+
+      try {
+        await handleRedirectResult();
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.warn("[AUTH_DEBUG] redirect result failed", error);
+        }
+      }
+    })();
+  }
+
+  await redirectInitPromise;
 }
 
 export async function signUpWithEmail(email: string, password: string, displayName: string) {
