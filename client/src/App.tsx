@@ -32,6 +32,7 @@ import { AuthDebugPanel } from "@/components/AuthDebugPanel";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
 import { setLoginRedirectReason } from "@/lib/api";
+import { debugAuthLog } from "@/lib/debugAuth";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading, authReady, logOut } = useAuth();
@@ -42,18 +43,40 @@ function AppRouter() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
+    debugAuthLog("ROUTE:location", {
+      path: location,
+      authReady,
+      uid: firebaseUser?.uid ?? null,
+    });
+  }, [location, authReady, firebaseUser]);
+
+  useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
     if (!authReady) return;
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
       setLoginRedirectReason("AppRouter: unauthenticated on /launch, redirect to /launch/login");
+      debugAuthLog("ROUTE:redirect", {
+        fromPath: location,
+        toPath: "/launch/login",
+        reason: "unauthenticated on /launch",
+        authReady,
+        uid: null,
+      });
       setLocation("/launch/login");
       return;
     }
 
     // Logged in → keep them out of login page
     if (firebaseUser && location === "/launch/login") {
+      debugAuthLog("ROUTE:redirect", {
+        fromPath: location,
+        toPath: "/launch",
+        reason: "authenticated on /launch/login",
+        authReady,
+        uid: firebaseUser.uid,
+      });
       setLocation("/launch");
       return;
     }
@@ -63,6 +86,13 @@ function AppRouter() {
     if (!authReady || isLoading || !user || !firebaseUser) return;
     
     if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
+      debugAuthLog("ROUTE:redirect", {
+        fromPath: location,
+        toPath: "/launch/onboarding",
+        reason: "user not onboarded",
+        authReady,
+        uid: firebaseUser.uid,
+      });
       setLocation("/launch/onboarding");
     }
   }, [authReady, location, setLocation, user, isLoading, firebaseUser]);

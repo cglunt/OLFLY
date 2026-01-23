@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
         handleRedirectResult, isFirebaseConfigured, User } from "./firebase";
+import { debugAuthLog } from "./debugAuth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -9,6 +10,7 @@ export function useAuth() {
   const [hasSeenAuthStateChangedOnce, setHasSeenAuthStateChangedOnce] = useState(false);
   const [redirectResultDone, setRedirectResultDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const authEventRef = useState({ count: 0 })[0];
 
   useEffect(() => {
     if (!isFirebaseConfigured()) {
@@ -24,18 +26,32 @@ export function useAuth() {
 
     // Set up auth state listener first
     unsubscribe = onAuthChange((firebaseUser) => {
-      console.log("[useAuth] AUTH STATE CHANGED:", firebaseUser?.email || "null");
+      authEventRef.count += 1;
+      debugAuthLog("AUTH:onAuthStateChanged", {
+        ts: Date.now(),
+        count: authEventRef.count,
+        uid: firebaseUser?.uid ?? null,
+        isAnonymous: firebaseUser?.isAnonymous ?? null,
+        emailDomain: firebaseUser?.email ? firebaseUser.email.split("@")[1] : null,
+        providerIds: firebaseUser?.providerData?.map((p) => p.providerId) ?? [],
+      });
       setUser(firebaseUser);
       setHasSeenAuthStateChangedOnce(true);
     });
 
     // Then check for redirect result (for returning from Google sign-in)
+    debugAuthLog("AUTH:getRedirectResult:start", { ts: Date.now() });
     handleRedirectResult()
       .then((redirectUser) => {
         if (redirectUser) {
-          console.log("[useAuth] Got user from redirect:", redirectUser.email);
+          debugAuthLog("AUTH:getRedirectResult:done", {
+            ts: Date.now(),
+            uid: redirectUser.uid,
+          });
           setUser(redirectUser);
+          return;
         }
+        debugAuthLog("AUTH:getRedirectResult:done", { ts: Date.now(), uid: null });
       })
       .catch((err: any) => {
         console.error("[useAuth] Redirect error:", err);
@@ -59,8 +75,13 @@ export function useAuth() {
     if (authReady) {
       setLoading(false);
       setAuthResolved(true);
+      debugAuthLog("AUTH:authReady:set", {
+        ts: Date.now(),
+        redirectResultDone,
+        hasSeenAuthStateChangedOnce,
+      });
     }
-  }, [authReady]);
+  }, [authReady, redirectResultDone, hasSeenAuthStateChangedOnce]);
 
   return {
     user,

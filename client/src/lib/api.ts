@@ -11,6 +11,7 @@ import type {
 } from "@shared/schema";
 
 import { auth, waitForAuthReady } from "./firebase";
+import { debugAuthLog } from "./debugAuth";
 
 type ApiAuthDebug = {
   didSetAuthHeader: boolean;
@@ -67,6 +68,13 @@ async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
     const authHeader = headers.Authorization ? "set" : "missing";
     console.debug("[api] authFetch", { url: String(input), authHeader });
   }
+  if (String(input).includes("/api/users")) {
+    debugAuthLog("API:/api/users:request", {
+      ts: Date.now(),
+      url: String(input),
+      didSetAuthHeader: authDebugState.didSetAuthHeader,
+    });
+  }
   const response = await fetch(input, {
     ...init,
     headers: {
@@ -79,6 +87,10 @@ async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
       ...authDebugState,
       lastUsersStatus: response.status,
     };
+    debugAuthLog("API:/api/users:response", {
+      ts: Date.now(),
+      status: response.status,
+    });
   }
   return response;
 }
