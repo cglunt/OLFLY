@@ -24,8 +24,7 @@ function getSafeRequestUrl(req) {
   try {
     return new URL(rawUrl, base).toString();
   } catch {
-    return rawUrl;
-  }
+    return base && rawUrl ? (rawUrl.startsWith('/') ? base + rawUrl : base + '/' + rawUrl) : rawUrl;  }
 }
 
 function logServerError(err, req) {
@@ -52,6 +51,10 @@ if (existsSync(serverPath)) {
 }
 
 export default async function handler(req, res) {
+   // Add debug headers to identify handler and deployment
+ res.set('x-olfly-build-sha', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
+ res.set('x-olfly-handler', 'api/index.js');
+ res.set('x-olfly-environment', process.env.NODE_ENV || 'unknown');
   if (!app) {
     return res.status(500).json({
       error: "Server build artifact missing",
