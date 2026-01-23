@@ -13,20 +13,50 @@ import { requireAuth, requireOwnership } from "./middleware";
 
 export async function registerRoutes(app: Express) {
   // User routes
-  app.post("/api/users", async (req, res) => {
+  app.post("/api/users", requireAuth, async (req, res) => {
+    const bodyKeys = req.body && typeof req.body === "object" ? Object.keys(req.body) : [];
+    console.info("[users] create-or-load", {
+      auth: !!req.user,
+      bodyKeys,
+    });
+
+    const parsed = insertUserSchema.partial().safeParse(req.body ?? {});
+    if (!parsed.success) {
+      res.status(400).json({
+        message: "Invalid user payload",
+        issues: parsed.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+      return;
+    }
+
     try {
-      const userData = insertUserSchema.parse(req.body);
-      const user = await storage.createUser(userData);
+      const existingUser = await storage.getUser(req.user!.uid);
+      if (existingUser) {
+        res.json(existingUser);
+        return;
+      }
+
+      const userData = {
+        ...parsed.data,
+        id: req.user!.uid,
+        email: req.user?.email ?? parsed.data.email ?? null,
+        name: parsed.data.name ?? req.user?.name ?? "User",
+      };
+
+      const user = await storage.createUser(userData as any);
       res.json(user);
     } catch (error: any) {
       if (error.code === "23505") {
-        const existingUser = await storage.getUser(req.body.id);
+        const existingUser = await storage.getUser(req.user!.uid);
         if (existingUser) {
           res.json(existingUser);
           return;
         }
       }
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ message: error.message ?? "Failed to create user" });
     }
   });
 

@@ -11,7 +11,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // Always-available health route (no DB, no auth)
 app.get("/api/health", (_req, res) => {
-  res.status(200).json({ ok: true });
+  res.status(200).json({
+    ok: true,
+    version:
+      process.env.VERCEL_GIT_COMMIT_SHA ??
+      process.env.BUILD_ID ??
+      new Date().toISOString(),
+  });
 });
 
 
