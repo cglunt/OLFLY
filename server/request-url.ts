@@ -20,3 +20,13 @@ export function getSafeRequestUrl(req: Request): string | undefined {
     return base + "/" + rawUrl;
   }
 }
+
+} catch (err) {
+  console.error("[request-url] URL parse failed", {
+    rawUrl,
+    base,
+    err: (err as any)?.message,
+  });
+  if (rawUrl.startsWith("/")) return base + rawUrl;
+  return base + "/" + rawUrl;
+}
