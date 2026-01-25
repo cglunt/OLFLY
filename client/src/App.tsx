@@ -206,7 +206,6 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <CookieConsentBanner />
-        <AuthDebugPanel />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
