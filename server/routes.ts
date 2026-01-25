@@ -216,7 +216,7 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
         ...req.body,
         userId: req.params.userId,
       });
-      const session = await storage.createSession(user.id, sessionData);
+      const session = await storage.createSession(sessionData);
       res.json(session);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
