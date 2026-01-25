@@ -39,7 +39,13 @@ export async function registerRoutes(app: Express) {
           return;
         }
       }
-      res.status(400).json({ message: error.message ?? "Failed to create user" });
+console.error("[users] create failed", {
+  message: error?.message,
+  code: error?.code,
+  stack: error?.stack,
+});
+res.status(400).json({ message: error?.message ?? "Failed to create user" });
+
     }
   });
 
