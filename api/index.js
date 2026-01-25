@@ -51,23 +51,30 @@ if (existsSync(serverPath)) {
 }
 
 export default async function handler(req, res) {
-   // Add debug headers to identify handler and deployment
- res.set('x-olfly-build-sha', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
- res.set('x-olfly-handler', 'api/index.js');
- res.set('x-olfly-environment', process.env.NODE_ENV || 'unknown');
+  // Add debug headers to identify handler and deployment
+  res.setHeader('x-olfly-build-sha', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
+  res.setHeader('x-olfly-handler', 'api/index.js');
+  res.setHeader('x-olfly-environment', process.env.NODE_ENV || 'unknown');
+
   if (!app) {
-    return res.status(500).json({
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "application/json");
+    return res.end(JSON.stringify({
       error: "Server build artifact missing",
       expected: "dist/index.cjs",
-    });
+    }));
   }
+
   try {
     return await app(req, res);
   } catch (err) {
     logServerError(err, req);
-    return res.status(500).json({
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "application/json");
+    return res.end(JSON.stringify({
       code: "SERVER_ERROR",
       message: err?.message ?? "Internal Server Error",
-    });
+    }));
   }
 }
+
