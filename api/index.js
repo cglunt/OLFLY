@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverPath = path.join(__dirname, "..", "dist", "index.cjs");
+
 let app;
 const shouldDebug =
   process.env.DEBUG_AUTH === "true" || process.env.DEBUG_SERVER === "true";
@@ -24,7 +25,12 @@ function getSafeRequestUrl(req) {
   try {
     return new URL(rawUrl, base).toString();
   } catch {
-    return base && rawUrl ? (rawUrl.startsWith('/') ? base + rawUrl : base + '/' + rawUrl) : rawUrl;  }
+    return base && rawUrl
+      ? rawUrl.startsWith("/")
+        ? base + rawUrl
+        : base + "/" + rawUrl
+      : rawUrl;
+  }
 }
 
 function logServerError(err, req) {
@@ -52,17 +58,40 @@ if (existsSync(serverPath)) {
 
 export default async function handler(req, res) {
   // Add debug headers to identify handler and deployment
-  res.setHeader('x-olfly-build-sha', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
-  res.setHeader('x-olfly-handler', 'api/index.js');
-  res.setHeader('x-olfly-environment', process.env.NODE_ENV || 'unknown');
+  res.setHeader("x-olfly-build-sha", process.env.VERCEL_GIT_COMMIT_SHA || "local");
+  res.setHeader("x-olfly-handler", "api/index.js");
+  res.setHeader("x-olfly-environment", process.env.NODE_ENV || "unknown");
+
+  // Reconstruct original /api/* path from rewrite ?path=
+  // Example incoming URL: /api/index.js?path=users or path=users/UID/sessions
+  const pathParam = req?.query?.path;
+  if (pathParam) {
+    const parts = Array.isArray(pathParam)
+      ? pathParam
+      : String(pathParam).split("/");
+
+    // Preserve any non-path query params
+    const originalUrl = req?.url ?? "";
+    const qIndex = originalUrl.indexOf("?");
+    const rawQs = qIndex >= 0 ? originalUrl.slice(qIndex + 1) : "";
+    const filteredQs = rawQs
+      .split("&")
+      .filter(Boolean)
+      .filter((kv) => !kv.startsWith("path="))
+      .join("&");
+
+    req.url = `/api/${parts.join("/")}${filteredQs ? `?${filteredQs}` : ""}`;
+  }
 
   if (!app) {
     res.statusCode = 500;
     res.setHeader("Content-Type", "application/json");
-    return res.end(JSON.stringify({
-      error: "Server build artifact missing",
-      expected: "dist/index.cjs",
-    }));
+    return res.end(
+      JSON.stringify({
+        error: "Server build artifact missing",
+        expected: "dist/index.cjs",
+      })
+    );
   }
 
   try {
@@ -71,10 +100,11 @@ export default async function handler(req, res) {
     logServerError(err, req);
     res.statusCode = 500;
     res.setHeader("Content-Type", "application/json");
-    return res.end(JSON.stringify({
-      code: "SERVER_ERROR",
-      message: err?.message ?? "Internal Server Error",
-    }));
+    return res.end(
+      JSON.stringify({
+        code: "SERVER_ERROR",
+        message: err?.message ?? "Internal Server Error",
+      })
+    );
   }
 }
-
