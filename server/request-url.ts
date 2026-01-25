@@ -11,9 +11,12 @@ export function getSafeRequestUrl(req: Request): string | undefined {
   const base = getRequestBase(req);
   if (!rawUrl) return undefined;
   if (!base) return rawUrl;
+
   try {
     return new URL(rawUrl, base).toString();
   } catch {
-    return rawUrl;
+    // Always return absolute URL fallback
+    if (rawUrl.startsWith("/")) return base + rawUrl;
+    return base + "/" + rawUrl;
   }
 }
