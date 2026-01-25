@@ -307,13 +307,14 @@ export async function updateSession(
 
 // Symptom Log API
 export async function createSymptomLog(
+  userId: string,
   logData: InsertSymptomLog,
 ): Promise<SymptomLog> {
-  const res = await authFetch("/api/symptom-logs", {
+  const res = await authFetch(`/api/users/${userId}/symptom-logs`, {
     method: "POST",
     body: JSON.stringify(logData),
   });
-  if (!res.ok) throw new Error("Failed to create symptom log");
+
   return res.json();
 }
 
