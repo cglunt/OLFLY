@@ -210,13 +210,21 @@ export async function getCollectionByContext(
 export async function createCollection(
   collectionData: InsertScentCollection,
 ): Promise<ScentCollection> {
-  const res = await authFetch("/api/collections", {
-    method: "POST",
-    body: JSON.stringify(collectionData),
-  });
-  if (!res.ok) throw new Error("Failed to create collection");
+  const res = await authFetch(
+    `/api/users/${collectionData.userId}/collections`,
+    {
+      method: "POST",
+      body: JSON.stringify(collectionData),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
   return res.json();
 }
+
 
 export async function updateCollection(
   userId: string,
