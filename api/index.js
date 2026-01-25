@@ -62,26 +62,59 @@ export default async function handler(req, res) {
   res.setHeader("x-olfly-handler", "api/index.js");
   res.setHeader("x-olfly-environment", process.env.NODE_ENV || "unknown");
 
+  const incomingUrl = req?.url ?? "";
+  const incomingMethod = req?.method ?? "UNKNOWN";
+
+  // Debug logging (always log for now to diagnose)
+  console.log("[api/index.js] Incoming request:", {
+    method: incomingMethod,
+    url: incomingUrl,
+    originalUrl: req?.originalUrl,
+    queryPath: req?.query?.path,
+    headers: {
+      host: req?.headers?.host,
+      contentType: req?.headers?.["content-type"],
+    },
+  });
+
   // Reconstruct original /api/* path from rewrite ?path=
-  // Example incoming URL: /api/index.js?path=users or path=users/UID/sessions
+  // Example incoming URL: /api/index.js?path=users or path=users/abc/sessions
   const pathParam = req?.query?.path;
+  let reconstructedUrl = incomingUrl;
+
   if (pathParam) {
+    // Handle both array (Vercel sometimes splits on /) and string formats
     const parts = Array.isArray(pathParam)
       ? pathParam
-      : String(pathParam).split("/");
+      : String(pathParam).split("/").filter(Boolean);
 
     // Preserve any non-path query params
-    const originalUrl = req?.url ?? "";
-    const qIndex = originalUrl.indexOf("?");
-    const rawQs = qIndex >= 0 ? originalUrl.slice(qIndex + 1) : "";
+    const qIndex = incomingUrl.indexOf("?");
+    const rawQs = qIndex >= 0 ? incomingUrl.slice(qIndex + 1) : "";
     const filteredQs = rawQs
       .split("&")
       .filter(Boolean)
       .filter((kv) => !kv.startsWith("path="))
       .join("&");
 
-    req.url = `/api/${parts.join("/")}${filteredQs ? `?${filteredQs}` : ""}`;
+    reconstructedUrl = `/api/${parts.join("/")}${filteredQs ? `?${filteredQs}` : ""}`;
+    req.url = reconstructedUrl;
+    req.originalUrl = reconstructedUrl;
+  } else if (!incomingUrl.startsWith("/api")) {
+    // If no path param and URL doesn't start with /api, force it
+    reconstructedUrl = `/api${incomingUrl.startsWith("/") ? "" : "/"}${incomingUrl}`;
+    req.url = reconstructedUrl;
+    req.originalUrl = reconstructedUrl;
   }
+
+  console.log("[api/index.js] Reconstructed URL:", {
+    original: incomingUrl,
+    reconstructed: req.url,
+    method: incomingMethod,
+  });
+
+  // Set response headers to ensure JSON for API routes
+  res.setHeader("x-olfly-reconstructed-url", req.url);
 
   if (!app) {
     res.statusCode = 500;
