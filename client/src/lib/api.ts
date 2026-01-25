@@ -267,9 +267,10 @@ export async function activateCollection(
 
 // Session API
 export async function createSession(
+  userId: string,
   sessionData: InsertSession,
 ): Promise<Session> {
-  const res = await authFetch("/api/sessions", {
+  const res = await authFetch(`/api/users/${userId}/sessions`, {
     method: "POST",
     body: JSON.stringify(sessionData),
   });
