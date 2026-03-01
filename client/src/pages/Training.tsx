@@ -262,42 +262,51 @@ export default function Training() {
   };
 
   const completeSession = async (finalRatings: Record<string, number>) => {
-    if (!user) return;
+    if (!user) {
+      console.error("[Training] completeSession called but user is null — session will not be saved");
+      return;
+    }
 
     stopRestBreath();
     setPhase("outro");
     setPhaseMotivation("");
     playNotification(user?.soundEnabled !== false);
-    
-    // Save session to backend
-    await createSessionMutation.mutateAsync({
-      userId: user.id,
-      completed: true,
-      scentRatings: finalRatings,
-    });
 
-    // Calculate new streak
-    const today = new Date().toISOString().split('T')[0];
-    const lastSessionDate = user.lastSessionDate ? new Date(user.lastSessionDate).toISOString().split('T')[0] : null;
-    
-    let newStreak = user.streak;
-    if (!lastSessionDate || lastSessionDate !== today) {
-      newStreak = user.streak + 1;
+    try {
+      // Save session to backend
+      await createSessionMutation.mutateAsync({
+        userId: user.id,
+        completed: true,
+        scentRatings: finalRatings,
+      });
+
+      // Calculate new streak
+      const today = new Date().toISOString().split('T')[0];
+      const lastSessionDate = user.lastSessionDate ? new Date(user.lastSessionDate).toISOString().split('T')[0] : null;
+
+      let newStreak = user.streak;
+      if (!lastSessionDate || lastSessionDate !== today) {
+        newStreak = user.streak + 1;
+      }
+
+      // Update user streak & last session date
+      const updatedUser = await updateUserAsync({
+        streak: newStreak,
+        lastSessionDate: new Date().toISOString(),
+      } as any);
+
+      const actualStreak = updatedUser?.streak ?? newStreak;
+      setFinalStreak(actualStreak);
+
+      const milestoneMsg = getMilestoneMessage(actualStreak);
+      const randomCompletion = MOTIVATION_MESSAGES.completion[Math.floor(Math.random() * MOTIVATION_MESSAGES.completion.length)];
+      setCompletionMessage(milestoneMsg || randomCompletion);
+    } catch (err) {
+      console.error("[Training] Failed to save session:", err);
+      // Still show a completion message even if save fails
+      setFinalStreak(user.streak);
+      setCompletionMessage("Great work! There was a problem saving your session — please check your connection and try again.");
     }
-
-    // Update user and get the actual updated streak from the server response
-    const updatedUser = await updateUserAsync({
-      streak: newStreak,
-      lastSessionDate: new Date().toISOString(),
-    } as any);
-
-    // Use the actual streak from the server response
-    const actualStreak = updatedUser?.streak ?? newStreak;
-    setFinalStreak(actualStreak);
-    
-    const milestoneMsg = getMilestoneMessage(actualStreak);
-    const randomCompletion = MOTIVATION_MESSAGES.completion[Math.floor(Math.random() * MOTIVATION_MESSAGES.completion.length)];
-    setCompletionMessage(milestoneMsg || randomCompletion);
   };
 
   // Show loading state while fetching user
@@ -443,6 +452,12 @@ export default function Training() {
                        >
                         {activeScent.image && <img src={activeScent.image} className="w-full h-full object-cover" />}
                        </motion.div>
+                       )}
+                       {/* Timer countdown badge — shows remaining seconds for timed phases */}
+                       {(phase === "breathe" || phase === "smell" || phase === "rest") && (
+                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0c0c1d]/90 border border-white/10 rounded-full px-3 py-1 min-w-[64px] text-center">
+                           <span className="text-white font-mono text-lg font-bold">{formatTime(timeLeft)}</span>
+                         </div>
                        )}
                   </div>
                )}

@@ -22,6 +22,14 @@ import {
 const MAX_SCENTS = 4;
 const BASELINE_SCENT_IDS = ['rose', 'lemon', 'eucalyptus', 'clove'];
 
+/** Clinical rationale for each protocol scent — shown on cards to explain why each was chosen */
+const SCENT_WHY: Record<string, string> = {
+  clove: "Intense & distinctive — strongly activates olfactory receptors for retraining.",
+  lemon: "Fresh & universally familiar — reliably stimulates the olfactory pathway.",
+  rose: "Emotionally evocative — engages memory centers linked to smell.",
+  eucalyptus: "Broad nasal activation — complements the other protocol scents.",
+};
+
 export default function Library() {
   const { user } = useCurrentUser();
   const queryClient = useQueryClient();
@@ -399,6 +407,9 @@ export default function Library() {
                 <div className="flex-1 min-w-0">
                    <h3 className="font-bold text-white text-lg truncate" data-testid={`text-scent-name-${scent.id}`}>{scent.name}</h3>
                    <p className="text-sm text-white/70 truncate">{scent.description}</p>
+                   {BASELINE_SCENT_IDS.includes(scent.id) && SCENT_WHY[scent.id] && (
+                     <p className="text-xs text-[#ac41c3]/80 mt-0.5 line-clamp-2">{SCENT_WHY[scent.id]}</p>
+                   )}
                 </div>
 
                 <div className={cn(

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import { useProgressUpdates } from "@/hooks/useProgressUpdates";
 import { ProgressShareCard } from "@/components/ProgressShareCard";
 
 export default function Progress() {
+  const [, setLocation] = useLocation();
   const { user: firebaseUser } = useAuth();
   const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
   const queryClient = useQueryClient();
@@ -192,9 +194,19 @@ export default function Progress() {
                   </div>
                 ))
               ) : (
-                <p className="text-white/50 text-sm text-center py-2">
-                  Start your first session to begin tracking milestones.
-                </p>
+                <div className="flex flex-col items-center gap-3 py-2">
+                  <Calendar size={24} className="text-white/30" />
+                  <p className="text-white/50 text-sm text-center">
+                    Start your first session to begin tracking milestones.
+                  </p>
+                  <Button
+                    onClick={() => setLocation("/launch/training")}
+                    size="sm"
+                    className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl text-xs h-8 px-4"
+                  >
+                    Start a Session
+                  </Button>
+                </div>
               )}
               {upcomingMilestones.length > 0 && reachedMilestones.length > 0 && (
                 <div className="border-t border-white/10 pt-3 mt-3">
@@ -257,10 +269,17 @@ export default function Progress() {
 
           <div className="h-[200px] w-full relative bg-[#3b1645] rounded-2xl p-4 shadow-md">
             {displayData.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                <TrendingUp size={32} className="text-white/30 mb-3" />
+              <div className="h-full flex flex-col items-center justify-center text-center gap-1">
+                <TrendingUp size={32} className="text-white/30 mb-2" />
                 <p className="text-white/50 text-sm">No sessions yet</p>
-                <p className="text-white/30 text-xs mt-1">Complete training sessions to see your progress chart</p>
+                <p className="text-white/30 text-xs">Complete training sessions to see your progress chart</p>
+                <Button
+                  onClick={() => setLocation("/launch/training")}
+                  size="sm"
+                  className="mt-3 bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl text-xs h-8 px-4"
+                >
+                  Start a Session
+                </Button>
               </div>
             ) : (
             <ResponsiveContainer width="100%" height="100%">
