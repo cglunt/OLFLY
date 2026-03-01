@@ -412,6 +412,10 @@ export default function Training() {
                   </motion.div>
                )}
                {phase !== "intro" && phase !== "outro" && phase !== "setup" && (
+                  <div className="flex flex-col items-center gap-2">
+                  {(phase === "breathe" || phase === "smell" || phase === "rest") && (
+                    <span className="text-[#ac41c3] text-3xl font-bold tabular-nums">{formatTime(timeLeft)}</span>
+                  )}
                   <div className="relative w-[280px] h-[280px] flex items-center justify-center">
                        {/* Progress Ring */}
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
@@ -453,12 +457,7 @@ export default function Training() {
                         {activeScent.image && <img src={activeScent.image} className="w-full h-full object-cover" />}
                        </motion.div>
                        )}
-                       {/* Timer countdown badge — shows remaining seconds for timed phases */}
-                       {(phase === "breathe" || phase === "smell" || phase === "rest") && (
-                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0c0c1d]/90 border border-white/10 rounded-full px-3 py-1 min-w-[64px] text-center">
-                           <span className="text-white font-mono text-lg font-bold">{formatTime(timeLeft)}</span>
-                         </div>
-                       )}
+                  </div>
                   </div>
                )}
            </div>
