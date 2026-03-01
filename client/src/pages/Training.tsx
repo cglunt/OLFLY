@@ -328,7 +328,7 @@ export default function Training() {
         
         {/* Header */}
         <header className="w-full flex justify-between items-center mt-2">
-           <Button variant="ghost" size="icon" onClick={() => setLocation("/launch")} className="hover:bg-white/10 rounded-full text-white" data-testid="button-back">
+           <Button variant="ghost" size="icon" onClick={() => setLocation("/launch")} className="hover:bg-white/10 rounded-full text-white" aria-label="Go back to home" data-testid="button-back">
              <ChevronLeft className="h-6 w-6" />
            </Button>
            <h2 className="text-sm font-bold tracking-widest uppercase text-white/80">
@@ -337,7 +337,7 @@ export default function Training() {
            
            <Dialog open={showHelp} onOpenChange={setShowHelp}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full" data-testid="button-help">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full" aria-label="Help" data-testid="button-help">
                   <HelpCircle className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
@@ -496,16 +496,19 @@ export default function Training() {
            {phase === "rate" && (
               <div className="w-full bg-[#3b1645] p-6 rounded-2xl shadow-md animate-in slide-in-from-bottom-5 fade-in">
                 <div className="flex justify-between items-center mb-6">
-                    <label className="text-white text-sm font-bold tracking-wider uppercase">Intensity</label>
-                    <span className="text-3xl font-bold text-[#ac41c3]" data-testid="text-rating">{currentRating}/10</span>
+                    <label htmlFor="intensity-slider" className="text-white text-sm font-bold tracking-wider uppercase">Intensity</label>
+                    <span className="text-3xl font-bold text-[#ac41c3]" data-testid="text-rating" aria-live="polite" aria-label={`Intensity ${currentRating} out of 10`}>{currentRating}/10</span>
                 </div>
                 <Slider 
+                    id="intensity-slider"
                     defaultValue={[5]} 
                     max={10} 
                     step={1} 
                     value={[currentRating]} 
                     onValueChange={(val) => setCurrentRating(val[0])}
                     className="py-2 mb-8"
+                    aria-label="Smell intensity rating"
+                    aria-valuetext={`${currentRating} out of 10`}
                     data-testid="slider-rating"
                 />
                 <Button size="lg" className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white rounded-xl h-14 font-bold text-lg shadow-md" onClick={submitRating} data-testid="button-submit-rating">
@@ -521,17 +524,18 @@ export default function Training() {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') beginTraining();
-                 }} data-testid="button-restart">
-                   <RotateCcw className="h-6 w-6" />
+                 }} aria-label="Restart phase" data-testid="button-restart">
+                   <RotateCcw className="h-6 w-6" aria-hidden="true" />
                  </Button>
                  
                  <Button 
                    size="icon" 
                    className="h-24 w-24 rounded-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:scale-105 transition-all shadow-lg shadow-[#ac41c3]/20"
                    onClick={toggleTimer}
+                   aria-label={isActive ? "Pause timer" : "Start timer"}
                    data-testid="button-play-pause"
                  >
-                   {isActive ? <Pause className="h-10 w-10 fill-current" /> : <Play className="h-10 w-10 fill-current pl-1" />}
+                   {isActive ? <Pause className="h-10 w-10 fill-current" aria-hidden="true" /> : <Play className="h-10 w-10 fill-current pl-1" aria-hidden="true" />}
                  </Button>
 
                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
@@ -539,8 +543,8 @@ export default function Training() {
                     if (phase === 'breathe') startSmellPhase();
                     else if (phase === 'smell') { setPhase('rate'); setPhaseMotivation(''); }
                     else if (phase === 'rest') beginTraining();
-                 }} data-testid="button-skip">
-                   <SkipForward className="h-6 w-6" />
+                 }} aria-label="Skip to next phase" data-testid="button-skip">
+                   <SkipForward className="h-6 w-6" aria-hidden="true" />
                  </Button>
                </div>
            )}
@@ -682,9 +686,35 @@ export default function Training() {
            )}
            
            {phase === "outro" && (
-               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg mt-4" onClick={() => setLocation("/launch")} data-testid="button-finish-session">
+             <div className="w-full space-y-4">
+               {/* Session summary */}
+               <div className="bg-[#3b1645] rounded-2xl p-5 space-y-3">
+                 <p className="text-white/60 text-xs uppercase tracking-wider font-semibold">Session Summary</p>
+                 {trainingScents.map((scent) => (
+                   <div key={scent.id} className="flex items-center justify-between">
+                     <span className="text-white/80 text-sm">{scent.name}</span>
+                     <div className="flex items-center gap-1.5">
+                       <div className="flex gap-0.5">
+                         {Array.from({ length: 10 }).map((_, i) => (
+                           <div
+                             key={i}
+                             className={`h-2 w-2 rounded-full ${
+                               i < (ratings[scent.id] ?? 5)
+                                 ? "bg-[#ac41c3]"
+                                 : "bg-white/15"
+                             }`}
+                           />
+                         ))}
+                       </div>
+                       <span className="text-white/50 text-xs w-6 text-right">{ratings[scent.id] ?? 5}/10</span>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+               <Button size="lg" className="w-full rounded-xl h-16 text-lg font-bold bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white hover:opacity-90 shadow-lg" onClick={() => setLocation("/launch")} data-testid="button-finish-session">
                  Finish Session
                </Button>
+             </div>
            )}
 
         </div>

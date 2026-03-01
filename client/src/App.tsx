@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -28,27 +28,17 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { Button } from "@/components/ui/button";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AuthDebugPanel } from "@/components/AuthDebugPanel";
 import { useEffect } from "react";
 import { initializeTrackers } from "@/lib/cookieConsent";
-import { setLoginRedirectReason } from "@/lib/api";
-import { debugAuthLog } from "@/lib/debugAuth";
 
 function AppRouter() {
   const { user: firebaseUser, loading: authLoading, authReady, logOut } = useAuth();
   const { user, isLoading, error: currentUserError, refetch } = useCurrentUser(
+    firebaseUser?.uid,
     firebaseUser?.displayName || undefined,
     { enabled: authReady && !!firebaseUser }
   );
   const [location, setLocation] = useLocation();
-
-  useEffect(() => {
-    debugAuthLog("ROUTE:location", {
-      path: location,
-      authReady,
-      uid: firebaseUser?.uid ?? null,
-    });
-  }, [location, authReady, firebaseUser]);
 
   useEffect(() => {
     // DO NOTHING until Firebase finishes restoring session
@@ -56,27 +46,12 @@ function AppRouter() {
 
     // Not logged in → protect /launch/*
     if (!firebaseUser && location.startsWith("/launch") && location !== "/launch/login") {
-      setLoginRedirectReason("client/src/App.tsx:49 unauthenticated on /launch");
-      debugAuthLog("ROUTE:redirect", {
-        fromPath: location,
-        toPath: "/launch/login",
-        reason: "unauthenticated on /launch",
-        authReady,
-        uid: null,
-      });
       setLocation("/launch/login");
       return;
     }
 
     // Logged in → keep them out of login page
     if (firebaseUser && location === "/launch/login") {
-      debugAuthLog("ROUTE:redirect", {
-        fromPath: location,
-        toPath: "/launch",
-        reason: "authenticated on /launch/login",
-        authReady,
-        uid: firebaseUser.uid,
-      });
       setLocation("/launch");
       return;
     }
@@ -84,15 +59,13 @@ function AppRouter() {
 
   useEffect(() => {
     if (!authReady || isLoading || !user || !firebaseUser) return;
-    
-    if (!user.hasOnboarded && location.startsWith("/launch") && location !== "/launch/onboarding" && location !== "/launch/login") {
-      debugAuthLog("ROUTE:redirect", {
-        fromPath: location,
-        toPath: "/launch/onboarding",
-        reason: "user not onboarded",
-        authReady,
-        uid: firebaseUser.uid,
-      });
+
+    if (
+      !user.hasOnboarded &&
+      location.startsWith("/launch") &&
+      location !== "/launch/onboarding" &&
+      location !== "/launch/login"
+    ) {
       setLocation("/launch/onboarding");
     }
   }, [authReady, location, setLocation, user, isLoading, firebaseUser]);
@@ -106,7 +79,7 @@ function AppRouter() {
     );
   }
 
-  // If not authenticated, show Login page
+  // If not authenticated, show redirect indicator
   if (!firebaseUser && location.startsWith("/launch")) {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
@@ -121,7 +94,7 @@ function AppRouter() {
     return (
       <div className="min-h-screen w-full bg-[#0c0c1d] flex items-center justify-center">
         <div className="text-center text-white space-y-2 max-w-sm">
-          <p className="text-lg font-semibold">We couldn’t load your profile.</p>
+          <p className="text-lg font-semibold">We couldn't load your profile.</p>
           <p className="text-white/70 text-sm">
             {currentUserStatus === 401
               ? "Your session expired. Please sign in again."
@@ -131,7 +104,6 @@ function AppRouter() {
             <Button
               onClick={async () => {
                 await logOut();
-                setLoginRedirectReason("client/src/App.tsx:104 session expired action");
                 setLocation("/launch/login");
               }}
               className="mt-2 bg-[#6d45d2] text-white hover:bg-[#5b36b0]"
@@ -150,7 +122,6 @@ function AppRouter() {
       </div>
     );
   }
-
 
   // User is authenticated, render app routes
   return (
@@ -191,6 +162,14 @@ function Router() {
       <Route path="/legal/contact" component={Contact} />
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/pricing" component={Landing} />
+      {/* Redirect legacy/wrong paths to correct locations */}
+      <Route path="/terms"><Redirect to="/legal/terms" /></Route>
+      <Route path="/privacy"><Redirect to="/legal/privacy" /></Route>
+      <Route path="/disclaimers"><Redirect to="/legal/disclaimers" /></Route>
+      <Route path="/for-clinicians"><Redirect to="/clinicians" /></Route>
+      <Route path="/launch/train"><Redirect to="/launch/training" /></Route>
+      <Route path="/launch/session"><Redirect to="/launch/training" /></Route>
+      <Route path="/launch/routine"><Redirect to="/launch/training" /></Route>
       <Route component={NotFound} />
     </Switch>
   );

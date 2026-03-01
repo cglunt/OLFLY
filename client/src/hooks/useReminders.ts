@@ -132,7 +132,7 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
     if (permissionStatus === 'denied') {
       return { text: "Permission denied", color: "text-red-400", isEnabled: false };
     }
-    if (!user?.remindersEnabled) {
+    if (!user?.remindersEnabled || permissionStatus !== 'granted') {
       return { text: "Disabled", color: "text-white/50", isEnabled: false };
     }
     return { text: "Enabled", color: "text-green-400", isEnabled: true };

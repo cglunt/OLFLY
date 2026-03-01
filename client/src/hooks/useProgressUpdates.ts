@@ -206,6 +206,12 @@ export function useProgressUpdates(sessions: Session[]) {
   }, [sessions, startDate]);
 
   useEffect(() => {
+    // Clear stale localStorage moments when there are no server sessions
+    if (sessions.length === 0 && progressMoments.length > 0) {
+      setProgressMoments([]);
+      setStorageItem('olflyProgressMoments', []);
+      return;
+    }
     if (sessions.length === 0) return;
     
     const newMoments = computeNewMoments(sessions, progressMoments);

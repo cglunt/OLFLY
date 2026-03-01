@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export default function Library() {
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
 
-  const { data: collections = [] } = useQuery({
+  const { data: collections = [], isSuccess: collectionsLoaded } = useQuery({
     queryKey: ["collections", user?.id],
     queryFn: () => getUserCollections(user!.id),
     enabled: !!user,
@@ -52,8 +52,10 @@ export default function Library() {
     },
   });
 
+  const didCreateBaseline = useRef(false);
   useEffect(() => {
-    if (user && collections.length === 0) {
+    if (user && collectionsLoaded && collections.length === 0 && !didCreateBaseline.current) {
+      didCreateBaseline.current = true;
       createCollectionMutation.mutate({
         userId: user.id,
         name: "Baseline",
@@ -62,7 +64,7 @@ export default function Library() {
         isActive: true,
       });
     }
-  }, [user, collections.length]);
+  }, [user, collectionsLoaded, collections.length]);
 
   const updateCollectionMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: Partial<ScentCollection> }) => 
