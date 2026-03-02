@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ALL_SCENTS, Scent } from "@/lib/data";
-import { Search, Check, X, Sparkles, Plus, Leaf, Trash2 } from "lucide-react";
+import { Search, Check, X, Sparkles, Plus, Leaf, Trash2, RefreshCw, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -328,6 +328,36 @@ export default function Library() {
                 <span>This collection is used for training</span>
               </motion.div>
             )}
+          </div>
+        )}
+
+        {/* 12-Week Rotation Tip (#15) */}
+        {(() => {
+          const weeksTraining = user.createdAt
+            ? Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 7))
+            : 0;
+          if (weeksTraining < 12) return null;
+          return (
+            <div className="bg-[#3b1645] border border-[#ac41c3]/30 rounded-2xl p-4 flex items-start gap-3">
+              <RefreshCw size={18} className="text-[#ac41c3] shrink-0 mt-0.5" />
+              <div>
+                <p className="text-white font-semibold text-sm">Time to rotate?</p>
+                <p className="text-white/60 text-sm mt-0.5">
+                  You've been training for {weeksTraining} weeks. Swapping to a new set of 4 scents can re-challenge your olfactory pathways and boost recovery.
+                </p>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Protocol Guidance (#7) */}
+        {activeCollection?.context === "default" && (
+          <div className="bg-[#1a1a2e] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
+            <Info size={16} className="text-white/40 shrink-0 mt-0.5" />
+            <p className="text-white/50 text-xs leading-relaxed">
+              <span className="text-white/70 font-semibold">Protocol: </span>
+              Sniff each scent for 20 seconds, focusing on the memory or image it evokes. Repeat twice daily — morning and evening — for best results.
+            </p>
           </div>
         )}
 

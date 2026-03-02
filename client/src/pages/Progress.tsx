@@ -272,7 +272,7 @@ export default function Progress() {
               <div className="h-full flex flex-col items-center justify-center text-center gap-1">
                 <TrendingUp size={32} className="text-white/30 mb-2" />
                 <p className="text-white/50 text-sm">No sessions yet</p>
-                <p className="text-white/30 text-xs">Complete training sessions to see your progress chart</p>
+                <p className="text-white/50 text-xs">Complete training sessions to see your progress chart</p>
                 <Button
                   onClick={() => setLocation("/launch/training")}
                   size="sm"

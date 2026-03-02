@@ -50,6 +50,18 @@ export default function Learn() {
                 Yes! After 12 weeks, or if you get bored, switching to a new set of 4 scents can help challenge your nose in new ways.
               </AccordionContent>
             </AccordionItem>
+            <AccordionItem value="item-4" className="border-none">
+              <AccordionTrigger className="bg-[#3b1645] rounded-xl px-4 py-3 text-white hover:no-underline data-[state=open]:rounded-b-none">What is parosmia?</AccordionTrigger>
+              <AccordionContent className="bg-[#3b1645] px-4 pb-4 rounded-b-xl text-white/70">
+                Parosmia is when familiar smells become distorted or unpleasant — coffee smelling like chemicals, for example. It's actually a sign that your olfactory nerves are regenerating and making new connections. Keep training gently through it; it usually improves over time.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-5" className="border-none">
+              <AccordionTrigger className="bg-[#3b1645] rounded-xl px-4 py-3 text-white hover:no-underline data-[state=open]:rounded-b-none">What is phantosmia?</AccordionTrigger>
+              <AccordionContent className="bg-[#3b1645] px-4 pb-4 rounded-b-xl text-white/70">
+                Phantosmia means smelling something — often a burning or sweet odour — that isn't actually there. This is common during smell recovery as the nerves rewire. It often fades as progress continues. If it's persistent or distressing, let your doctor know.
+              </AccordionContent>
+            </AccordionItem>
           </Accordion>
         </div>
 

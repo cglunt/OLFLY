@@ -277,10 +277,23 @@ export default function Onboarding() {
                     </div>
 
                     <Block className="mb-6 bg-[#3b1645]">
-                         <div className="text-center space-y-2">
-                            <p className="text-lg font-bold text-white">"Twenty seconds per scent. You got this."</p>
-                            <p className="text-sm text-white/40">Your nose is cheering for you already.</p>
-                         </div>
+                        <p className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3">Each session looks like this</p>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                            <p className="text-[#ac41c3] font-bold text-sm">Breathe</p>
+                            <p className="text-white/50 text-xs mt-0.5">Calm in</p>
+                          </div>
+                          <div className="text-white/30 text-lg">›</div>
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                            <p className="text-[#ac41c3] font-bold text-sm">Smell</p>
+                            <p className="text-white/50 text-xs mt-0.5">20 seconds</p>
+                          </div>
+                          <div className="text-white/30 text-lg">›</div>
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                            <p className="text-[#ac41c3] font-bold text-sm">Rest</p>
+                            <p className="text-white/50 text-xs mt-0.5">Then repeat</p>
+                          </div>
+                        </div>
                     </Block>
 
                     <div className="mt-auto pb-4 md:pb-0">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Volume2, Sparkles } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
@@ -206,19 +206,45 @@ export default function Settings() {
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Subscription</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
-            <div className="p-4">
-              <div className="flex items-center gap-4 mb-4">
+            <div className="p-4 space-y-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
                   <Sparkles size={18} className="text-[#ac41c3]" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-white font-medium">Free Plan</p>
-                  <p className="text-white/50 text-sm">Upgrade via app store for more features</p>
+                  <p className="text-white font-medium">{user.plusActive ? "Olfly Plus" : "Free Plan"}</p>
+                  <p className="text-white/50 text-sm">{user.plusActive ? "Full access enabled" : "Core training included"}</p>
                 </div>
+                {user.plusActive && (
+                  <span className="text-xs bg-[#ac41c3]/20 text-[#ac41c3] px-2 py-1 rounded-full font-medium">Active</span>
+                )}
               </div>
-              <p className="text-white/40 text-sm text-center">
-                Upgrade to Plus through the App Store or Google Play
-              </p>
+
+              {!user.plusActive && (
+                <>
+                  <div className="space-y-2">
+                    <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Free includes</p>
+                    {["Daily scent training sessions", "Baseline protocol (4 scents)", "Streak tracking", "Progress chart"].map(f => (
+                      <div key={f} className="flex items-center gap-2 text-white/70 text-sm">
+                        <Check size={14} className="text-green-400 shrink-0" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Plus unlocks</p>
+                    {["Custom scent collections", "Advanced progress insights", "Symptom log history", "Priority support"].map(f => (
+                      <div key={f} className="flex items-center gap-2 text-white/50 text-sm">
+                        <Sparkles size={14} className="text-[#ac41c3]/60 shrink-0" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-white/40 text-xs text-center pt-1">
+                    Upgrade via the App Store or Google Play
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
