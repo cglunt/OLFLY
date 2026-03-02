@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
-  TrendingUp, Sparkles, Timer, BarChart3, Palette,
+  TrendingUp, Flame, Timer, BarChart3, Palette,
   BookOpen, Check, ChevronDown, Mail, Menu, X, Star, Stethoscope, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ const FEATURES = [
   { icon: Palette, title: "Use scents you already have", desc: "Start with household items or essential oils" },
   { icon: BookOpen, title: "Notice patterns and changes", desc: "Log symptoms and observations day to day" },
   { icon: BarChart3, title: "Stay motivated with progress", desc: "Beautiful visualization of your journey" },
-  { icon: Sparkles, title: "Stay consistent without overthinking", desc: "Daily streaks and gentle reminders keep you on track" },
+  { icon: Flame, title: "Stay consistent without overthinking", desc: "Daily streaks and gentle reminders keep you on track" },
 ];
 
 const PRICING = [

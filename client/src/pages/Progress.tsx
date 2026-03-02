@@ -11,7 +11,7 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { getUserSessions, getUserSymptomLogs, createSymptomLog } from "@/lib/api";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Share2, Sparkles, Calendar, Star } from "lucide-react";
+import { Moon, Zap, TrendingUp, AlertCircle, Plus, X, Check, Share2, Flame, Calendar, Star } from "lucide-react";
 import type { Session, SymptomLog } from "@shared/schema";
 import { useProgressUpdates } from "@/hooks/useProgressUpdates";
 import { ProgressShareCard } from "@/components/ProgressShareCard";
@@ -158,7 +158,7 @@ export default function Progress() {
         <div className="space-y-4">
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Sparkles size={20} className="text-[#db2faa]" />
+              <Flame size={20} className="text-[#db2faa]" />
               Progress Updates
             </h2>
             <p className="text-white/50 text-sm mt-1">Gentle check-ins to help you notice progress over time.</p>

@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useLocation } from "wouter";
-import { Play, Zap, Activity, Bell, Clock, Package, User, Sparkles } from "lucide-react";
+import { Play, Zap, Activity, Bell, Clock, Package, User, Flame } from "lucide-react";
 import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071916008.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -244,7 +244,7 @@ export default function Home() {
               data-testid="card-routine-baseline"
             >
               <div className="h-12 w-12 rounded-full bg-[#3b1645] flex items-center justify-center text-[#db2faa] shrink-0 border border-white/5">
-                <Sparkles size={20} />
+                <Flame size={20} />
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-white text-lg">Baseline</h3>

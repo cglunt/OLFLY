@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Flame } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
@@ -209,7 +209,7 @@ export default function Settings() {
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
-                  <Sparkles size={18} className="text-[#ac41c3]" />
+                  <Flame size={18} className="text-[#ac41c3]" />
                 </div>
                 <div className="flex-1">
                   <p className="text-white font-medium">{user.plusActive ? "Olfly Plus" : "Free Plan"}</p>
@@ -235,7 +235,7 @@ export default function Settings() {
                     <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Plus unlocks</p>
                     {["Custom scent collections", "Advanced progress insights", "Symptom log history", "Priority support"].map(f => (
                       <div key={f} className="flex items-center gap-2 text-white/50 text-sm">
-                        <Sparkles size={14} className="text-[#ac41c3]/60 shrink-0" />
+                        <Flame size={14} className="text-[#ac41c3]/60 shrink-0" />
                         {f}
                       </div>
                     ))}

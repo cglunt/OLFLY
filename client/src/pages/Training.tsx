@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation, useSearch } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check, Pencil } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Flame, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
@@ -210,6 +210,7 @@ export default function Training() {
   };
 
   const beginTraining = () => {
+    stopRestBreath(); // stop any previous audio before starting fresh
     setPhase("breathe");
     setTimeLeft(5);
     setIsActive(true);
@@ -218,6 +219,7 @@ export default function Training() {
   };
 
   const startSmellPhase = () => {
+    stopRestBreath(); // stop any breathing audio before smell phase
     setPhase("smell");
     setTimeLeft(smellDuration);
     setIsActive(true);
@@ -488,9 +490,9 @@ export default function Training() {
                  transition={{ delay: 0.5 }}
                  className="flex items-center justify-center gap-2 mt-4"
                >
-                 <Sparkles size={18} className="text-[#ac41c3]" />
+                 <Flame size={18} className="text-[#ac41c3]" />
                  <span className="text-[#ac41c3] font-medium">{finalStreak} day streak!</span>
-                 <Sparkles size={18} className="text-[#ac41c3]" />
+                 <Flame size={18} className="text-[#ac41c3]" />
                </motion.div>
              )}
              {(phase === "breathe" || phase === "smell" || phase === "rest") && phaseMotivation && (
@@ -535,8 +537,10 @@ export default function Training() {
            {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                <div className="flex items-center gap-8 mt-4">
                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
+                    setIsActive(false);
+                    stopRestBreath();
                     if (phase === 'breathe') startSmellPhase();
-                    else if (phase === 'smell') setPhase('rate');
+                    else if (phase === 'smell') { setPhase('rate'); setPhaseMotivation(''); }
                     else if (phase === 'rest') beginTraining();
                  }} aria-label="Restart phase" data-testid="button-restart">
                    <RotateCcw className="h-6 w-6" aria-hidden="true" />

@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, ShieldAlert, Sparkles, FileText, Droplets, ChevronRight } from "lucide-react";
+import { Brain, ShieldAlert, Flame, FileText, Droplets, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Learn() {
@@ -76,7 +76,7 @@ export default function Learn() {
                 </div>
              </div>
              <div className="bg-[#3b1645] rounded-2xl p-5 flex gap-4 shadow-md">
-                <Sparkles className="h-6 w-6 text-[#db2faa] shrink-0" />
+                <Flame className="h-6 w-6 text-[#db2faa] shrink-0" />
                 <div>
                   <h4 className="font-bold text-white text-base">Clean Essential Oils</h4>
                   <p className="text-sm text-white/70">If using essential oils, ensure they are high quality. Do not touch the oil to your skin directly.</p>

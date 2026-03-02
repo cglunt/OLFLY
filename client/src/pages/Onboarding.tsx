@@ -473,49 +473,44 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Progress takes<br/>patience</h2>
-                    
-                    <div className="space-y-4 mb-4">
-                         <p className="text-white/70 text-lg leading-relaxed">
-                            Smell recovery can take weeks or months. That's completely normal.
-                         </p>
-                         <p className="text-white/70 text-lg leading-relaxed">
-                            Olfly tracks your progress so you can see even small improvements.
-                         </p>
-                    </div>
-                    
-                    <motion.div 
+                    <h2 className="text-2xl font-bold mb-2">Progress takes patience</h2>
+
+                    <p className="text-white/70 text-sm leading-relaxed mb-3">
+                        Smell recovery can take weeks or months — that's completely normal. Olfly tracks even small improvements so you can see your progress.
+                    </p>
+
+                    <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="flex justify-center my-4"
+                        className="flex justify-center my-2"
                     >
-                        <img src={topMiaImg} alt="" className="w-80 h-80 md:w-96 md:h-96 object-contain" />
+                        <img src={topMiaImg} alt="" className="w-44 h-44 object-contain" />
                     </motion.div>
-                    
+
                     <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
-                        <motion.h3 
+                        <motion.h3
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.3, duration: 0.5 }}
-                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight"
+                            className="text-2xl font-bold text-white leading-snug"
                         >
                             "Slow progress<br/>is still progress."
                         </motion.h3>
-                        <motion.p 
+                        <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5, duration: 0.5 }}
-                            className="text-white/50 text-lg mt-4"
+                            className="text-white/50 text-sm mt-2"
                         >
                             Your brain is literally rewiring.
                         </motion.p>
                     </div>
 
                     <div className="pb-4 md:pb-0 mt-auto">
-                        <Button 
+                        <Button
                             onClick={nextStep}
-                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
+                            className="w-full h-14 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base font-bold shadow-lg shadow-[#ac41c3]/20"
                             data-testid="button-next-step6"
                         >
                             Almost done

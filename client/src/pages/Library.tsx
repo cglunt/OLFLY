@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ALL_SCENTS, Scent } from "@/lib/data";
-import { Search, Check, X, Sparkles, Plus, Leaf, Trash2, RefreshCw, Info } from "lucide-react";
+import { Search, Check, X, Flame, Plus, Leaf, Trash2, RefreshCw, Info, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -17,6 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 
 const MAX_SCENTS = 4;
@@ -39,6 +41,7 @@ export default function Library() {
   const [activeCollectionId, setActiveCollectionId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
+  const [isDeletingCollection, setIsDeletingCollection] = useState(false);
 
   const { data: collections = [], isSuccess: collectionsLoaded } = useQuery({
     queryKey: ["collections", user?.id],
@@ -153,7 +156,17 @@ export default function Library() {
 
   const handleDelete = () => {
     if (!activeCollection) return;
+    if (collections.length <= 1) {
+      toast({ title: "Can't delete last collection", description: "You need at least one collection for training.", variant: "destructive" });
+      return;
+    }
+    setIsDeletingCollection(true);
+  };
+
+  const confirmDelete = () => {
+    if (!activeCollection) return;
     deleteCollectionMutation.mutate(activeCollection.id);
+    setIsDeletingCollection(false);
   };
 
   if (!user) {
@@ -238,7 +251,7 @@ export default function Library() {
             </div>
           ) : (
             <div className="bg-[#3b1645] rounded-2xl p-6 text-center">
-              <Sparkles size={32} className="text-[#ac41c3] mx-auto mb-3" />
+              <Flame size={32} className="text-[#ac41c3] mx-auto mb-3" />
               <h3 className="font-bold text-white mb-2">No collections yet</h3>
               <p className="text-white/60 text-sm mb-4">Create your first scent collection to get started</p>
               <Button onClick={() => setIsCreating(true)} className="bg-[#ac41c3] text-white">
@@ -457,6 +470,38 @@ export default function Library() {
           )})}
         </div>
       </div>
+      {/* Delete Collection Confirmation */}
+      <Dialog open={isDeletingCollection} onOpenChange={setIsDeletingCollection}>
+        <DialogContent className="bg-[#1a1a2e] border-[#3b1645] max-w-[90vw] rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                <AlertTriangle size={18} className="text-red-400" />
+              </div>
+              <DialogTitle className="text-white">Delete "{activeCollection?.name}"?</DialogTitle>
+            </div>
+            <DialogDescription className="text-white/60 pl-13">
+              This will permanently remove the collection and all its scent selections. This can't be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 mt-2">
+            <Button
+              variant="ghost"
+              className="flex-1 text-white/70 hover:bg-white/10"
+              onClick={() => setIsDeletingCollection(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white"
+              onClick={confirmDelete}
+              disabled={deleteCollectionMutation.isPending}
+            >
+              {deleteCollectionMutation.isPending ? "Deleting…" : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
