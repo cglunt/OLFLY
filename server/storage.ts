@@ -1,4 +1,4 @@
-import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, pushSubscriptions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission, type InsertPushSubscription, type PushSubscriptionRecord } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
 
@@ -40,6 +40,12 @@ export interface IStorage {
   // Subscription operations
   getUserByStripeCustomerId(stripeCustomerId: string): Promise<User | undefined>;
   updateUserSubscription(userId: string, updates: { plan: string; plusActive: boolean; currentPeriodEnd: Date | null; stripeCustomerId?: string }): Promise<User | undefined>;
+
+  // Push notification subscription operations
+  savePushSubscription(subscription: InsertPushSubscription): Promise<PushSubscriptionRecord>;
+  deletePushSubscription(endpoint: string): Promise<void>;
+  getPushSubscriptionsForUser(userId: string): Promise<PushSubscriptionRecord[]>;
+  getUsersWithRemindersEnabled(): Promise<User[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -237,6 +243,50 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return user || undefined;
+  }
+
+  // Push notification subscription operations
+  async savePushSubscription(subscription: InsertPushSubscription): Promise<PushSubscriptionRecord> {
+    const [existing] = await db
+      .select()
+      .from(pushSubscriptions)
+      .where(eq(pushSubscriptions.endpoint, subscription.endpoint));
+
+    if (existing) {
+      // Update the existing subscription (keys can rotate)
+      const [updated] = await db
+        .update(pushSubscriptions)
+        .set({ p256dh: subscription.p256dh, auth: subscription.auth, timezone: subscription.timezone })
+        .where(eq(pushSubscriptions.endpoint, subscription.endpoint))
+        .returning();
+      return updated;
+    }
+
+    const [newSub] = await db
+      .insert(pushSubscriptions)
+      .values(subscription)
+      .returning();
+    return newSub;
+  }
+
+  async deletePushSubscription(endpoint: string): Promise<void> {
+    await db
+      .delete(pushSubscriptions)
+      .where(eq(pushSubscriptions.endpoint, endpoint));
+  }
+
+  async getPushSubscriptionsForUser(userId: string): Promise<PushSubscriptionRecord[]> {
+    return db
+      .select()
+      .from(pushSubscriptions)
+      .where(eq(pushSubscriptions.userId, userId));
+  }
+
+  async getUsersWithRemindersEnabled(): Promise<User[]> {
+    return db
+      .select()
+      .from(users)
+      .where(eq(users.remindersEnabled, true));
   }
 }
 

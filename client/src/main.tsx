@@ -2,6 +2,11 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { auth, onAuthChange, initAuthPersistence, waitForAuthReady } from "./lib/firebase";
+import { registerServiceWorker } from "./lib/notifications";
+
+// Register the service worker early so push notifications work even when
+// the app tab is closed. Non-blocking — failures are logged but ignored.
+void registerServiceWorker();
 
 console.log("[AUTH_PROBE] location=", window.location.pathname);
 

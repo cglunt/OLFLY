@@ -9,6 +9,85 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { requireAuth, requireOwnership } from "./middleware";
+import webpush from "web-push";
+import cron from "node-cron";
+
+// ── VAPID setup ──────────────────────────────────────────────────────────────
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || "";
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || "";
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || "mailto:hello@olfly.com";
+
+if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+} else {
+  console.warn("VAPID keys not set — push notifications will not work.");
+}
+
+// ── Reminder scheduler ───────────────────────────────────────────────────────
+// Runs every minute, checks which users need a notification right now
+cron.schedule("* * * * *", async () => {
+  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) return;
+
+  try {
+    const usersWithReminders = await storage.getUsersWithRemindersEnabled();
+
+    for (const user of usersWithReminders) {
+      const subscriptions = await storage.getPushSubscriptionsForUser(user.id);
+      if (!subscriptions.length) continue;
+
+      for (const sub of subscriptions) {
+        const tz = sub.timezone || "UTC";
+        let userNow: Date;
+        try {
+          userNow = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+        } catch {
+          userNow = new Date();
+        }
+
+        const h = userNow.getHours().toString().padStart(2, "0");
+        const m = userNow.getMinutes().toString().padStart(2, "0");
+        const currentTime = `${h}:${m}`;
+
+        const morningTime = user.morningTime || "08:00";
+        const eveningTime = user.eveningTime || "20:00";
+
+        let notification: { title: string; body: string; url: string; tag: string } | null = null;
+
+        if (currentTime === morningTime) {
+          notification = {
+            title: "Time for your smell training",
+            body: "Your scents are waiting. A quick session helps rebuild your senses.",
+            url: "/training",
+            tag: "olfly-morning",
+          };
+        } else if (currentTime === eveningTime) {
+          notification = {
+            title: "Quick reset",
+            body: "A few minutes of smell training can help. Ready when you are.",
+            url: "/training",
+            tag: "olfly-evening",
+          };
+        }
+
+        if (notification) {
+          try {
+            await webpush.sendNotification(
+              { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+              JSON.stringify(notification)
+            );
+          } catch (err: any) {
+            // 410 = subscription expired/unsubscribed — clean it up
+            if (err.statusCode === 410) {
+              await storage.deletePushSubscription(sub.endpoint);
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Reminder cron error:", err);
+  }
+});
 
 export async function registerRoutes(app: Express) {
   // User routes
@@ -266,6 +345,55 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
       const submissionData = insertContactSubmissionSchema.parse(req.body);
       const submission = await storage.createContactSubmission(submissionData);
       res.json(submission);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ── Push notification routes ────────────────────────────────────────────────
+
+  // Return VAPID public key to the client (no auth required — it's public)
+  app.get("/api/push/vapid-public-key", (_req, res) => {
+    if (!VAPID_PUBLIC_KEY) {
+      return res.status(503).json({ message: "Push notifications not configured" });
+    }
+    res.json({ publicKey: VAPID_PUBLIC_KEY });
+  });
+
+  // Save a push subscription
+  app.post("/api/push/subscribe", requireAuth, async (req, res) => {
+    try {
+      const { endpoint, keys, timezone } = req.body as {
+        endpoint: string;
+        keys: { p256dh: string; auth: string };
+        timezone?: string;
+      };
+
+      if (!endpoint || !keys?.p256dh || !keys?.auth) {
+        return res.status(400).json({ message: "Invalid subscription data" });
+      }
+
+      const sub = await storage.savePushSubscription({
+        userId: req.user!.uid,
+        endpoint,
+        p256dh: keys.p256dh,
+        auth: keys.auth,
+        timezone: timezone || "UTC",
+      });
+
+      res.json(sub);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Remove a push subscription (unsubscribe)
+  app.delete("/api/push/subscribe", requireAuth, async (req, res) => {
+    try {
+      const { endpoint } = req.body as { endpoint: string };
+      if (!endpoint) return res.status(400).json({ message: "endpoint required" });
+      await storage.deletePushSubscription(endpoint);
+      res.json({ ok: true });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

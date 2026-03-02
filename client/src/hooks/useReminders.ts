@@ -10,6 +10,9 @@ import {
   scheduleReminders,
   cancelReminders,
   isNotificationSupported,
+  subscribeToPushNotifications,
+  unsubscribeFromPushNotifications,
+  registerServiceWorker,
 } from '@/lib/notifications';
 import type { User } from '@shared/schema';
 
@@ -76,7 +79,7 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
   const handleToggleReminders = async (enabled: boolean) => {
     if (enabled) {
       const currentPermission = getNotificationPermission();
-      
+
       if (currentPermission === 'unsupported') {
         toast({
           title: "Notifications not supported",
@@ -85,12 +88,12 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
         });
         return;
       }
-      
+
       if (currentPermission === 'default') {
         setShowPermissionDialog(true);
         return;
       }
-      
+
       if (currentPermission === 'denied') {
         toast({
           title: "Notifications blocked",
@@ -99,9 +102,14 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
         });
         return;
       }
-      
+
+      // Permission already granted — re-subscribe (handles re-enables and key rotations)
+      await registerServiceWorker();
+      await subscribeToPushNotifications();
       updateRemindersMutation.mutate(true);
     } else {
+      // Unsubscribe from Web Push when reminders are turned off
+      await unsubscribeFromPushNotifications();
       updateRemindersMutation.mutate(false);
     }
   };
@@ -110,8 +118,12 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
     const permission = await requestNotificationPermission();
     setPermissionStatus(permission);
     setShowPermissionDialog(false);
-    
+
     if (permission === 'granted') {
+      // Register service worker and subscribe to Web Push so notifications
+      // arrive even when the app is closed.
+      await registerServiceWorker();
+      await subscribeToPushNotifications();
       updateRemindersMutation.mutate(true);
     } else {
       toast({

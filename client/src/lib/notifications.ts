@@ -1,5 +1,105 @@
 type NotificationPermissionStatus = 'granted' | 'denied' | 'default' | 'unsupported';
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Convert a VAPID base64url public key to a Uint8Array for pushManager.subscribe() */
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; i++) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// ── Service Worker & Web Push ─────────────────────────────────────────────────
+
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+  if (!('serviceWorker' in navigator)) return null;
+  try {
+    const reg = await navigator.serviceWorker.register('/sw.js');
+    return reg;
+  } catch (err) {
+    console.error('Service worker registration failed:', err);
+    return null;
+  }
+}
+
+/**
+ * Fetches the VAPID public key from the server, subscribes the current device
+ * to Web Push, and POSTs the subscription to /api/push/subscribe.
+ * Returns true on success.
+ */
+export async function subscribeToPushNotifications(): Promise<boolean> {
+  try {
+    const reg = await registerServiceWorker();
+    if (!reg) return false;
+
+    // Make sure we have permission
+    const permission = Notification.permission;
+    if (permission !== 'granted') return false;
+
+    // Get VAPID public key
+    const keyRes = await fetch('/api/push/vapid-public-key');
+    if (!keyRes.ok) return false;
+    const { publicKey } = await keyRes.json();
+    if (!publicKey) return false;
+
+    // Subscribe via PushManager
+    const subscription = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    });
+
+    // Send subscription to server (auth header added by authFetch below)
+    const subJson = subscription.toJSON();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+
+    const res = await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        endpoint: subJson.endpoint,
+        keys: subJson.keys,
+        timezone,
+      }),
+    });
+
+    return res.ok;
+  } catch (err) {
+    console.error('Push subscription error:', err);
+    return false;
+  }
+}
+
+/**
+ * Unsubscribes the current device from Web Push and notifies the server.
+ */
+export async function unsubscribeFromPushNotifications(): Promise<void> {
+  try {
+    if (!('serviceWorker' in navigator)) return;
+    const reg = await navigator.serviceWorker.getRegistration('/sw.js');
+    if (!reg) return;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return;
+
+    const endpoint = sub.endpoint;
+    await sub.unsubscribe();
+
+    await fetch('/api/push/subscribe', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ endpoint }),
+    });
+  } catch (err) {
+    console.error('Push unsubscribe error:', err);
+  }
+}
+
 interface ReminderSettings {
   remindersEnabled: boolean;
   morningTime: string;
