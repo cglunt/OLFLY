@@ -205,31 +205,6 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Social Media */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-bold text-white">Follow Us</h2>
-          <div className="flex gap-5 items-center">
-            <a href="https://www.instagram.com/olfly.app/" target="_blank" rel="noopener noreferrer" aria-label="Follow Olfly on Instagram" className="text-white/50 hover:text-[#ac41c3] transition-colors">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
-                <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.8"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-              </svg>
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=61580709514176" target="_blank" rel="noopener noreferrer" aria-label="Follow Olfly on Facebook" className="text-white/50 hover:text-[#ac41c3] transition-colors">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </a>
-            <a href="https://www.linkedin.com/company/olfly-app" target="_blank" rel="noopener noreferrer" aria-label="Follow Olfly on LinkedIn" className="text-white/50 hover:text-[#ac41c3] transition-colors">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.8"/>
-              </svg>
-            </a>
-          </div>
-        </div>
 
         <div className="space-y-4 text-white/80 leading-relaxed">
           <section className="space-y-3">
