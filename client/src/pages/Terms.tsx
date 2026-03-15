@@ -87,7 +87,7 @@ export default function Terms() {
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white">Contact</h2>
             <p>
-              For questions about these terms, contact us at support@olfly.com
+              For questions about these terms, contact us at support@olfly.app
             </p>
           </section>
         </div>

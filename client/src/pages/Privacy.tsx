@@ -57,7 +57,7 @@ export default function Privacy() {
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white">Contact for Privacy Questions</h2>
             <p>
-              For privacy-related questions or requests, contact us at privacy@olfly.com
+              For privacy-related questions or requests, contact us at privacy@olfly.app
             </p>
           </section>
         </div>
