@@ -27,9 +27,9 @@ export default function Home() {
   const { user, refetch } = useCurrentUser(firebaseUser?.displayName || undefined);
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState(getGreeting);
-  
+
   const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
-  
+
   const {
     permissionStatus,
     showPermissionDialog,
@@ -68,135 +68,132 @@ export default function Home() {
 
   const completedSessions = sessions.filter(s => s.completed).length;
   const progressPercent = Math.min((completedSessions / 10) * 100, 100);
+  const firstName = firebaseUser?.displayName?.split(' ')[0] || user.name;
 
   return (
     <Layout>
-      {/* Full-page starfield background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="5%" cy="8%" r="1.3" fill="white" opacity="0.5"/>
-          <circle cx="12%" cy="22%" r="0.8" fill="white" opacity="0.3"/>
-          <circle cx="20%" cy="5%" r="1.6" fill="white" opacity="0.4"/>
-          <circle cx="28%" cy="35%" r="0.9" fill="white" opacity="0.25"/>
-          <circle cx="38%" cy="12%" r="1.1" fill="white" opacity="0.45"/>
-          <circle cx="48%" cy="28%" r="0.7" fill="white" opacity="0.3"/>
-          <circle cx="55%" cy="6%" r="1.4" fill="white" opacity="0.5"/>
-          <circle cx="62%" cy="18%" r="1.0" fill="white" opacity="0.35"/>
-          <circle cx="70%" cy="40%" r="0.8" fill="white" opacity="0.2"/>
-          <circle cx="78%" cy="9%" r="1.5" fill="white" opacity="0.45"/>
-          <circle cx="85%" cy="25%" r="0.9" fill="white" opacity="0.3"/>
-          <circle cx="92%" cy="14%" r="1.2" fill="white" opacity="0.4"/>
-          <circle cx="96%" cy="38%" r="0.7" fill="white" opacity="0.25"/>
-          <circle cx="8%" cy="55%" r="1.0" fill="white" opacity="0.2"/>
-          <circle cx="18%" cy="68%" r="0.8" fill="white" opacity="0.18"/>
-          <circle cx="32%" cy="58%" r="1.2" fill="white" opacity="0.22"/>
-          <circle cx="44%" cy="72%" r="0.9" fill="white" opacity="0.15"/>
-          <circle cx="58%" cy="62%" r="1.1" fill="white" opacity="0.2"/>
-          <circle cx="72%" cy="78%" r="0.7" fill="white" opacity="0.18"/>
-          <circle cx="82%" cy="55%" r="1.3" fill="white" opacity="0.22"/>
-          <circle cx="90%" cy="70%" r="0.8" fill="white" opacity="0.15"/>
-          <circle cx="15%" cy="88%" r="1.0" fill="white" opacity="0.12"/>
-          <circle cx="50%" cy="92%" r="0.9" fill="white" opacity="0.12"/>
-          <circle cx="75%" cy="90%" r="1.1" fill="white" opacity="0.1"/>
-          {/* Soft glow stars */}
-          <circle cx="30%" cy="15%" r="3" fill="white" opacity="0.07"/>
-          <circle cx="65%" cy="30%" r="4" fill="white" opacity="0.06"/>
-          <circle cx="88%" cy="60%" r="3.5" fill="white" opacity="0.05"/>
-          <circle cx="10%" cy="75%" r="2.5" fill="white" opacity="0.06"/>
+      {/* ── HERO — full-bleed top block ── */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] rounded-b-[2.5rem] shadow-2xl shadow-[#6d45d2]/40 pb-8 px-6 pt-4"
+      >
+        {/* Stars inside hero */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="8%"  cy="12%" r="1.3" fill="white" opacity="0.5"/>
+          <circle cx="18%" cy="6%"  r="0.9" fill="white" opacity="0.35"/>
+          <circle cx="30%" cy="18%" r="1.1" fill="white" opacity="0.4"/>
+          <circle cx="45%" cy="8%"  r="0.7" fill="white" opacity="0.3"/>
+          <circle cx="58%" cy="14%" r="1.4" fill="white" opacity="0.45"/>
+          <circle cx="70%" cy="5%"  r="1.0" fill="white" opacity="0.38"/>
+          <circle cx="82%" cy="20%" r="0.8" fill="white" opacity="0.3"/>
+          <circle cx="92%" cy="9%"  r="1.2" fill="white" opacity="0.42"/>
+          <circle cx="25%" cy="40%" r="0.7" fill="white" opacity="0.18"/>
+          <circle cx="75%" cy="35%" r="0.9" fill="white" opacity="0.18"/>
+          <circle cx="50%" cy="50%" r="0.8" fill="white" opacity="0.12"/>
+          {/* Soft glow */}
+          <circle cx="15%" cy="10%" r="5"   fill="white" opacity="0.05"/>
+          <circle cx="80%" cy="15%" r="6"   fill="white" opacity="0.04"/>
         </svg>
-        {/* Subtle purple nebula glows */}
-        <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-[#6d45d2]/8 blur-3xl" />
-        <div className="absolute bottom-1/3 left-0 w-36 h-36 rounded-full bg-[#ac41c3]/6 blur-3xl" />
-      </div>
-      <div className="p-6 space-y-8 relative z-10">
-        <header className="flex justify-between items-center pt-4">
-          <div className="space-y-1">
-            <p className="text-white text-xl font-bold" data-testid="text-greeting">{greeting},</p>
-            <h1 className="text-2xl font-bold text-white tracking-tight truncate whitespace-nowrap" data-testid="text-username">
-              {firebaseUser?.displayName?.split(' ')[0] || user.name}
+        {/* Glow orbs */}
+        <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-[#db2faa]/25 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-32 h-32 rounded-full bg-[#4a2080]/50 blur-2xl pointer-events-none" />
+
+        {/* Header row */}
+        <header className="relative z-10 flex justify-between items-center pt-2 mb-6">
+          <div>
+            <p className="text-white/80 text-sm font-medium" data-testid="text-greeting">{greeting},</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight whitespace-nowrap" data-testid="text-username">
+              {firstName} 👋
             </h1>
           </div>
-          <div className="flex gap-4 items-center">
-             <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-12 h-12" data-testid="button-notifications">
-                <Bell className="w-6 h-6" strokeWidth={1.5} />
-             </Button>
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#ac41c3] shadow-md shadow-black/40 cursor-pointer" onClick={() => setLocation("/launch/settings")}>
+          <div className="flex gap-3 items-center">
+            <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-10 h-10" data-testid="button-notifications">
+              <Bell className="w-5 h-5" strokeWidth={1.5} />
+            </Button>
+            <div
+              className="h-11 w-11 rounded-full overflow-hidden border-2 border-white/40 shadow-md cursor-pointer"
+              onClick={() => setLocation("/launch/settings")}
+            >
               {firebaseUser?.photoURL ? (
                 <img src={firebaseUser.photoURL} alt="Profile" className="h-full w-full object-cover" />
               ) : (
-                <div className="h-full w-full bg-[#6d45d2] flex items-center justify-center">
-                  <User size={24} className="text-white" />
+                <div className="h-full w-full bg-white/20 flex items-center justify-center">
+                  <User size={22} className="text-white" />
                 </div>
               )}
             </div>
           </div>
         </header>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
+        {/* Daily Goal content — integrated into hero */}
+        <div
+          className="relative z-10 cursor-pointer"
           onClick={() => setLocation("/launch/training")}
           data-testid="card-daily-goal"
         >
-          <div className="relative z-10">
-             <div className="flex justify-between items-start mb-6">
-               <div>
-                 <span className="text-white/90 text-sm font-medium uppercase tracking-wider">Daily Goal</span>
-                 <h2 className="text-2xl font-bold mt-1">Scent Training</h2>
-                 <p className="text-white/90 text-sm mt-1">~2 Min Session</p>
-               </div>
-               <div className="w-16 h-16 relative">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
-                    <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" strokeWidth="4" fill="none" />
-                    <circle 
-                      cx="32" cy="32" r="28" 
-                      stroke="white" 
-                      strokeWidth="4" 
-                      fill="none" 
-                      strokeDasharray="175" 
-                      strokeDashoffset={175 - (175 * progressPercent / 100)} 
-                      strokeLinecap="round" 
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center font-bold text-sm" data-testid="text-progress-percent">
-                    {Math.round(progressPercent)}%
-                  </div>
-               </div>
-             </div>
-             
-             <div className="flex gap-6 pt-4 border-t border-white/20">
-                <div className="flex items-center gap-3">
-                   <div className="p-2 bg-white/20 rounded-full">
-                      <Zap size={14} fill="currentColor" />
-                   </div>
-                   <div>
-                      <p className="text-[10px] text-white/80 uppercase tracking-wide">Streak</p>
-                      <p className="text-sm font-bold" data-testid="text-streak">{user.streak} Days</p>
-                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                   <div className="p-2 bg-white/20 rounded-full">
-                      <Activity size={14} />
-                   </div>
-                   <div>
-                      <p className="text-[10px] text-white/80 uppercase tracking-wide">Sessions</p>
-                      <p className="text-sm font-bold" data-testid="text-sessions">{completedSessions}</p>
-                   </div>
-                </div>
-             </div>
-             
-             <Button 
-               className="w-full mt-4 bg-white text-[#6d45d2] hover:bg-white/90 font-semibold py-3 rounded-xl shadow-lg"
-               data-testid="button-start-training"
-             >
-               <Play size={18} className="mr-2" fill="currentColor" />
-               Start Training
-             </Button>
+          <div className="flex justify-between items-start mb-5">
+            <div>
+              <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Daily Goal</span>
+              <h2 className="text-2xl font-bold text-white mt-0.5">Scent Training</h2>
+              <p className="text-white/70 text-sm mt-0.5">~2 Min Session</p>
+            </div>
+            {/* Progress ring */}
+            <div className="w-16 h-16 relative">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" strokeWidth="4" fill="none" />
+                <circle
+                  cx="32" cy="32" r="28"
+                  stroke="white"
+                  strokeWidth="4"
+                  fill="none"
+                  strokeDasharray="175"
+                  strokeDashoffset={175 - (175 * progressPercent / 100)}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center font-bold text-sm text-white" data-testid="text-progress-percent">
+                {Math.round(progressPercent)}%
+              </div>
+            </div>
           </div>
-        </motion.div>
 
-        <motion.div 
+          {/* Stats row */}
+          <div className="flex gap-6 pb-5 border-b border-white/20 mb-5">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-white/20 rounded-full">
+                <Zap size={13} fill="currentColor" className="text-white" />
+              </div>
+              <div>
+                <p className="text-[10px] text-white/70 uppercase tracking-wide">Streak</p>
+                <p className="text-sm font-bold text-white" data-testid="text-streak">{user.streak} Days</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-white/20 rounded-full">
+                <Activity size={13} className="text-white" />
+              </div>
+              <div>
+                <p className="text-[10px] text-white/70 uppercase tracking-wide">Sessions</p>
+                <p className="text-sm font-bold text-white" data-testid="text-sessions">{completedSessions}</p>
+              </div>
+            </div>
+          </div>
+
+          <Button
+            className="w-full bg-white text-[#6d45d2] hover:bg-white/90 font-bold py-3 rounded-2xl shadow-lg text-base"
+            data-testid="button-start-training"
+          >
+            <Play size={18} className="mr-2" fill="currentColor" />
+            Start Training
+          </Button>
+        </div>
+      </motion.div>
+
+      {/* ── CONTENT — framed below hero ── */}
+      <div className="px-6 pt-5 pb-4 space-y-4">
+
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -260,40 +257,38 @@ export default function Home() {
           </div>
         </motion.a>
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-white">Top Routines</h2>
-          
-          <div className="space-y-4">
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setLocation("/launch/training?routine=morning")}
-              className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
-              data-testid="card-routine-morning"
-            >
-              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center text-white shadow-sm shrink-0">
-                <Play size={20} className="ml-0.5" fill="currentColor" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-white text-lg">Morning Reset</h3>
-                <p className="text-sm text-white/70">Lemon & Eucalyptus • 1 Min</p>
-              </div>
-            </motion.div>
+        <div className="space-y-3">
+          <h2 className="text-lg font-bold text-white">Top Routines</h2>
 
-            <motion.div 
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setLocation("/launch/training?routine=baseline")}
-              className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
-              data-testid="card-routine-baseline"
-            >
-              <div className="h-12 w-12 rounded-full bg-[#3b1645] flex items-center justify-center text-[#db2faa] shrink-0 border border-white/5">
-                <Flame size={20} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-white text-lg">Baseline</h3>
-                <p className="text-sm text-white/70">Rose, Lemon, Eucalyptus & Clove • 2 Min</p>
-              </div>
-            </motion.div>
-          </div>
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setLocation("/launch/training?routine=morning")}
+            className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
+            data-testid="card-routine-morning"
+          >
+            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center text-white shadow-sm shrink-0">
+              <Play size={20} className="ml-0.5" fill="currentColor" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-white text-lg">Morning Reset</h3>
+              <p className="text-sm text-white/70">Lemon & Eucalyptus • 1 Min</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setLocation("/launch/training?routine=baseline")}
+            className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
+            data-testid="card-routine-baseline"
+          >
+            <div className="h-12 w-12 rounded-full bg-[#3b1645] flex items-center justify-center text-[#db2faa] shrink-0 border border-white/5">
+              <Flame size={20} />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-white text-lg">Baseline</h3>
+              <p className="text-sm text-white/70">Rose, Lemon, Eucalyptus & Clove • 2 Min</p>
+            </div>
+          </motion.div>
         </div>
 
       </div>
