@@ -76,7 +76,7 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] rounded-b-[2.5rem] shadow-2xl shadow-[#6d45d2]/40 pb-8 px-6 pt-4"
+        className="relative overflow-hidden bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] shadow-2xl shadow-[#6d45d2]/40 pb-10 px-6 pt-4"
       >
         {/* Stars inside hero */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -191,7 +191,7 @@ export default function Home() {
       </motion.div>
 
       {/* ── CONTENT — framed below hero ── */}
-      <div className="px-6 pt-5 pb-4 space-y-4">
+      <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10">
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
