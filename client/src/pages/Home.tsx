@@ -24,7 +24,7 @@ function getGreeting(): string {
 
 export default function Home() {
   const { user: firebaseUser } = useAuth();
-  const { user } = useCurrentUser(firebaseUser?.displayName || undefined);
+  const { user, refetch } = useCurrentUser(firebaseUser?.displayName || undefined);
   const [, setLocation] = useLocation();
   const [greeting, setGreeting] = useState(getGreeting);
   
@@ -49,6 +49,11 @@ export default function Home() {
 
   useEffect(() => {
     setGreeting(getGreeting());
+  }, []);
+
+  // Refresh user data (streak, plan) each time Home is visited
+  useEffect(() => {
+    refetch();
   }, []);
 
   if (!user) {
@@ -78,7 +83,7 @@ export default function Home() {
              <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-12 h-12" data-testid="button-notifications">
                 <Bell className="w-6 h-6" strokeWidth={1.5} />
              </Button>
-            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#ac41c3] shadow-md shadow-black/40">
+            <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#ac41c3] shadow-md shadow-black/40 cursor-pointer" onClick={() => setLocation("/launch/settings")}>
               {firebaseUser?.photoURL ? (
                 <img src={firebaseUser.photoURL} alt="Profile" className="h-full w-full object-cover" />
               ) : (
@@ -93,10 +98,33 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
+          className="w-full bg-gradient-to-br from-[#1a0533] via-[#6d45d2] to-[#db2faa] rounded-2xl p-6 text-white shadow-md shadow-black/40 relative overflow-hidden cursor-pointer"
           onClick={() => setLocation("/launch/training")}
           data-testid="card-daily-goal"
         >
+          {/* Starfield background */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="8%" cy="15%" r="1.2" fill="white" opacity="0.7"/>
+            <circle cx="18%" cy="45%" r="0.8" fill="white" opacity="0.4"/>
+            <circle cx="30%" cy="12%" r="1.5" fill="white" opacity="0.5"/>
+            <circle cx="45%" cy="30%" r="0.9" fill="white" opacity="0.35"/>
+            <circle cx="55%" cy="8%" r="1.1" fill="white" opacity="0.6"/>
+            <circle cx="68%" cy="22%" r="1.4" fill="white" opacity="0.45"/>
+            <circle cx="78%" cy="55%" r="0.7" fill="white" opacity="0.3"/>
+            <circle cx="88%" cy="10%" r="1.0" fill="white" opacity="0.55"/>
+            <circle cx="92%" cy="40%" r="1.3" fill="white" opacity="0.4"/>
+            <circle cx="12%" cy="72%" r="0.9" fill="white" opacity="0.3"/>
+            <circle cx="35%" cy="80%" r="1.1" fill="white" opacity="0.25"/>
+            <circle cx="62%" cy="75%" r="0.8" fill="white" opacity="0.35"/>
+            <circle cx="75%" cy="85%" r="1.2" fill="white" opacity="0.25"/>
+            {/* Larger soft glow stars */}
+            <circle cx="22%" cy="25%" r="2.5" fill="white" opacity="0.15"/>
+            <circle cx="80%" cy="18%" r="3" fill="white" opacity="0.12"/>
+            <circle cx="50%" cy="60%" r="2" fill="white" opacity="0.1"/>
+          </svg>
+          {/* Soft glow orb top-right */}
+          <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-[#db2faa]/30 blur-2xl pointer-events-none" />
+          <div className="absolute top-1/2 -left-4 w-16 h-16 rounded-full bg-[#6d45d2]/40 blur-xl pointer-events-none" />
           <div className="relative z-10">
              <div className="flex justify-between items-start mb-6">
                <div>

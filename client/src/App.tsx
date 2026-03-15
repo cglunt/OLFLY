@@ -149,29 +149,31 @@ function Router() {
   }
 
   return (
-    <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/launch/login" component={Login} />
-      <Route path="/clinicians" component={Clinicians} />
-      <Route path="/legal" component={Legal} />
-      <Route path="/legal/terms" component={Terms} />
-      <Route path="/legal/privacy" component={Privacy} />
-      <Route path="/legal/disclaimers" component={Disclaimers} />
-      <Route path="/legal/affiliate" component={Affiliate} />
-      <Route path="/legal/safety" component={Safety} />
-      <Route path="/legal/contact" component={Contact} />
-      <Route path="/cookie-policy" component={CookiePolicy} />
-      <Route path="/pricing" component={Landing} />
-      {/* Redirect legacy/wrong paths to correct locations */}
-      <Route path="/terms"><Redirect to="/legal/terms" /></Route>
-      <Route path="/privacy"><Redirect to="/legal/privacy" /></Route>
-      <Route path="/disclaimers"><Redirect to="/legal/disclaimers" /></Route>
-      <Route path="/for-clinicians"><Redirect to="/clinicians" /></Route>
-      <Route path="/launch/train"><Redirect to="/launch/training" /></Route>
-      <Route path="/launch/session"><Redirect to="/launch/training" /></Route>
-      <Route path="/launch/routine"><Redirect to="/launch/training" /></Route>
-      <Route component={NotFound} />
-    </Switch>
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/" component={Landing} />
+        <Route path="/launch/login" component={Login} />
+        <Route path="/clinicians" component={Clinicians} />
+        <Route path="/legal" component={Legal} />
+        <Route path="/legal/terms" component={Terms} />
+        <Route path="/legal/privacy" component={Privacy} />
+        <Route path="/legal/disclaimers" component={Disclaimers} />
+        <Route path="/legal/affiliate" component={Affiliate} />
+        <Route path="/legal/safety" component={Safety} />
+        <Route path="/legal/contact" component={Contact} />
+        <Route path="/cookie-policy" component={CookiePolicy} />
+        <Route path="/pricing" component={Landing} />
+        {/* Redirect legacy/wrong paths to correct locations */}
+        <Route path="/terms"><Redirect to="/legal/terms" /></Route>
+        <Route path="/privacy"><Redirect to="/legal/privacy" /></Route>
+        <Route path="/disclaimers"><Redirect to="/legal/disclaimers" /></Route>
+        <Route path="/for-clinicians"><Redirect to="/clinicians" /></Route>
+        <Route path="/launch/train"><Redirect to="/launch/training" /></Route>
+        <Route path="/launch/session"><Redirect to="/launch/training" /></Route>
+        <Route path="/launch/routine"><Redirect to="/launch/training" /></Route>
+        <Route component={NotFound} />
+      </Switch>
+    </ErrorBoundary>
   );
 }
 

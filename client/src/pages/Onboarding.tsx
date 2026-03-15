@@ -12,7 +12,7 @@ import { ALL_SCENTS } from "@/lib/data";
 import { useQueryClient } from "@tanstack/react-query";
 import { playNotification } from "@/lib/sounds";
 
-const TERMS_VERSION = "1.0";
+const TERMS_VERSION = "1.1";
 
 import topToddImg from '@assets/Top_Todd@2x_1767069623167.png';
 import topMiaImg from '@assets/Top_Mia@2x_1767069623167.png';
@@ -25,7 +25,7 @@ import restGirlImg from '@assets/rest-girl.png';
 const QUIZ_QUESTIONS = [
   {
     question: "Do you have trouble smelling everyday things like food or flowers?",
-    options: ["Yes, definitely", "Sometimes", "Not sure"],
+    options: ["Yes, definitely", "Sometimes", "No, but I want to improve"],
   },
   {
     question: "Has your sense of smell changed after an illness or injury?",
@@ -45,6 +45,8 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [quizStep, setQuizStep] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState<string[]>([]);
+  const [illnessDate, setIllnessDate] = useState({ month: '', year: '' });
+  const [showIllnessDateForm, setShowIllnessDateForm] = useState(false);
   const [morningTime, setMorningTime] = useState("08:00");
   const [eveningTime, setEveningTime] = useState("20:00");
   const [remindersEnabled, setRemindersEnabled] = useState(true);
@@ -64,6 +66,24 @@ export default function Onboarding() {
     const newAnswers = [...quizAnswers, answer];
     setQuizAnswers(newAnswers);
     
+    // Q2 (illness/injury) — if user says yes, capture onset date
+    if (quizStep === 1 && (answer === "Yes" || answer === "I think so")) {
+      setShowIllnessDateForm(true);
+      return;
+    }
+    
+    if (quizStep < QUIZ_QUESTIONS.length - 1) {
+      setQuizStep(q => q + 1);
+    } else {
+      nextStep();
+    }
+  };
+
+  const handleIllnessDateContinue = () => {
+    if (illnessDate.month || illnessDate.year) {
+      localStorage.setItem('olflyIllnessOnset', JSON.stringify(illnessDate));
+    }
+    setShowIllnessDateForm(false);
     if (quizStep < QUIZ_QUESTIONS.length - 1) {
       setQuizStep(q => q + 1);
     } else {
@@ -195,34 +215,80 @@ export default function Onboarding() {
                     </p>
                     
                     <Block className="flex-1 flex flex-col justify-center mb-4">
-                        <div className="flex justify-center mb-4">
-                            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
-                                <HelpCircle size={56} className="text-white" />
+                        {showIllnessDateForm ? (
+                          <motion.div key="illness-date" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                            <div className="flex justify-center mb-4">
+                              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
+                                <Clock size={36} className="text-white" />
+                              </div>
                             </div>
-                        </div>
-                        <div className="text-center mb-6">
-                            <span className="text-white/40 text-sm uppercase tracking-wider">Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
-                        </div>
-                        
-                        <h3 className="text-xl md:text-2xl font-bold text-center mb-6 leading-tight">
-                            {QUIZ_QUESTIONS[quizStep].question}
-                        </h3>
-                        
-                        <div className="space-y-3">
-                            {QUIZ_QUESTIONS[quizStep].options.map((option, i) => (
-                                <motion.button
-                                    key={option}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    onClick={() => handleQuizAnswer(option)}
-                                    className="w-full p-4 rounded-xl bg-[#0c0c1d] border border-white/10 text-left text-white hover:border-[#ac41c3] hover:bg-[#ac41c3]/10 transition-all"
-                                    data-testid={`quiz-option-${i}`}
+                            <h3 className="text-xl font-bold text-center mb-2 leading-tight">When did this happen?</h3>
+                            <p className="text-white/60 text-sm text-center mb-6">Knowing when your smell changed helps us estimate how far along your recovery may be.</p>
+                            <div className="grid grid-cols-2 gap-3 mb-6">
+                              <div>
+                                <label className="text-white/50 text-xs uppercase tracking-wider mb-1 block">Month</label>
+                                <select
+                                  value={illnessDate.month}
+                                  onChange={e => setIllnessDate(d => ({ ...d, month: e.target.value }))}
+                                  className="w-full bg-[#0c0c1d] border border-white/10 rounded-xl px-3 py-3 text-white text-sm focus:outline-none focus:border-[#ac41c3] appearance-none"
                                 >
-                                    {option}
+                                  <option value="">Month</option>
+                                  {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
+                                    <option key={m} value={String(i + 1)}>{m}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="text-white/50 text-xs uppercase tracking-wider mb-1 block">Year</label>
+                                <select
+                                  value={illnessDate.year}
+                                  onChange={e => setIllnessDate(d => ({ ...d, year: e.target.value }))}
+                                  className="w-full bg-[#0c0c1d] border border-white/10 rounded-xl px-3 py-3 text-white text-sm focus:outline-none focus:border-[#ac41c3] appearance-none"
+                                >
+                                  <option value="">Year</option>
+                                  {Array.from({ length: 6 }, (_, i) => new Date().getFullYear() - i).map(y => (
+                                    <option key={y} value={String(y)}>{y}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <Button onClick={handleIllnessDateContinue} className="w-full h-12 rounded-2xl bg-[#ac41c3] text-white hover:bg-[#9e3bb3] font-bold mb-3">
+                              Continue
+                            </Button>
+                            <button onClick={handleIllnessDateContinue} className="w-full text-center text-white/40 text-sm hover:text-white/60 transition-colors">
+                              Skip this question
+                            </button>
+                          </motion.div>
+                        ) : (
+                          <>
+                            <div className="flex justify-center mb-4">
+                              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#ac41c3]/30">
+                                <HelpCircle size={56} className="text-white" />
+                              </div>
+                            </div>
+                            <div className="text-center mb-6">
+                              <span className="text-white/40 text-sm uppercase tracking-wider">Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
+                            </div>
+                            <h3 className="text-xl md:text-2xl font-bold text-center mb-6 leading-tight">
+                              {QUIZ_QUESTIONS[quizStep].question}
+                            </h3>
+                            <div className="space-y-3">
+                              {QUIZ_QUESTIONS[quizStep].options.map((option, i) => (
+                                <motion.button
+                                  key={option}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: i * 0.1 }}
+                                  onClick={() => handleQuizAnswer(option)}
+                                  className="w-full p-4 rounded-xl bg-[#0c0c1d] border border-white/10 text-left text-white hover:border-[#ac41c3] hover:bg-[#ac41c3]/10 transition-all"
+                                  data-testid={`quiz-option-${i}`}
+                                >
+                                  {option}
                                 </motion.button>
-                            ))}
-                        </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
                     </Block>
                     
                     <div className="text-center pb-4">
@@ -471,24 +537,25 @@ export default function Onboarding() {
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col"
+                    className="flex-1 flex flex-col justify-between"
                 >
-                    <h2 className="text-2xl font-bold mb-2">Progress takes patience</h2>
-
-                    <p className="text-white/70 text-sm leading-relaxed mb-3">
-                        Smell recovery can take weeks or months — that's completely normal. Olfly tracks even small improvements so you can see your progress.
-                    </p>
+                    <div>
+                        <h2 className="text-2xl font-bold mb-3">Progress takes patience</h2>
+                        <p className="text-white/70 text-sm leading-relaxed">
+                            Smell recovery can take weeks or months — that's completely normal. Olfly tracks even small improvements so you can see your progress.
+                        </p>
+                    </div>
 
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="flex justify-center my-2"
+                        className="flex justify-center"
                     >
-                        <img src={topMiaImg} alt="" className="w-44 h-44 object-contain" />
+                        <img src={topMiaImg} alt="" className="w-full max-w-[200px] max-h-[35vh] object-contain" />
                     </motion.div>
 
-                    <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
+                    <div className="text-center px-4">
                         <motion.h3
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -507,7 +574,7 @@ export default function Onboarding() {
                         </motion.p>
                     </div>
 
-                    <div className="pb-4 md:pb-0 mt-auto">
+                    <div className="pb-4 md:pb-0">
                         <Button
                             onClick={nextStep}
                             className="w-full h-14 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base font-bold shadow-lg shadow-[#ac41c3]/20"

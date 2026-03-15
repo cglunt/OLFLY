@@ -140,6 +140,13 @@ export default function Library() {
 
   const handleCreateCollection = () => {
     if (!user || !newCollectionName.trim()) return;
+    const nameExists = collections.some(
+      c => c.name.toLowerCase() === newCollectionName.trim().toLowerCase()
+    );
+    if (nameExists) {
+      toast({ title: "Name already in use", description: "Please choose a different name for your collection.", variant: "destructive" });
+      return;
+    }
     createCollectionMutation.mutate({
       userId: user.id,
       name: newCollectionName.trim(),

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ALL_SCENTS, AVATAR_IMAGE, Scent } from "@/lib/data";
 import { useLocation, useSearch } from "wouter";
-import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Flame, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check, Pencil } from "lucide-react";
+import { Play, Pause, SkipForward, HelpCircle, ChevronLeft, RotateCcw, Sparkles, Award, Star, Info, ChevronDown, ChevronUp, Wind, Check, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 import restBoyImg from '@assets/rest-boy.png';
 import restGirlImg from '@assets/rest-girl.png';
@@ -161,6 +161,7 @@ export default function Training() {
   const activeScent = trainingScents[currentScentIndex] || trainingScents[0];
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const chimeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const smellDuration = routine?.smellDuration || 20;
   const totalDuration = phase === "breathe" ? 5 : phase === "smell" ? smellDuration : phase === "rest" ? 10 : 0;
 
@@ -168,6 +169,7 @@ export default function Training() {
     mutationFn: createSession,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 
@@ -210,7 +212,6 @@ export default function Training() {
   };
 
   const beginTraining = () => {
-    stopRestBreath(); // stop any previous audio before starting fresh
     setPhase("breathe");
     setTimeLeft(5);
     setIsActive(true);
@@ -219,12 +220,12 @@ export default function Training() {
   };
 
   const startSmellPhase = () => {
-    stopRestBreath(); // stop any breathing audio before smell phase
+    if (chimeTimeoutRef.current) clearTimeout(chimeTimeoutRef.current);
     setPhase("smell");
     setTimeLeft(smellDuration);
     setIsActive(true);
     setPhaseMotivation(getMotivationMessage('smell'));
-    setTimeout(() => {
+    chimeTimeoutRef.current = setTimeout(() => {
       playChime(user?.soundEnabled !== false);
     }, 2000);
   };
@@ -251,6 +252,8 @@ export default function Training() {
   };
 
   const submitRating = () => {
+    if (chimeTimeoutRef.current) { clearTimeout(chimeTimeoutRef.current); chimeTimeoutRef.current = null; }
+    stopRestBreath();
     const newRatings = { ...ratings, [activeScent.id]: currentRating };
     setRatings(newRatings);
     
@@ -423,14 +426,14 @@ export default function Training() {
                        {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                           <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 300 300">
                             {/* Track */}
-                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="10" fill="none" />
+                            <circle cx="150" cy="150" r={130} stroke="rgba(255,255,255,0.1)" strokeWidth="20" fill="none" />
                             {/* Progress */}
                             <circle
                               cx="150"
                               cy="150"
                               r={130}
                               stroke={phase === "rest" ? "#6d45d2" : "#ac41c3"} 
-                              strokeWidth="10"
+                              strokeWidth="20"
                               fill="none"
                               strokeDasharray={2 * Math.PI * 130}
                               strokeDashoffset={2 * Math.PI * 130 - ((totalDuration - timeLeft) / totalDuration) * (2 * Math.PI * 130)}
@@ -456,7 +459,7 @@ export default function Training() {
                         animate={{ scale: 1, opacity: 1 }}
                         className="w-56 h-56 rounded-full overflow-hidden border-8 border-[#0c0c1d] shadow-2xl z-10 bg-white"
                        >
-                        {activeScent.image && <img src={activeScent.image} className="w-full h-full object-cover" />}
+                        {activeScent.image && <img src={activeScent.image} className="w-full h-full object-cover" alt={activeScent.name || "Scent"} />}
                        </motion.div>
                        )}
                   </div>
@@ -490,9 +493,9 @@ export default function Training() {
                  transition={{ delay: 0.5 }}
                  className="flex items-center justify-center gap-2 mt-4"
                >
-                 <Flame size={18} className="text-[#ac41c3]" />
+                 <Sparkles size={18} className="text-[#ac41c3]" />
                  <span className="text-[#ac41c3] font-medium">{finalStreak} day streak!</span>
-                 <Flame size={18} className="text-[#ac41c3]" />
+                 <Sparkles size={18} className="text-[#ac41c3]" />
                </motion.div>
              )}
              {(phase === "breathe" || phase === "smell" || phase === "rest") && phaseMotivation && (
@@ -537,10 +540,8 @@ export default function Training() {
            {(phase === "breathe" || phase === "smell" || phase === "rest") && (
                <div className="flex items-center gap-8 mt-4">
                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-full bg-[#3b1645] text-white/70 hover:text-white hover:bg-[#4a1c57]" onClick={() => {
-                    setIsActive(false);
-                    stopRestBreath();
                     if (phase === 'breathe') startSmellPhase();
-                    else if (phase === 'smell') { setPhase('rate'); setPhaseMotivation(''); }
+                    else if (phase === 'smell') setPhase('rate');
                     else if (phase === 'rest') beginTraining();
                  }} aria-label="Restart phase" data-testid="button-restart">
                    <RotateCcw className="h-6 w-6" aria-hidden="true" />
