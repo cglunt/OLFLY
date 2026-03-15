@@ -154,6 +154,7 @@ export default function Settings() {
                 checked={isEnabled}
                 onCheckedChange={handleToggleReminders}
                 disabled={updateRemindersMutation.isPending || !isSupported}
+                aria-label="Toggle daily reminders"
                 className="data-[state=checked]:bg-[#ac41c3]"
                 data-testid="switch-reminders"
               />
@@ -188,6 +189,9 @@ export default function Settings() {
             
             <div 
               className="p-4 flex items-center gap-4 cursor-pointer hover:bg-[#4a1c57] transition-colors"
+              role="button"
+              tabIndex={0}
+              aria-label="Edit reminder times"
               onClick={handleOpenReminderDialog}
               data-testid="button-edit-reminders"
             >

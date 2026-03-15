@@ -200,7 +200,7 @@ export default function Library() {
             <h2 className="text-lg font-bold text-white">My Collections</h2>
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="ghost" className="text-[#ac41c3] hover:text-white hover:bg-[#ac41c3]/20">
+                <Button size="sm" variant="ghost" aria-label="Create new collection" className="text-[#ac41c3] hover:text-white hover:bg-[#ac41c3]/20">
                   <Plus size={16} className="mr-1" /> New
                 </Button>
               </DialogTrigger>
@@ -211,6 +211,7 @@ export default function Library() {
                 <div className="space-y-4 pt-4">
                   <Input 
                     placeholder="Collection name..."
+                    aria-label="Collection name"
                     value={newCollectionName}
                     onChange={(e) => setNewCollectionName(e.target.value)}
                     className="bg-[#3b1645] border-transparent text-white"
@@ -221,6 +222,7 @@ export default function Library() {
                     onClick={handleCreateCollection}
                     disabled={!newCollectionName.trim()}
                     className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white"
+                    aria-label="Create new collection"
                     data-testid="button-create-collection"
                   >
                     Create Collection
@@ -288,7 +290,7 @@ export default function Library() {
                 )}>
                   {activeScentIds.length}/{MAX_SCENTS}
                 </span>
-                <button onClick={handleDelete} className="p-2 text-white/50 hover:text-red-400 transition-colors">
+                <button onClick={handleDelete} aria-label="Delete collection" className="p-2 text-white/50 hover:text-red-400 transition-colors">
                   <Trash2 size={16} />
                 </button>
               </div>

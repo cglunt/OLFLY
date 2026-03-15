@@ -104,15 +104,19 @@ export default function Home() {
           <div>
             <p className="text-white/80 text-sm font-medium" data-testid="text-greeting">{greeting},</p>
             <h1 className="text-2xl font-bold text-white tracking-tight whitespace-nowrap" data-testid="text-username">
-              {firstName} 👋
+              {firstName}
             </h1>
           </div>
           <div className="flex gap-3 items-center">
-            <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-10 h-10" data-testid="button-notifications">
+            <Button size="icon" variant="ghost" className="rounded-full text-white hover:bg-white/10 w-10 h-10" aria-label="Open notifications" data-testid="button-notifications">
               <Bell className="w-5 h-5" strokeWidth={1.5} />
             </Button>
             <div
               className="h-11 w-11 rounded-full overflow-hidden border-2 border-white/40 shadow-md cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-label="Go to settings"
+              onKeyDown={(e) => e.key === 'Enter' && setLocation('/launch/settings')}
               onClick={() => setLocation("/launch/settings")}
             >
               {firebaseUser?.photoURL ? (
@@ -129,6 +133,10 @@ export default function Home() {
         {/* Daily Goal content — integrated into hero */}
         <div
           className="relative z-10 cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label="Start today's scent training session"
+          onKeyDown={(e) => e.key === 'Enter' && setLocation('/launch/training')}
           onClick={() => setLocation("/launch/training")}
           data-testid="card-daily-goal"
         >
@@ -182,6 +190,7 @@ export default function Home() {
 
           <Button
             className="w-full bg-white text-[#6d45d2] hover:bg-white/90 font-bold py-3 rounded-2xl shadow-lg text-base"
+            aria-label="Start training session"
             data-testid="button-start-training"
           >
             <Play size={18} className="mr-2" fill="currentColor" />
@@ -222,6 +231,7 @@ export default function Home() {
             checked={isEnabled}
             onCheckedChange={handleToggleReminders}
             disabled={updateRemindersMutation.isPending}
+            aria-label="Toggle daily reminders"
             className="data-[state=checked]:bg-[#ac41c3]"
             data-testid="switch-reminders"
           />
@@ -263,6 +273,8 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation("/launch/training?routine=morning")}
+            role="button"
+            aria-label="Start Morning Reset routine"
             className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
             data-testid="card-routine-morning"
           >
@@ -278,6 +290,8 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation("/launch/training?routine=baseline")}
+            role="button"
+            aria-label="Start Baseline routine"
             className="bg-[#3b1645] rounded-2xl p-5 flex items-center gap-4 cursor-pointer shadow-md shadow-black/40 hover:bg-[#4a1c57] transition-colors"
             data-testid="card-routine-baseline"
           >
