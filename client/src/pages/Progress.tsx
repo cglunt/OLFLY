@@ -121,7 +121,7 @@ export default function Progress() {
       <div className="p-6 pb-24 space-y-8">
         <header className="flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-heading font-bold text-white" data-testid="text-page-title">Overview</h1>
+            <h1 className="text-2xl font-heading font-bold text-white whitespace-nowrap" data-testid="text-page-title">Overview</h1>
             <p className="text-white/70">Weekly Analysis</p>
           </div>
           <div className="bg-[#3b1645] px-4 py-2 rounded-xl text-sm font-medium text-white flex items-center gap-2">

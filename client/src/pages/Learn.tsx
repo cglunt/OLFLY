@@ -11,7 +11,7 @@ export default function Learn() {
     <Layout>
       <div className="p-6 pb-24 space-y-8">
         <header>
-          <h1 className="text-3xl font-bold text-white">Learn</h1>
+          <h1 className="text-2xl font-bold text-white whitespace-nowrap">Learn</h1>
           <p className="text-white/70">Understanding olfactory training and recovery.</p>
         </header>
 

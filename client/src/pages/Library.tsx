@@ -190,7 +190,7 @@ export default function Library() {
     <Layout>
       <div className="p-6 pb-32 space-y-6">
         <header className="pt-2 space-y-1">
-          <h1 className="text-3xl font-heading font-bold text-white">Library</h1>
+          <h1 className="text-2xl font-heading font-bold text-white whitespace-nowrap">Library</h1>
           <p className="text-white/60">Create scent collections for different occasions</p>
         </header>
 
