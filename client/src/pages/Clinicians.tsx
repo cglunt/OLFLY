@@ -96,8 +96,8 @@ export default function Clinicians() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-[#0c0c1d]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo size="md" />
-          
+          <a href="/" aria-label="Back to Olfly home"><Logo size="md" /></a>
+
           <div className="hidden md:flex items-center gap-8">
             <button
               onClick={() => setLocation("/")}
@@ -506,8 +506,8 @@ export default function Clinicians() {
       <footer className="border-t border-white/5 py-12">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <Logo size="sm" />
-            
+            <a href="/" aria-label="Back to Olfly home"><Logo size="sm" /></a>
+
             <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
               <button onClick={() => setLocation("/")} className="hover:text-white transition-colors">Back to Olfly home</button>
               <button onClick={() => setLocation("/legal/terms")} className="hover:text-white transition-colors">Terms</button>

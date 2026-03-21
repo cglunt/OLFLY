@@ -188,19 +188,21 @@ export default function Home() {
             </div>
           </div>
 
-          <Button
-            className="w-full bg-white text-[#6d45d2] hover:bg-white/90 font-bold py-3 rounded-2xl shadow-lg text-base"
-            aria-label="Start training session"
-            data-testid="button-start-training"
-          >
-            <Play size={18} className="mr-2" fill="currentColor" />
-            Start Training
-          </Button>
+          <div className="flex justify-center">
+            <Button
+              className="bg-white text-[#6d45d2] hover:bg-white/90 font-bold py-3 px-10 rounded-2xl shadow-lg text-base"
+              aria-label="Start training session"
+              data-testid="button-start-training"
+            >
+              <Play size={18} className="mr-2" fill="currentColor" />
+              Start Training
+            </Button>
+          </div>
         </div>
       </motion.div>
 
       {/* ── CONTENT — framed below hero ── */}
-      <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10">
+      <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)]">
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}

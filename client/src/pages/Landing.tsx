@@ -18,7 +18,8 @@ import heroBanner from "@assets/HeroBackground_(5)_1767830022017.jpg";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
-import eucalyptusImg from "@assets/generated_images/close-up_of_eucalyptus_leaves.png";
+// Real eucalyptus photo — Unsplash (loaded by browser at runtime, no build step needed)
+const eucalyptusImg = "https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=400&auto=format&fit=crop&q=80";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
@@ -138,7 +139,7 @@ export default function Landing() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-[#0c0c1d]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo size="md" />
+          <a href="/" aria-label="Olfly home"><Logo size="md" /></a>
           
           <div className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
@@ -797,8 +798,8 @@ export default function Landing() {
       <footer className="border-t border-white/5 py-12">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <Logo size="sm" />
-            
+            <a href="/" aria-label="Olfly home"><Logo size="sm" /></a>
+
             <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
               <button onClick={() => setLocation("/clinicians")} className="hover:text-white transition-colors">For Clinicians</button>
               <button onClick={() => setLocation("/legal/terms")} className="hover:text-white transition-colors">Terms</button>

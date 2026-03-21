@@ -97,7 +97,7 @@ function EntryCard({ log, onDelete }: { log: SymptomLog; onDelete: () => void })
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="bg-[#3b1645] rounded-xl border border-white/5 overflow-hidden">
+    <div className="bg-white/15 backdrop-blur-sm rounded-xl border border-white/20 overflow-hidden">
       <button onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-4 py-3 text-left"
       >
@@ -286,62 +286,68 @@ export default function Learn() {
     <Layout>
 
       {/* ══ Top section — home-screen style ══ */}
-      <div className="px-6 pt-6 pb-6 space-y-4">
+      <div className="px-6 pt-6 pb-8 space-y-4 bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] relative overflow-hidden">
+        {/* Glow orbs matching home screen */}
+        <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-[#db2faa]/25 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-32 h-32 rounded-full bg-[#4a2080]/50 blur-2xl pointer-events-none" />
 
-        {/* Header matching Progress page */}
-        <header className="flex justify-between items-end">
+        {/* Header matching home screen hero style */}
+        <header className="flex justify-between items-end relative z-10">
           <div>
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-0.5">Daily Log</p>
             <h1 className="text-2xl font-bold text-white">Symptom Journal</h1>
-            <p className="text-white/60 text-sm">Track how your senses feel</p>
+            <p className="text-white/70 text-sm">Track how your senses feel</p>
           </div>
           <div className="flex items-center gap-2">
             {logs.length > 0 && (
-              <div className="bg-[#3b1645] px-3 py-1.5 rounded-xl text-xs font-medium text-white flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#db2faa]" />
+              <div className="bg-white/20 px-3 py-1.5 rounded-xl text-xs font-medium text-white flex items-center gap-1.5 backdrop-blur-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 {logs.length} {logs.length === 1 ? "entry" : "entries"}
               </div>
             )}
             {!showForm && (
               <button onClick={() => setShowForm(true)}
-                className="flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-r from-[#6d45d2] to-[#db2faa] px-4 py-2 rounded-full shadow-md shadow-[#6d45d2]/30 hover:opacity-90 transition-opacity">
+                className="flex items-center gap-1.5 text-xs font-bold text-[#6d45d2] bg-white px-4 py-2 rounded-full shadow-lg hover:bg-white/90 transition-opacity">
                 <Plus size={12} />New entry
               </button>
             )}
           </div>
         </header>
 
-        <AnimatePresence>
-          {showForm && (
-            <NewEntryForm
-              userId={user?.id ?? ""}
-              onSaved={() => setShowForm(false)}
-              onCancel={() => setShowForm(false)}
-            />
-          )}
-        </AnimatePresence>
-
-        {logsLoading ? (
-          <div className="flex justify-center py-6">
-            <div className="w-6 h-6 border-2 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : logs.length === 0 ? (
-          <div className="bg-[#3b1645] rounded-2xl p-5 text-center">
-            <p className="text-white/50 text-sm">No entries yet</p>
-            <p className="text-white/30 text-xs mt-1">Tap "New entry" to start tracking</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {visibleLogs.map((log) => (
-              <EntryCard key={log.id} log={log} onDelete={() => deleteMutation.mutate(log.id)} />
-            ))}
-            {logs.length > 3 && (
-              <button onClick={() => setShowAllEntries(!showAllEntries)}
-                className="w-full text-xs text-white/40 hover:text-white/60 py-2 flex items-center justify-center gap-1 transition-colors">
-                {showAllEntries ? <><ChevronUp size={12} />Show less</> : <><ChevronDown size={12} />Show all {logs.length} entries</>}
-              </button>
+        <div className="relative z-10 space-y-2">
+          <AnimatePresence>
+            {showForm && (
+              <NewEntryForm
+                userId={user?.id ?? ""}
+                onSaved={() => setShowForm(false)}
+                onCancel={() => setShowForm(false)}
+              />
             )}
-          </div>
-        )}
+          </AnimatePresence>
+
+          {logsLoading ? (
+            <div className="flex justify-center py-6">
+              <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="bg-white/10 rounded-2xl p-5 text-center backdrop-blur-sm border border-white/20">
+              <p className="text-white/70 text-sm">No entries yet</p>
+              <p className="text-white/50 text-xs mt-1">Tap "New entry" to start tracking</p>
+            </div>
+          ) : (
+            <>
+              {visibleLogs.map((log) => (
+                <EntryCard key={log.id} log={log} onDelete={() => deleteMutation.mutate(log.id)} />
+              ))}
+              {logs.length > 3 && (
+                <button onClick={() => setShowAllEntries(!showAllEntries)}
+                  className="w-full text-xs text-white/60 hover:text-white py-2 flex items-center justify-center gap-1 transition-colors">
+                  {showAllEntries ? <><ChevronUp size={12} />Show less</> : <><ChevronDown size={12} />Show all {logs.length} entries</>}
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* ══ Bottom section — dark purple floating panel ══ */}
