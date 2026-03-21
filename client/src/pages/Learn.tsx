@@ -285,9 +285,25 @@ export default function Learn() {
   return (
     <Layout>
 
-      {/* ══ Top section — home-screen style ══ */}
-      <div className="px-6 pt-6 pb-8 space-y-4 bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] relative overflow-hidden">
-        {/* Glow orbs matching home screen */}
+      {/* ══ Top section — matches home-screen hero exactly ══ */}
+      <div className="px-6 pt-6 pb-14 space-y-4 bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] relative overflow-hidden">
+        {/* Stars — identical to home hero */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="8%"  cy="12%" r="1.3" fill="white" opacity="0.5"/>
+          <circle cx="18%" cy="6%"  r="0.9" fill="white" opacity="0.35"/>
+          <circle cx="30%" cy="18%" r="1.1" fill="white" opacity="0.4"/>
+          <circle cx="45%" cy="8%"  r="0.7" fill="white" opacity="0.3"/>
+          <circle cx="58%" cy="14%" r="1.4" fill="white" opacity="0.45"/>
+          <circle cx="70%" cy="5%"  r="1.0" fill="white" opacity="0.38"/>
+          <circle cx="82%" cy="20%" r="0.8" fill="white" opacity="0.3"/>
+          <circle cx="92%" cy="9%"  r="1.2" fill="white" opacity="0.42"/>
+          <circle cx="25%" cy="55%" r="0.7" fill="white" opacity="0.18"/>
+          <circle cx="75%" cy="45%" r="0.9" fill="white" opacity="0.18"/>
+          <circle cx="50%" cy="70%" r="0.8" fill="white" opacity="0.12"/>
+          <circle cx="15%" cy="10%" r="5"   fill="white" opacity="0.05"/>
+          <circle cx="80%" cy="15%" r="6"   fill="white" opacity="0.04"/>
+        </svg>
+        {/* Glow orbs */}
         <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-[#db2faa]/25 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-32 h-32 rounded-full bg-[#4a2080]/50 blur-2xl pointer-events-none" />
 
@@ -350,8 +366,8 @@ export default function Learn() {
         </div>
       </div>
 
-      {/* ══ Bottom section — dark purple floating panel ══ */}
-      <div className="bg-[#130822] rounded-t-[2.5rem] shadow-[0_-20px_60px_rgba(0,0,0,0.65)] px-6 pt-8 pb-24 space-y-6">
+      {/* ══ Bottom section — floats over gradient just like home screen ══ */}
+      <div className="bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)] px-6 pt-8 pb-24 space-y-6">
 
         {/* Learn header */}
         <header>
