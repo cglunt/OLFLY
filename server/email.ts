@@ -1,42 +1,21 @@
-import nodemailer from "nodemailer";
-
 /**
- * Lazy-initialized nodemailer transporter.
- * Reads SMTP credentials from environment variables:
+ * Email helper using Resend's HTTP API.
+ * Works in Vercel serverless (no outbound TCP/SMTP needed — pure HTTPS).
  *
- *   SMTP_HOST     — e.g. smtp.sendgrid.net / smtp.mailgun.org / smtp.gmail.com
- *   SMTP_PORT     — e.g. 587 (default)
- *   SMTP_USER     — SMTP username / API key
- *   SMTP_PASS     — SMTP password / API key secret
- *   SMTP_FROM     — "From" address, defaults to noreply@olfly.app
- *
- * If credentials are missing the helper logs a warning and skips sending,
- * so the endpoint still returns success and saves to the DB.
+ * Required env vars:
+ *   RESEND_API_KEY  — from resend.com dashboard
+ *   SMTP_FROM       — "From" address, e.g. support@olfly.app (must be a verified domain in Resend)
+ *                     Falls back to noreply@olfly.app
  */
 
-const SMTP_FROM = process.env.SMTP_FROM || "noreply@olfly.app";
+const RESEND_API_URL = "https://api.resend.com/emails";
+const FROM_ADDRESS = process.env.SMTP_FROM || "Olfly <noreply@olfly.app>";
 
-function isSmtpConfigured(): boolean {
-  return !!(
-    process.env.SMTP_HOST &&
-    process.env.SMTP_USER &&
-    process.env.SMTP_PASS
-  );
+function isResendConfigured(): boolean {
+  return !!process.env.RESEND_API_KEY;
 }
 
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: Number(process.env.SMTP_PORT) === 465,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-}
-
-interface SendMailOptions {
+export interface SendMailOptions {
   to: string;
   subject: string;
   text: string;
@@ -45,25 +24,40 @@ interface SendMailOptions {
 }
 
 /**
- * Sends an email. Returns true on success, false if SMTP is not configured
- * or if sending fails (error is logged but not thrown).
+ * Sends an email via Resend's HTTP API.
+ * Returns true on success, false if not configured or on failure.
  */
 export async function sendMail(opts: SendMailOptions): Promise<boolean> {
-  if (!isSmtpConfigured()) {
-    console.warn("[email] SMTP not configured — skipping email send. Set SMTP_HOST, SMTP_USER, SMTP_PASS.");
+  if (!isResendConfigured()) {
+    console.warn("[email] RESEND_API_KEY not set — skipping email. Add it to Vercel env vars.");
     return false;
   }
 
   try {
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: SMTP_FROM,
-      to: opts.to,
+    const body: Record<string, unknown> = {
+      from: FROM_ADDRESS,
+      to: [opts.to],
       subject: opts.subject,
       text: opts.text,
-      html: opts.html,
-      replyTo: opts.replyTo,
+    };
+    if (opts.html) body.html = opts.html;
+    if (opts.replyTo) body.reply_to = opts.replyTo;
+
+    const res = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
     });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error("[email] Resend error:", err);
+      return false;
+    }
+
     return true;
   } catch (error) {
     console.error("[email] Failed to send email:", error);

@@ -94,7 +94,7 @@ function BottomNav() {
     { path: "/launch", icon: Home, label: "Home" },
     { path: "/launch/library", icon: BookOpen, label: "Library" },
     { path: "/launch/progress", icon: BarChart2, label: "Progress" },
-    { path: "/launch/journal", icon: NotebookPen, label: "Journal" },
+    { path: "/launch/learn", icon: NotebookPen, label: "Journal" },
     { path: "/launch/settings", icon: Settings, label: "Settings" },
   ];
 
