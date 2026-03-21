@@ -97,7 +97,7 @@ function EntryCard({ log, onDelete }: { log: SymptomLog; onDelete: () => void })
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="bg-[#1a1a2e] rounded-xl border border-white/5 overflow-hidden">
+    <div className="bg-[#3b1645] rounded-xl border border-white/5 overflow-hidden">
       <button onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-4 py-3 text-left"
       >
@@ -192,7 +192,7 @@ function NewEntryForm({ userId, onSaved, onCancel }: { userId: string; onSaved: 
 
   return (
     <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-      className="bg-[#1a1a2e] rounded-2xl border border-[#6d45d2]/30 p-4 space-y-4"
+      className="bg-[#2a1040] rounded-2xl border border-[#6d45d2]/40 p-4 space-y-4 shadow-lg shadow-black/30"
     >
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-white text-sm">New entry</h3>
@@ -284,65 +284,73 @@ export default function Learn() {
 
   return (
     <Layout>
-      <div className="p-6 pb-24 space-y-8">
 
-        {/* ── Symptom Journal ── */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <BookOpen size={16} className="text-[#db2faa]" />
-              <h2 className="text-lg font-bold text-white">Symptom Journal</h2>
-            </div>
+      {/* ══ Top section — home-screen style ══ */}
+      <div className="px-6 pt-6 pb-6 space-y-4">
+
+        {/* Header matching Progress page */}
+        <header className="flex justify-between items-end">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Symptom Journal</h1>
+            <p className="text-white/60 text-sm">Track how your senses feel</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {logs.length > 0 && (
+              <div className="bg-[#3b1645] px-3 py-1.5 rounded-xl text-xs font-medium text-white flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#db2faa]" />
+                {logs.length} {logs.length === 1 ? "entry" : "entries"}
+              </div>
+            )}
             {!showForm && (
               <button onClick={() => setShowForm(true)}
-                className="flex items-center gap-1.5 text-xs text-[#db2faa] bg-[#db2faa]/10 border border-[#db2faa]/30 px-3 py-1.5 rounded-full hover:bg-[#db2faa]/20 transition-colors">
+                className="flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-r from-[#6d45d2] to-[#db2faa] px-4 py-2 rounded-full shadow-md shadow-[#6d45d2]/30 hover:opacity-90 transition-opacity">
                 <Plus size={12} />New entry
               </button>
             )}
           </div>
+        </header>
 
-          <AnimatePresence>
-            {showForm && (
-              <div className="mb-3">
-                <NewEntryForm
-                  userId={user?.id ?? ""}
-                  onSaved={() => setShowForm(false)}
-                  onCancel={() => setShowForm(false)}
-                />
-              </div>
-            )}
-          </AnimatePresence>
-
-          {logsLoading ? (
-            <div className="flex justify-center py-6">
-              <div className="w-6 h-6 border-2 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : logs.length === 0 ? (
-            <div className="bg-[#1a1a2e] rounded-2xl border border-white/5 p-5 text-center">
-              <p className="text-white/40 text-sm">No entries yet</p>
-              <p className="text-white/25 text-xs mt-1">Track how your senses feel day to day</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {visibleLogs.map((log) => (
-                <EntryCard key={log.id} log={log} onDelete={() => deleteMutation.mutate(log.id)} />
-              ))}
-              {logs.length > 3 && (
-                <button onClick={() => setShowAllEntries(!showAllEntries)}
-                  className="w-full text-xs text-white/40 hover:text-white/60 py-2 flex items-center justify-center gap-1 transition-colors">
-                  {showAllEntries ? <><ChevronUp size={12} />Show less</> : <><ChevronDown size={12} />Show all {logs.length} entries</>}
-                </button>
-              )}
-            </div>
+        <AnimatePresence>
+          {showForm && (
+            <NewEntryForm
+              userId={user?.id ?? ""}
+              onSaved={() => setShowForm(false)}
+              onCancel={() => setShowForm(false)}
+            />
           )}
-        </section>
+        </AnimatePresence>
 
-        <div className="h-px bg-white/5" />
+        {logsLoading ? (
+          <div className="flex justify-center py-6">
+            <div className="w-6 h-6 border-2 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : logs.length === 0 ? (
+          <div className="bg-[#3b1645] rounded-2xl p-5 text-center">
+            <p className="text-white/50 text-sm">No entries yet</p>
+            <p className="text-white/30 text-xs mt-1">Tap "New entry" to start tracking</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {visibleLogs.map((log) => (
+              <EntryCard key={log.id} log={log} onDelete={() => deleteMutation.mutate(log.id)} />
+            ))}
+            {logs.length > 3 && (
+              <button onClick={() => setShowAllEntries(!showAllEntries)}
+                className="w-full text-xs text-white/40 hover:text-white/60 py-2 flex items-center justify-center gap-1 transition-colors">
+                {showAllEntries ? <><ChevronUp size={12} />Show less</> : <><ChevronDown size={12} />Show all {logs.length} entries</>}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
-        {/* ── Learn content ── */}
+      {/* ══ Bottom section — dark purple floating panel ══ */}
+      <div className="bg-[#130822] rounded-t-[2.5rem] shadow-[0_-20px_60px_rgba(0,0,0,0.65)] px-6 pt-8 pb-24 space-y-6">
+
+        {/* Learn header */}
         <header>
           <h1 className="text-2xl font-bold text-white">Learn</h1>
-          <p className="text-white/70">Understanding olfactory training and recovery.</p>
+          <p className="text-white/60">Understanding olfactory training and recovery.</p>
         </header>
 
         <Card className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white border-none shadow-md rounded-2xl">
