@@ -108,6 +108,25 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || subscribeStatus === "loading") return;
+    setSubscribeStatus("loading");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error();
+      setSubscribeStatus("success");
+      setEmail("");
+    } catch {
+      setSubscribeStatus("error");
+    }
+  };
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -725,19 +744,32 @@ export default function Landing() {
 
           <div className="max-w-sm mx-auto">
             <p className="text-white/50 text-sm mb-3">Get launch updates</p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#6d45d2]"
-                data-testid="input-email-subscribe"
-              />
-              <Button className="bg-white text-[#0c0c1d] hover:bg-white/90 rounded-full px-6 font-bold" data-testid="button-email-subscribe">
-                <Mail size={18} />
-              </Button>
-            </div>
+            {subscribeStatus === "success" ? (
+              <p className="text-[#db2faa] text-sm font-medium py-3">✓ You're on the list! We'll be in touch.</p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setSubscribeStatus("idle"); }}
+                  className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#6d45d2]"
+                  data-testid="input-email-subscribe"
+                />
+                <Button
+                  type="submit"
+                  disabled={subscribeStatus === "loading"}
+                  className="bg-white text-[#0c0c1d] hover:bg-white/90 rounded-full px-6 font-bold disabled:opacity-60"
+                  data-testid="button-email-subscribe"
+                >
+                  <Mail size={18} />
+                </Button>
+              </form>
+            )}
+            {subscribeStatus === "error" && (
+              <p className="text-red-400 text-xs mt-2">Something went wrong — please try again.</p>
+            )}
           </div>
         </motion.div>
       </section>

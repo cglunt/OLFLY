@@ -431,6 +431,45 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
     }
   });
 
+  // ── Email waitlist subscription via MailerLite ──────────────────────────────
+
+  app.post("/api/subscribe", async (req, res) => {
+    try {
+      const { email } = req.body as { email: string };
+      if (!email || !email.includes("@")) {
+        return res.status(400).json({ message: "Valid email required" });
+      }
+
+      const apiKey = process.env.MAILERLITE_API_KEY;
+      const groupId = process.env.MAILERLITE_GROUP_ID;
+
+      if (!apiKey || !groupId) {
+        console.warn("[subscribe] MAILERLITE_API_KEY or MAILERLITE_GROUP_ID not configured");
+        return res.status(503).json({ message: "Subscription service not configured" });
+      }
+
+      const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ email, groups: [groupId] }),
+      });
+
+      if (!response.ok && response.status !== 409) {
+        const err = await response.json().catch(() => ({}));
+        console.error("[subscribe] MailerLite error:", err);
+        return res.status(500).json({ message: "Failed to subscribe. Please try again." });
+      }
+
+      res.json({ ok: true });
+    } catch (error: any) {
+      console.error("[subscribe] error:", error);
+      res.status(500).json({ message: "Something went wrong. Please try again." });
+    }
+  });
+
   // ── Push notification routes ────────────────────────────────────────────────
 
   // Return VAPID public key to the client (no auth required — it's public)
