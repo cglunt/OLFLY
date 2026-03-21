@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "813167561430",
+    "project_id": "olfly-a7e63",
+    "storage_bucket": "olfly-a7e63.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813167561430:android:d715605b7865fc2814d777",
+        "android_client_info": {
+          "package_name": "com.olfly.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813167561430-k3p8heemb1v3o979gkp78fla3a4tkcp6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRQOhZn0wZeXDXPxjaLshVN3eNBt1dUoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813167561430-k3p8heemb1v3o979gkp78fla3a4tkcp6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
