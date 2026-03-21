@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Wind, BookOpen, BarChart2, GraduationCap, ArrowLeft, Settings } from "lucide-react";
+import { Home, Wind, BookOpen, BarChart2, GraduationCap, ArrowLeft, Settings, NotebookPen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LayoutProps {
@@ -94,7 +94,7 @@ function BottomNav() {
     { path: "/launch", icon: Home, label: "Home" },
     { path: "/launch/library", icon: BookOpen, label: "Library" },
     { path: "/launch/progress", icon: BarChart2, label: "Progress" },
-    { path: "/launch/learn", icon: GraduationCap, label: "Learn" },
+    { path: "/launch/journal", icon: NotebookPen, label: "Journal" },
     { path: "/launch/settings", icon: Settings, label: "Settings" },
   ];
 

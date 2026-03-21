@@ -327,3 +327,13 @@ export async function getUserSymptomLogs(
   if (!res.ok) throw new Error("Failed to fetch symptom logs");
   return res.json();
 }
+
+export async function deleteSymptomLog(
+  userId: string,
+  logId: string,
+): Promise<void> {
+  const res = await authFetch(`/api/users/${userId}/symptom-logs/${logId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete symptom log");
+}

@@ -14,6 +14,7 @@ import Learn from "@/pages/Learn";
 import Onboarding from "@/pages/Onboarding";
 import Article from "@/pages/Article";
 import Settings from "@/pages/Settings";
+import Journal from "@/pages/Journal";
 import Legal from "@/pages/Legal";
 import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
@@ -132,6 +133,7 @@ function AppRouter() {
         <Route path="/launch/training" component={Training} />
         <Route path="/launch/library" component={Library} />
         <Route path="/launch/progress" component={Progress} />
+        <Route path="/launch/journal" component={Journal} />
         <Route path="/launch/learn" component={Learn} />
         <Route path="/launch/article/restoring-smell" component={Article} />
         <Route path="/launch/settings" component={Settings} />

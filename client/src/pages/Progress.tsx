@@ -49,7 +49,8 @@ export default function Progress() {
   } = useProgressUpdates(sessions);
 
   const createLogMutation = useMutation({
-    mutationFn: createSymptomLog,
+    mutationFn: (logData: Parameters<typeof createSymptomLog>[1]) =>
+      createSymptomLog(user!.id, logData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["symptomLogs", user?.id] });
       setShowSymptomForm(false);

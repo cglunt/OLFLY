@@ -363,6 +363,15 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
     }
   });
 
+  app.delete("/api/users/:userId/symptom-logs/:logId", requireAuth, requireOwnership((req) => req.params.userId), async (req, res) => {
+    try {
+      await storage.deleteSymptomLog(req.params.logId, req.params.userId);
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Contact form (public route - no auth required)
   app.post("/api/contact", async (req, res) => {
     try {

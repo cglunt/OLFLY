@@ -50,9 +50,13 @@ export const symptomLogs = pgTable("symptom_logs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   smellStrength: integer("smell_strength").notNull(),
+  nasalCongestion: integer("nasal_congestion").notNull().default(0),
   tasteChanges: integer("taste_changes").notNull(),
+  tasteIntensity: integer("taste_intensity").notNull().default(5),
   distortions: boolean("distortions").notNull().default(false),
+  parosmiaDescription: text("parosmia_description"),
   phantomSmells: boolean("phantom_smells").notNull().default(false),
+  phantomSmellDescription: text("phantom_smell_description"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

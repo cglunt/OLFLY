@@ -33,6 +33,7 @@ export interface IStorage {
   // Symptom log operations
   createSymptomLog(log: InsertSymptomLog): Promise<SymptomLog>;
   getUserSymptomLogs(userId: string, limit?: number): Promise<SymptomLog[]>;
+  deleteSymptomLog(logId: string, userId: string): Promise<void>;
   
   // Contact submissions
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
@@ -223,6 +224,12 @@ export class DatabaseStorage implements IStorage {
       .where(eq(symptomLogs.userId, userId))
       .orderBy(desc(symptomLogs.createdAt))
       .limit(limit);
+  }
+
+  async deleteSymptomLog(logId: string, userId: string): Promise<void> {
+    await db
+      .delete(symptomLogs)
+      .where(and(eq(symptomLogs.id, logId), eq(symptomLogs.userId, userId)));
   }
 
   // Contact submissions
