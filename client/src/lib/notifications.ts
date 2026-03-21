@@ -28,7 +28,7 @@ function getNativePlatform(): 'ios' | 'android' | null {
 async function getCapacitorPush() {
   if (!isNativePlatform()) return null;
   try {
-    const mod = await import('@capacitor/push-notifications');
+    const mod = await import(/* @vite-ignore */ '@capacitor/push-notifications');
     return mod.PushNotifications;
   } catch {
     console.warn('[Notifications] @capacitor/push-notifications not installed yet');
