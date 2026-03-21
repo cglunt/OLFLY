@@ -11,6 +11,8 @@ import { z } from "zod";
 import { requireAuth, requireOwnership } from "./middleware";
 import webpush from "web-push";
 import cron from "node-cron";
+import { getFirebaseMessaging } from "./firebase-admin";
+import { sendMail } from "./email";
 
 // ── VAPID setup ──────────────────────────────────────────────────────────────
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || "";
@@ -24,62 +26,84 @@ if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
 }
 
 // ── Reminder scheduler ───────────────────────────────────────────────────────
-// Runs every minute, checks which users need a notification right now
+// Runs every minute, checks which users need a notification right now.
+// Sends via Web Push (VAPID) for web subscribers and FCM for native app users.
 cron.schedule("* * * * *", async () => {
-  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) return;
-
   try {
     const usersWithReminders = await storage.getUsersWithRemindersEnabled();
 
     for (const user of usersWithReminders) {
-      const subscriptions = await storage.getPushSubscriptionsForUser(user.id);
-      if (!subscriptions.length) continue;
+      const morningTime = user.morningTime || "08:00";
+      const eveningTime = user.eveningTime || "20:00";
 
-      for (const sub of subscriptions) {
-        const tz = sub.timezone || "UTC";
+      // Helper: resolve current time in the user's timezone from a subscription
+      const getCurrentTimeForTz = (tz: string): string => {
         let userNow: Date;
         try {
           userNow = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
         } catch {
           userNow = new Date();
         }
-
         const h = userNow.getHours().toString().padStart(2, "0");
         const m = userNow.getMinutes().toString().padStart(2, "0");
-        const currentTime = `${h}:${m}`;
+        return `${h}:${m}`;
+      };
 
-        const morningTime = user.morningTime || "08:00";
-        const eveningTime = user.eveningTime || "20:00";
-
-        let notification: { title: string; body: string; url: string; tag: string } | null = null;
-
+      const buildNotification = (currentTime: string) => {
         if (currentTime === morningTime) {
-          notification = {
+          return {
             title: "Time for your smell training",
             body: "Your scents are waiting. A quick session helps rebuild your senses.",
-            url: "/training",
+            url: "/launch/training",
             tag: "olfly-morning",
           };
-        } else if (currentTime === eveningTime) {
-          notification = {
+        }
+        if (currentTime === eveningTime) {
+          return {
             title: "Quick reset",
             body: "A few minutes of smell training can help. Ready when you are.",
-            url: "/training",
+            url: "/launch/training",
             tag: "olfly-evening",
           };
         }
+        return null;
+      };
 
-        if (notification) {
+      // ── Web Push (VAPID) ────────────────────────────────────────────────────
+      if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+        const webSubs = await storage.getPushSubscriptionsForUser(user.id);
+        for (const sub of webSubs) {
+          const notification = buildNotification(getCurrentTimeForTz(sub.timezone || "UTC"));
+          if (!notification) continue;
           try {
             await webpush.sendNotification(
               { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
               JSON.stringify(notification)
             );
           } catch (err: any) {
-            // 410 = subscription expired/unsubscribed — clean it up
             if (err.statusCode === 410) {
               await storage.deletePushSubscription(sub.endpoint);
             }
+          }
+        }
+      }
+
+      // ── FCM (native Capacitor apps) ─────────────────────────────────────────
+      const fcmTokenRecords = await storage.getFcmTokensForUser(user.id);
+      for (const record of fcmTokenRecords) {
+        const notification = buildNotification(getCurrentTimeForTz(record.timezone || "UTC"));
+        if (!notification) continue;
+        try {
+          await getFirebaseMessaging().send({
+            token: record.token,
+            notification: { title: notification.title, body: notification.body },
+            data: { url: notification.url, tag: notification.tag },
+          });
+        } catch (err: any) {
+          // Token no longer valid — remove it
+          const invalidCodes = ["messaging/registration-token-not-registered", "messaging/invalid-registration-token"];
+          if (invalidCodes.includes(err?.errorInfo?.code)) {
+            await storage.deleteFcmToken(record.token);
           }
         }
       }
@@ -350,6 +374,63 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
     }
   });
 
+  // Clinician access request form — saves to DB and emails support@olfly.app
+  app.post("/api/clinician-request", async (req, res) => {
+    try {
+      const { fullName, workEmail, organization, patientCount, notes } = req.body as {
+        fullName: string;
+        workEmail: string;
+        organization: string;
+        patientCount: string;
+        notes?: string;
+      };
+
+      if (!fullName || !workEmail || !organization || !patientCount) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Save to DB using the existing contact_submissions table
+      await storage.createContactSubmission({
+        name: fullName,
+        email: workEmail,
+        subject: "Clinician Access Request",
+        message: [
+          `Organization: ${organization}`,
+          `Patient count: ${patientCount}`,
+          notes ? `Notes: ${notes}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      });
+
+      // Send notification email to support — fire-and-forget (don't block response)
+      const emailText = [
+        `New clinician access request from ${fullName}`,
+        ``,
+        `Name:           ${fullName}`,
+        `Work email:     ${workEmail}`,
+        `Organization:   ${organization}`,
+        `Patient count:  ${patientCount}`,
+        notes ? `Notes:          ${notes}` : null,
+        ``,
+        `Reply directly to this email to contact the applicant.`,
+      ]
+        .filter((l) => l !== null)
+        .join("\n");
+
+      sendMail({
+        to: "support@olfly.app",
+        subject: `Clinician access request — ${fullName} (${organization})`,
+        text: emailText,
+        replyTo: workEmail,
+      }).catch((err) => console.error("[clinician-request] email error:", err));
+
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   // ── Push notification routes ────────────────────────────────────────────────
 
   // Return VAPID public key to the client (no auth required — it's public)
@@ -393,6 +474,45 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
       const { endpoint } = req.body as { endpoint: string };
       if (!endpoint) return res.status(400).json({ message: "endpoint required" });
       await storage.deletePushSubscription(endpoint);
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ── FCM token routes (native Capacitor apps) ─────────────────────────────────
+
+  // Register or refresh an FCM device token
+  app.post("/api/push/register-token", requireAuth, async (req, res) => {
+    try {
+      const { token, platform, timezone } = req.body as {
+        token: string;
+        platform: "ios" | "android";
+        timezone?: string;
+      };
+      if (!token) return res.status(400).json({ message: "token required" });
+      if (!platform || !["ios", "android"].includes(platform)) {
+        return res.status(400).json({ message: "platform must be 'ios' or 'android'" });
+      }
+
+      const record = await storage.saveFcmToken({
+        userId: req.user!.uid,
+        token,
+        platform,
+        timezone: timezone || "UTC",
+      });
+      res.json({ ok: true, id: record.id });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Remove an FCM device token (on unsubscribe or sign-out)
+  app.delete("/api/push/register-token", requireAuth, async (req, res) => {
+    try {
+      const { token } = req.body as { token: string };
+      if (!token) return res.status(400).json({ message: "token required" });
+      await storage.deleteFcmToken(token);
       res.json({ ok: true });
     } catch (error: any) {
       res.status(400).json({ message: error.message });

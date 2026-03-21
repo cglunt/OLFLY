@@ -14,21 +14,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import clinicianHero from "@assets/iphone-mockup-featuring-a-female-doctor-at-a-hospital-a6130_1767140328069.png";
 
 const CLINICIAN_FEATURES = [
-  { icon: Users, title: "Clinician dashboard for multiple patients", desc: "Manage all your patients from one central view" },
-  { icon: BarChart3, title: "Adherence and session frequency tracking", desc: "See which patients are staying consistent" },
-  { icon: FileText, title: "Progress summaries over time", desc: "Track improvements across weeks and months" },
-  { icon: Download, title: "Exportable PDF progress reports per patient", desc: "Generate documentation for visits and records" },
-  { icon: Palette, title: "Templates for common training programs", desc: "Start patients on proven protocols quickly" },
-  { icon: Building2, title: "Branded exports and CSV/EHR-friendly options", desc: "Customize reports for your practice" },
+  { icon: Users, title: "Clinician dashboard for multiple patients", desc: "Manage all your patients from one central view", comingSoon: true },
+  { icon: BarChart3, title: "Adherence and session frequency tracking", desc: "See which patients are staying consistent", comingSoon: true },
+  { icon: FileText, title: "Progress summaries over time", desc: "Track improvements across weeks and months", comingSoon: true },
+  { icon: Download, title: "Exportable PDF progress reports per patient", desc: "Generate documentation for visits and records", comingSoon: true },
+  { icon: Palette, title: "Templates for common training programs", desc: "Start patients on proven protocols quickly", comingSoon: true },
+  { icon: Building2, title: "Branded exports and CSV/EHR-friendly options", desc: "Customize reports for your practice", comingSoon: true },
 ];
 
 const CLINIC_FEATURES = [
   "Up to 25 active patients",
-  "Clinician dashboard",
-  "Patient adherence tracking",
-  "Progress summaries",
-  "Exportable PDF reports",
-  "Program templates",
+  "Clinician dashboard (in development)",
+  "Patient adherence tracking (in development)",
+  "Progress summaries (in development)",
+  "Exportable PDF reports (in development)",
+  "Program templates (in development)",
   "Priority email support",
 ];
 
@@ -39,11 +39,11 @@ const CLINICIAN_FAQS = [
   },
   {
     q: "Can I export reports for documentation?",
-    a: "Yes. All clinician plans include PDF progress reports per patient. Plus and Enterprise tiers offer branded exports and CSV/EHR-compatible formats."
+    a: "Yes, exportable PDF progress reports per patient are planned for all clinician plans. Enterprise tier will include branded exports and CSV/EHR-compatible formats. These features are currently in development."
   },
   {
     q: "Do patients need their own paid subscription?",
-    a: "No. Patients use the free version of Olfly. Their training data syncs to your clinician dashboard automatically once they're linked to your account."
+    a: "No. Patients use the free version of Olfly. Patient linking and dashboard syncing are part of the clinician feature set currently in development — we'll walk you through the setup during onboarding."
   },
   {
     q: "How do I get started as a clinician?",
@@ -62,10 +62,29 @@ export default function Clinicians() {
     notes: "",
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    setFormError(null);
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/clinician-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Something went wrong. Please try again.");
+      }
+      setFormSubmitted(true);
+    } catch (err: any) {
+      setFormError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const scrollToForm = () => {
@@ -150,7 +169,7 @@ export default function Clinicians() {
               </h1>
               
               <p className="text-xl text-white/80 mb-6 leading-relaxed">
-                Support smell training for multiple patients with adherence tracking and exportable progress reports.
+                Clinician tools for smell training are in development. Request early access and be among the first to use them when they launch.
               </p>
 
               <p className="text-sm text-white/50 mb-8">
@@ -193,9 +212,9 @@ export default function Clinicians() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">What clinicians get</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What we're building for clinicians</h2>
             <p className="text-white/60 max-w-xl mx-auto">
-              Tools to support patient olfactory rehabilitation
+              Clinician tools are in active development. Request early access to be first in line when they launch.
             </p>
           </motion.div>
 
@@ -207,8 +226,13 @@ export default function Clinicians() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-[#0c0c1d] rounded-2xl p-6 border border-white/5 hover:border-[#6d45d2]/30 transition-colors"
+                className="bg-[#0c0c1d] rounded-2xl p-6 border border-white/5 hover:border-[#6d45d2]/30 transition-colors relative"
               >
+                {feature.comingSoon && (
+                  <span className="absolute top-4 right-4 text-[10px] font-semibold uppercase tracking-wider text-[#db2faa] bg-[#db2faa]/10 px-2 py-0.5 rounded-full border border-[#db2faa]/20">
+                    Coming soon
+                  </span>
+                )}
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6d45d2]/20 to-[#db2faa]/20 flex items-center justify-center mb-4">
                   <feature.icon size={24} className="text-[#db2faa]" />
                 </div>
@@ -230,7 +254,7 @@ export default function Clinicians() {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Clinician plans</h2>
           <p className="text-white/60 max-w-xl mx-auto">
-            Simple pricing to support your practice
+            Early access pricing — clinician features are in development. Lock in your rate now.
           </p>
         </motion.div>
 
@@ -350,17 +374,23 @@ export default function Clinicians() {
           <ul className="space-y-2 mb-8 text-white/70">
             <li className="flex items-center gap-3">
               <Check size={16} className="text-[#db2faa] shrink-0" />
-              Clinician dashboard for multiple patients
+              Early access to clinician features as they launch
             </li>
             <li className="flex items-center gap-3">
               <Check size={16} className="text-[#db2faa] shrink-0" />
-              Adherence tracking and progress summaries
+              Clinician dashboard, adherence tracking &amp; PDF reports (in development)
             </li>
             <li className="flex items-center gap-3">
               <Check size={16} className="text-[#db2faa] shrink-0" />
-              Exportable PDF reports
+              Priority email support and onboarding help
             </li>
           </ul>
+
+          {formError && (
+            <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-center">
+              <p className="text-red-300 text-sm">{formError}</p>
+            </div>
+          )}
 
           {formSubmitted ? (
             <motion.div
@@ -451,10 +481,11 @@ export default function Clinicians() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full py-3 text-lg mt-6"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-[#6d45d2] to-[#db2faa] hover:opacity-90 text-white font-bold rounded-full py-3 text-lg mt-6 disabled:opacity-60"
                 data-testid="button-clinician-submit"
               >
-                Request access
+                {isSubmitting ? "Sending..." : "Request access"}
               </Button>
             </form>
           )}

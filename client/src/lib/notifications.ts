@@ -1,5 +1,43 @@
 type NotificationPermissionStatus = 'granted' | 'denied' | 'default' | 'unsupported';
 
+// ── Platform detection ────────────────────────────────────────────────────────
+
+/**
+ * Returns true when running inside a Capacitor native app (iOS or Android).
+ * Safe to call before Capacitor is installed — returns false gracefully on web.
+ */
+function isNativePlatform(): boolean {
+  return (
+    typeof (window as any).Capacitor !== 'undefined' &&
+    (window as any).Capacitor.isNativePlatform?.() === true
+  );
+}
+
+/**
+ * Returns the Capacitor platform string ('ios' | 'android') or null on web.
+ */
+function getNativePlatform(): 'ios' | 'android' | null {
+  if (!isNativePlatform()) return null;
+  return (window as any).Capacitor?.getPlatform?.() ?? null;
+}
+
+/**
+ * Dynamically imports @capacitor/push-notifications.
+ * Returns null if the package is not yet installed (safe before Capacitor setup).
+ */
+async function getCapacitorPush() {
+  if (!isNativePlatform()) return null;
+  try {
+    const mod = await import('@capacitor/push-notifications');
+    return mod.PushNotifications;
+  } catch {
+    console.warn('[Notifications] @capacitor/push-notifications not installed yet');
+    return null;
+  }
+}
+
+const FCM_TOKEN_KEY = 'olfly_fcm_token';
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Convert a VAPID base64url public key to a Uint8Array for pushManager.subscribe() */
@@ -28,32 +66,71 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 }
 
 /**
- * Fetches the VAPID public key from the server, subscribes the current device
- * to Web Push, and POSTs the subscription to /api/push/subscribe.
+ * Subscribes the current device to push notifications.
+ * - Native (Capacitor): registers for FCM/APNs, sends the device token to the server.
+ * - Web: uses VAPID Web Push via the service worker.
  * Returns true on success.
  */
 export async function subscribeToPushNotifications(): Promise<boolean> {
+  // ── Native path ────────────────────────────────────────────────────────────
+  if (isNativePlatform()) {
+    const PushNotifications = await getCapacitorPush();
+    if (!PushNotifications) return false;
+
+    return new Promise((resolve) => {
+      // Remove any stale listeners before adding new ones
+      PushNotifications.removeAllListeners().then(() => {
+        // Registration succeeded — send the FCM token to the server
+        PushNotifications.addListener('registration', async (tokenData: { value: string }) => {
+          try {
+            const platform = getNativePlatform() ?? 'android';
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+            const token = tokenData.value;
+
+            // Cache locally so unsubscribe can reference it without a plugin call
+            localStorage.setItem(FCM_TOKEN_KEY, token);
+
+            const res = await fetch('/api/push/register-token', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ token, platform, timezone }),
+            });
+            resolve(res.ok);
+          } catch (err) {
+            console.error('[Notifications] FCM token registration error:', err);
+            resolve(false);
+          }
+        });
+
+        PushNotifications.addListener('registrationError', (err: unknown) => {
+          console.error('[Notifications] FCM registrationError:', err);
+          resolve(false);
+        });
+
+        PushNotifications.register();
+      });
+    });
+  }
+
+  // ── Web path ───────────────────────────────────────────────────────────────
   try {
     const reg = await registerServiceWorker();
     if (!reg) return false;
 
-    // Make sure we have permission
     const permission = Notification.permission;
     if (permission !== 'granted') return false;
 
-    // Get VAPID public key
     const keyRes = await fetch('/api/push/vapid-public-key');
     if (!keyRes.ok) return false;
     const { publicKey } = await keyRes.json();
     if (!publicKey) return false;
 
-    // Subscribe via PushManager
     const subscription = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicKey),
     });
 
-    // Send subscription to server (auth header added by authFetch below)
     const subJson = subscription.toJSON();
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
@@ -76,9 +153,29 @@ export async function subscribeToPushNotifications(): Promise<boolean> {
 }
 
 /**
- * Unsubscribes the current device from Web Push and notifies the server.
+ * Unsubscribes the current device from push notifications and notifies the server.
  */
 export async function unsubscribeFromPushNotifications(): Promise<void> {
+  // ── Native path ────────────────────────────────────────────────────────────
+  if (isNativePlatform()) {
+    try {
+      const token = localStorage.getItem(FCM_TOKEN_KEY);
+      if (!token) return;
+
+      await fetch('/api/push/register-token', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ token }),
+      });
+      localStorage.removeItem(FCM_TOKEN_KEY);
+    } catch (err) {
+      console.error('[Notifications] FCM unsubscribe error:', err);
+    }
+    return;
+  }
+
+  // ── Web path ───────────────────────────────────────────────────────────────
   try {
     if (!('serviceWorker' in navigator)) return;
     const reg = await navigator.serviceWorker.getRegistration('/sw.js');
@@ -111,17 +208,41 @@ const STORAGE_KEY = 'olfly_reminder_settings';
 const PERMISSION_KEY = 'olfly_notification_permission';
 
 export function isNotificationSupported(): boolean {
+  // Native Capacitor apps always support notifications via FCM/APNs
+  if (isNativePlatform()) return true;
   return 'Notification' in window && 'serviceWorker' in navigator;
 }
 
 export function getNotificationPermission(): NotificationPermissionStatus {
   if (!isNotificationSupported()) return 'unsupported';
+  // On native, the permission status is async (requires plugin call), so we
+  // read the last-known value cached in localStorage after requestPermission().
+  if (isNativePlatform()) {
+    return (localStorage.getItem(PERMISSION_KEY) as NotificationPermissionStatus) || 'default';
+  }
   return Notification.permission as NotificationPermissionStatus;
 }
 
 export async function requestNotificationPermission(): Promise<NotificationPermissionStatus> {
   if (!isNotificationSupported()) return 'unsupported';
-  
+
+  // ── Native path ────────────────────────────────────────────────────────────
+  if (isNativePlatform()) {
+    const PushNotifications = await getCapacitorPush();
+    if (!PushNotifications) return 'unsupported';
+    try {
+      const result = await PushNotifications.requestPermissions();
+      const status: NotificationPermissionStatus =
+        result.receive === 'granted' ? 'granted' : 'denied';
+      localStorage.setItem(PERMISSION_KEY, status);
+      return status;
+    } catch (error) {
+      console.error('[Notifications] requestPermissions error:', error);
+      return 'denied';
+    }
+  }
+
+  // ── Web path ───────────────────────────────────────────────────────────────
   try {
     const permission = await Notification.requestPermission();
     localStorage.setItem(PERMISSION_KEY, permission);

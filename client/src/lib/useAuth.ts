@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
-        isFirebaseConfigured, User, initAuthPersistence } from "./firebase";
+        isFirebaseConfigured, User, initAuthPersistence, handleRedirectResult } from "./firebase";
 import { debugAuthLog } from "./debugAuth";
 
 export function useAuth() {
@@ -39,14 +39,27 @@ export function useAuth() {
       setHasSeenAuthStateChangedOnce(true);
     });
 
-    // Ensure persistence has been applied before marking authReady.
+    // 1. Apply persistence, then
+    // 2. Drain any pending getRedirectResult() from a Google signInWithRedirect
+    //    flow (no-op on web; essential on Capacitor native after redirect returns).
     debugAuthLog("AUTH:persistence:start", { ts: Date.now() });
     initAuthPersistence()
       .then(() => {
         debugAuthLog("AUTH:persistence:done", { ts: Date.now() });
+        return handleRedirectResult();
+      })
+      .then((redirectUser) => {
+        if (redirectUser) {
+          debugAuthLog("AUTH:redirectResult:user", {
+            ts: Date.now(),
+            uid: redirectUser.uid,
+          });
+        } else {
+          debugAuthLog("AUTH:redirectResult:none", { ts: Date.now() });
+        }
       })
       .catch((err: any) => {
-        console.error("[useAuth] Redirect error:", err);
+        console.error("[useAuth] handleRedirectResult error:", err);
       })
       .finally(() => {
         setRedirectResultDone(true);

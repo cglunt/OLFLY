@@ -136,3 +136,21 @@ export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions
 
 export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
 export type PushSubscriptionRecord = typeof pushSubscriptions.$inferSelect;
+
+// FCM tokens — used by native Capacitor apps (iOS / Android)
+export const fcmTokens = pgTable("fcm_tokens", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  token: text("token").notNull().unique(),
+  platform: text("platform").notNull(), // 'ios' | 'android'
+  timezone: text("timezone").notNull().default("UTC"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertFcmTokenSchema = createInsertSchema(fcmTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertFcmToken = z.infer<typeof insertFcmTokenSchema>;
+export type FcmTokenRecord = typeof fcmTokens.$inferSelect;

@@ -1,4 +1,4 @@
-import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, pushSubscriptions, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission, type InsertPushSubscription, type PushSubscriptionRecord } from "@shared/schema";
+import { users, userScents, sessions, symptomLogs, scentCollections, contactSubmissions, pushSubscriptions, fcmTokens, type User, type InsertUser, type UserScent, type InsertUserScent, type Session, type InsertSession, type SymptomLog, type InsertSymptomLog, type ScentCollection, type InsertScentCollection, type ContactSubmission, type InsertContactSubmission, type InsertPushSubscription, type PushSubscriptionRecord, type InsertFcmToken, type FcmTokenRecord } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
 
@@ -45,6 +45,10 @@ export interface IStorage {
   savePushSubscription(subscription: InsertPushSubscription): Promise<PushSubscriptionRecord>;
   deletePushSubscription(endpoint: string): Promise<void>;
   getPushSubscriptionsForUser(userId: string): Promise<PushSubscriptionRecord[]>;
+  // FCM token operations (native Capacitor apps)
+  saveFcmToken(token: InsertFcmToken): Promise<FcmTokenRecord>;
+  deleteFcmToken(token: string): Promise<void>;
+  getFcmTokensForUser(userId: string): Promise<FcmTokenRecord[]>;
   getUsersWithRemindersEnabled(): Promise<User[]>;
 }
 
@@ -280,6 +284,43 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, userId));
+  }
+
+  // FCM token operations (native Capacitor apps)
+  async saveFcmToken(token: InsertFcmToken): Promise<FcmTokenRecord> {
+    const existing = await db
+      .select()
+      .from(fcmTokens)
+      .where(eq(fcmTokens.token, token.token));
+
+    if (existing.length) {
+      // Update timezone / platform in case they changed
+      const [updated] = await db
+        .update(fcmTokens)
+        .set({ platform: token.platform, timezone: token.timezone })
+        .where(eq(fcmTokens.token, token.token))
+        .returning();
+      return updated;
+    }
+
+    const [inserted] = await db
+      .insert(fcmTokens)
+      .values(token)
+      .returning();
+    return inserted;
+  }
+
+  async deleteFcmToken(token: string): Promise<void> {
+    await db
+      .delete(fcmTokens)
+      .where(eq(fcmTokens.token, token));
+  }
+
+  async getFcmTokensForUser(userId: string): Promise<FcmTokenRecord[]> {
+    return db
+      .select()
+      .from(fcmTokens)
+      .where(eq(fcmTokens.userId, userId));
   }
 
   async getUsersWithRemindersEnabled(): Promise<User[]> {

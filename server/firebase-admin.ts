@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getMessaging } from "firebase-admin/messaging";
 
 function requireEnv(name: string): string {
   const val = process.env[name];
@@ -7,7 +8,7 @@ function requireEnv(name: string): string {
   return val;
 }
 
-export function getFirebaseAuth() {
+function initFirebaseAdmin() {
   if (!getApps().length) {
     const projectId = requireEnv("FIREBASE_PROJECT_ID");
     const clientEmail = requireEnv("FIREBASE_CLIENT_EMAIL");
@@ -17,6 +18,15 @@ export function getFirebaseAuth() {
       credential: cert({ projectId, clientEmail, privateKey }),
     });
   }
+}
 
+export function getFirebaseAuth() {
+  initFirebaseAdmin();
   return getAuth();
+}
+
+/** Returns the Firebase Admin Messaging instance for sending FCM push messages. */
+export function getFirebaseMessaging() {
+  initFirebaseAdmin();
+  return getMessaging();
 }

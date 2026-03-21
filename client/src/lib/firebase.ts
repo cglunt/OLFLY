@@ -1,18 +1,20 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 // Firebase configuration and authentication
-import { 
-  getAuth, 
+import {
+  getAuth,
   GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence,
   signInWithPopup,
-  signOut, 
-  onAuthStateChanged, 
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+  onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-  User, 
-  Auth 
+  User,
+  Auth
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -66,16 +68,68 @@ export { auth };
 
 const googleProvider = new GoogleAuthProvider();
 
+/**
+ * Returns true when running inside a Capacitor native app (iOS or Android).
+ * Safe to call before Capacitor is installed — returns false gracefully on web.
+ */
+function isNativePlatform(): boolean {
+  return (
+    typeof (window as any).Capacitor !== "undefined" &&
+    (window as any).Capacitor.isNativePlatform?.() === true
+  );
+}
+
+/**
+ * Sign in with Google.
+ * - Web: uses signInWithPopup (better UX, no page navigation).
+ * - Native (Capacitor iOS/Android): uses signInWithRedirect because popups
+ *   are blocked inside WKWebView and Android WebView. The result is captured
+ *   at app startup via handleRedirectResult().
+ */
 export async function signInWithGoogle() {
   if (!auth) {
     throw new Error("Firebase not configured");
   }
 
   try {
-    await signInWithPopup(auth, googleProvider);
+    if (isNativePlatform()) {
+      // On native the function triggers the redirect; the resolved user arrives
+      // via onAuthStateChanged after the app relaunches from the redirect.
+      await signInWithRedirect(auth, googleProvider);
+    } else {
+      await signInWithPopup(auth, googleProvider);
+    }
   } catch (error) {
     console.error("Error signing in with Google:", error);
     throw error;
+  }
+}
+
+/**
+ * Must be called once at app startup (before rendering) to capture the result
+ * of a signInWithRedirect flow on native platforms. On web it is a no-op
+ * (getRedirectResult resolves to null when there is no pending redirect).
+ */
+export async function handleRedirectResult(): Promise<User | null> {
+  if (!auth) return null;
+
+  try {
+    const result = await getRedirectResult(auth);
+    if (result?.user) {
+      if (import.meta.env.DEV) {
+        console.log("[AUTH_DEBUG] getRedirectResult: signed in as", result.user.uid);
+      }
+      return result.user;
+    }
+    return null;
+  } catch (error) {
+    // auth/no-auth-event is normal on web — not a real error
+    const code = (error as any)?.code;
+    if (code !== "auth/no-auth-event") {
+      console.error("[Firebase] getRedirectResult error:", error);
+      throw error;
+    }
+    return null;
   }
 }
 
