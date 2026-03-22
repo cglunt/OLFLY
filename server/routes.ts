@@ -167,7 +167,14 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
 
   app.patch("/api/users/:id", requireAuth, requireOwnership(), async (req, res) => {
     try {
-      const updates = req.body;
+      const updates = { ...req.body };
+      // Drizzle timestamp columns require Date objects — convert ISO strings from JSON body
+      if (updates.lastSessionDate && typeof updates.lastSessionDate === "string") {
+        updates.lastSessionDate = new Date(updates.lastSessionDate);
+      }
+      if (updates.currentPeriodEnd && typeof updates.currentPeriodEnd === "string") {
+        updates.currentPeriodEnd = new Date(updates.currentPeriodEnd);
+      }
       const user = await storage.updateUser(req.params.id, updates);
       if (!user) {
         res.status(404).json({ message: "User not found" });
