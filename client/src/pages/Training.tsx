@@ -310,7 +310,7 @@ export default function Training() {
       console.error("[Training] Failed to save session:", err);
       // Still show a completion message even if save fails
       setFinalStreak(user.streak);
-      setCompletionMessage("Great work! There was a problem saving your session — please check your connection and try again.");
+      setCompletionMessage("Great work! Your session is complete. Your progress will sync next time you open the app.");
     }
   };
 

@@ -269,12 +269,23 @@ export async function activateCollection(
 export async function createSession(
   sessionData: InsertSession,
 ): Promise<Session> {
-  const res = await authFetch(`/api/users/${sessionData.userId}/sessions`, {
-    method: "POST",
-    body: JSON.stringify(sessionData),
-  });
-  if (!res.ok) throw new Error("Failed to create session");
-  return res.json();
+  // Retry once on failure — handles transient network blips / token refresh races
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const res = await authFetch(`/api/users/${sessionData.userId}/sessions`, {
+      method: "POST",
+      body: JSON.stringify(sessionData),
+    });
+    if (res.ok) return res.json();
+    // On first failure, wait briefly and retry
+    if (attempt < 2) {
+      await new Promise(r => setTimeout(r, 1500));
+      continue;
+    }
+    // On second failure, surface the actual server error message
+    const errBody = await res.json().catch(() => ({})) as { message?: string };
+    throw new Error(errBody.message ?? `Server error ${res.status}`);
+  }
+  throw new Error("Failed to create session");
 }
 
 export async function getUserSessions(
