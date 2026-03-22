@@ -427,12 +427,22 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
         .filter((l) => l !== null)
         .join("\n");
 
-      sendMail({
+      const emailSent = await sendMail({
         to: "support@olfly.app",
         subject: `Clinician access request — ${fullName} (${organization})`,
         text: emailText,
         replyTo: workEmail,
-      }).catch((err) => console.error("[clinician-request] email error:", err));
+      }).catch((err) => {
+        console.error("[clinician-request] email error:", err);
+        return false;
+      });
+
+      console.log(
+        `[clinician-request] email sent=${emailSent} | ` +
+        `RESEND_API_KEY set=${!!process.env.RESEND_API_KEY} | ` +
+        `from=${process.env.SMTP_FROM || "noreply@olfly.app"} | ` +
+        `to=support@olfly.app`
+      );
 
       res.json({ ok: true });
     } catch (error: any) {
