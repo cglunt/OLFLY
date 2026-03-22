@@ -203,6 +203,9 @@ export default function Home() {
 
       {/* ── CONTENT — framed below hero ── */}
       <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)]">
+        {/* Concave corner fills — covers the crevice left/right of the rounded corners */}
+        <div className="absolute -top-10 left-0 w-10 h-10 bg-[#0c0c1d] rounded-br-full pointer-events-none" />
+        <div className="absolute -top-10 right-0 w-10 h-10 bg-[#0c0c1d] rounded-bl-full pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
