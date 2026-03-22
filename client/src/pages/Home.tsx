@@ -43,7 +43,7 @@ export default function Home() {
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["sessions", user?.id],
-    queryFn: () => getUserSessions(user!.id, 10),
+    queryFn: () => getUserSessions(user!.id),
     enabled: !!user,
   });
 
