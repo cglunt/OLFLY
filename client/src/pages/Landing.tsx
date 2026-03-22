@@ -18,8 +18,8 @@ import heroBanner from "@assets/HeroBackground_(5)_1767830022017.jpg";
 import cloveImg from "@assets/generated_images/close-up_of_dried_cloves.png";
 import lemonImg from "@assets/generated_images/close-up_of_fresh_lemon.png";
 import roseImg from "@assets/generated_images/close-up_of_a_pink_rose.png";
-// Real eucalyptus photo — Unsplash (loaded by browser at runtime, no build step needed)
-const eucalyptusImg = "https://images.unsplash.com/photo-1607305387299-a3d9611cd469?w=400&auto=format&fit=crop&q=80";
+// Real eucalyptus photo chosen by Cynthia — unsplash.com/photos/4N5huJDOydQ
+const eucalyptusImg = "https://source.unsplash.com/4N5huJDOydQ/400x400";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
