@@ -31,10 +31,6 @@ const QUIZ_QUESTIONS = [
     question: "Has your sense of smell changed after an illness or injury?",
     options: ["Yes", "I think so", "No, but I want to improve"],
   },
-  {
-    question: "Do scents sometimes smell different or strange to you?",
-    options: ["Yes, things smell wrong", "Occasionally", "Not really"],
-  },
 ];
 
 export default function Onboarding() {
@@ -57,7 +53,7 @@ export default function Onboarding() {
   
   const queryKey = ["currentUser", firebaseUser?.displayName || undefined];
 
-  const totalSteps = 8;
+  const totalSteps = 6;
   const defaultScents = ALL_SCENTS.filter(s => s.isDefault);
 
   const nextStep = () => setStep(s => s + 1);
@@ -307,132 +303,82 @@ export default function Onboarding() {
                     transition={{ duration: 0.4 }}
                     className="flex-1 flex flex-col"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Smell training<br/>really works</h2>
-                    
-                    <div className="space-y-4 mb-6">
-                         <p className="text-white/70 text-lg leading-relaxed">
-                            Research shows daily scent training helps rebuild neural pathways for smell.
-                         </p>
-                         <p className="text-white/70 text-lg leading-relaxed">
-                            Just 20 seconds per scent, twice a day. That's all it takes.
-                         </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-3">Smell training<br/>really works</h2>
+
+                    <p className="text-white/70 text-base leading-relaxed mb-4">
+                        Research shows daily scent training rebuilds neural pathways. Just 20 seconds per scent, twice a day.
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2 mb-4">
                         {defaultScents.map((scent, i) => (
-                            <motion.div 
+                            <motion.div
                                 key={scent.id}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="h-24 md:h-28 rounded-xl md:rounded-2xl overflow-hidden relative group"
+                                className="h-20 rounded-xl overflow-hidden relative"
                             >
                                 {scent.image && (
-                                    <img 
-                                        src={scent.image} 
+                                    <img
+                                        src={scent.image}
                                         alt={scent.name}
                                         className="w-full h-full object-cover"
                                     />
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                                <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3">
-                                    <span className="text-sm md:text-base font-bold text-white">{scent.name}</span>
+                                <div className="absolute bottom-0 left-0 right-0 p-2">
+                                    <span className="text-sm font-bold text-white">{scent.name}</span>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
 
-                    <Block className="mb-6 bg-[#3b1645]">
-                        <p className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3">Each session looks like this</p>
+                    <Block className="mb-4 bg-[#3b1645]">
+                        <p className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Each session</p>
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-2 text-center">
                             <p className="text-[#ac41c3] font-bold text-sm">Breathe</p>
-                            <p className="text-white/50 text-xs mt-0.5">Calm in</p>
+                            <p className="text-white/50 text-xs">Calm in</p>
                           </div>
-                          <div className="text-white/30 text-lg">›</div>
-                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                          <div className="text-white/30">›</div>
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-2 text-center">
                             <p className="text-[#ac41c3] font-bold text-sm">Smell</p>
-                            <p className="text-white/50 text-xs mt-0.5">20 seconds</p>
+                            <p className="text-white/50 text-xs">20 seconds</p>
                           </div>
-                          <div className="text-white/30 text-lg">›</div>
-                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-3 text-center">
+                          <div className="text-white/30">›</div>
+                          <div className="flex-1 bg-[#0c0c1d] rounded-xl p-2 text-center">
                             <p className="text-[#ac41c3] font-bold text-sm">Rest</p>
-                            <p className="text-white/50 text-xs mt-0.5">Then repeat</p>
+                            <p className="text-white/50 text-xs">Repeat</p>
                           </div>
                         </div>
                     </Block>
 
-                    <div className="mt-auto pb-4 md:pb-0">
-                        <Button 
-                            onClick={nextStep}
-                            className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
-                            data-testid="button-next-step3"
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </motion.div>
-            )}
-
-            {step === 4 && (
-                <motion.div
-                    key="step4"
-                    variants={variants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col"
-                >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Prepare your<br/>baseline scents</h2>
-                    
-                    <p className="text-white/70 text-lg leading-relaxed mb-4">
-                        To get the most out of smell training, it helps to prepare your scents ahead of time.
-                    </p>
-                    
-                    <div className="flex justify-center mb-4">
-                        <div className="w-40 h-40 rounded-2xl overflow-hidden border border-white/10">
-                            <img src={scentPrepImg} alt="Scent preparation" className="w-full h-full object-contain bg-[#1a1a2e]" />
-                        </div>
-                    </div>
-                    
-                    <Block className="mb-4 space-y-4">
-                        <h3 className="font-bold text-white">How to prepare your scents:</h3>
-                        <div className="space-y-3">
-                            <div className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">1</div>
-                                <p className="text-white/70 text-sm">Use small glass jars with lids.</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">2</div>
-                                <p className="text-white/70 text-sm">Place a cotton ball inside each jar.</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">3</div>
-                                <p className="text-white/70 text-sm">Add a few drops of essential oil to the cotton ball.</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-sm shrink-0">4</div>
-                                <p className="text-white/70 text-sm">Close the lid to keep the scent fresh.</p>
-                            </div>
-                        </div>
-                        
-                        <div className="bg-[#0c0c1d] rounded-xl p-3 border border-white/5">
-                            <p className="text-white/60 text-sm">
-                                <span className="text-[#ac41c3] font-medium">Tip:</span> Keeping your scents in small containers makes it easy to train anywhere when you get a reminder.
-                            </p>
+                    <Block className="mb-4">
+                        <h3 className="font-bold text-white text-sm mb-3">Prepare your scents beforehand:</h3>
+                        <div className="space-y-2">
+                            {[
+                                "Use small glass jars with lids.",
+                                "Place a cotton ball inside each jar.",
+                                "Add a few drops of essential oil.",
+                                "Close the lid to keep the scent fresh.",
+                            ].map((tip, i) => (
+                                <div key={i} className="flex gap-3 items-start">
+                                    <div className="w-6 h-6 rounded-full bg-[#ac41c3]/20 text-[#ac41c3] flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">{i + 1}</div>
+                                    <p className="text-white/70 text-sm">{tip}</p>
+                                </div>
+                            ))}
                         </div>
                     </Block>
-                    
+
                     <div className="mt-auto space-y-3 pb-4 md:pb-0">
-                        <Button 
+                        <Button
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base md:text-lg font-bold shadow-lg shadow-[#ac41c3]/20"
                             data-testid="button-scents-ready"
                         >
                             I'm ready
                         </Button>
-                        <button 
+                        <button
                             onClick={() => setLocation("/legal/safety")}
                             className="w-full text-center text-white/50 text-sm hover:text-white/70 transition-colors"
                         >
@@ -442,9 +388,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-            {step === 5 && (
+            {step === 4 && (
                 <motion.div
-                    key="step5"
+                    key="step4"
                     variants={variants}
                     initial="enter"
                     animate="center"
@@ -521,7 +467,7 @@ export default function Onboarding() {
                          <Button 
                             onClick={nextStep}
                             className="w-full h-14 md:h-16 rounded-[2rem] bg-white text-black hover:bg-white/90 text-base md:text-lg font-bold shadow-lg shadow-white/5"
-                            data-testid="button-next-step5"
+                            data-testid="button-next-step4"
                         >
                             Next
                         </Button>
@@ -529,66 +475,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-            {step === 6 && (
+            {step === 5 && (
                 <motion.div
-                    key="step6"
-                    variants={variants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.4 }}
-                    className="flex-1 flex flex-col justify-between"
-                >
-                    <div>
-                        <h2 className="text-2xl font-bold mb-3">Progress takes patience</h2>
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            Smell recovery can take weeks or months — that's completely normal. Olfly tracks even small improvements so you can see your progress.
-                        </p>
-                    </div>
-
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                        className="flex justify-center"
-                    >
-                        <img src={topMiaImg} alt="" className="w-full max-w-[200px] max-h-[35vh] object-contain" />
-                    </motion.div>
-
-                    <div className="text-center px-4">
-                        <motion.h3
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
-                            className="text-2xl font-bold text-white leading-snug"
-                        >
-                            "Slow progress<br/>is still progress."
-                        </motion.h3>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 0.5 }}
-                            className="text-white/50 text-sm mt-2"
-                        >
-                            Your brain is literally rewiring.
-                        </motion.p>
-                    </div>
-
-                    <div className="pb-4 md:pb-0">
-                        <Button
-                            onClick={nextStep}
-                            className="w-full h-14 rounded-[2rem] bg-[#ac41c3] text-white hover:bg-[#9e3bb3] text-base font-bold shadow-lg shadow-[#ac41c3]/20"
-                            data-testid="button-next-step6"
-                        >
-                            Almost done
-                        </Button>
-                    </div>
-                </motion.div>
-            )}
-
-             {step === 7 && (
-                <motion.div
-                    key="step7"
+                    key="step5"
                     variants={variants}
                     initial="enter"
                     animate="center"
@@ -645,9 +534,9 @@ export default function Onboarding() {
                 </motion.div>
             )}
 
-            {step === 8 && (
+            {step === 6 && (
                 <motion.div
-                    key="step8"
+                    key="step6"
                     variants={variants}
                     initial="enter"
                     animate="center"
