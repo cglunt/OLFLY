@@ -364,13 +364,12 @@ export default function Learn() {
             </>
           )}
         </div>
+        {/* Fade into panel colour — hides corner crevice artefact */}
+        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#0c0c1d] pointer-events-none" />
       </div>
 
       {/* ══ Bottom section — floats over gradient just like home screen ══ */}
       <div className="bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)] px-6 pt-8 pb-24 space-y-6">
-        {/* Concave corner fills */}
-        <div className="absolute -top-10 left-0 w-10 h-10 bg-[#0c0c1d] rounded-br-full pointer-events-none" />
-        <div className="absolute -top-10 right-0 w-10 h-10 bg-[#0c0c1d] rounded-bl-full pointer-events-none" />
 
         {/* Learn header */}
         <header>

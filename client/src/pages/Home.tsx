@@ -76,7 +76,7 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] shadow-2xl shadow-[#6d45d2]/40 pb-10 px-6 pt-4"
+        className="relative overflow-hidden bg-gradient-to-br from-[#2e1060] via-[#6d45d2] to-[#d42fa0] shadow-2xl shadow-[#6d45d2]/40 pb-14 px-6 pt-4"
       >
         {/* Stars inside hero */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -199,13 +199,12 @@ export default function Home() {
             </Button>
           </div>
         </div>
+        {/* Fade bottom of hero into panel colour — hides any corner crevice artefact */}
+        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-b from-transparent to-[#0c0c1d] pointer-events-none" />
       </motion.div>
 
       {/* ── CONTENT — framed below hero ── */}
       <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)]">
-        {/* Concave corner fills — covers the crevice left/right of the rounded corners */}
-        <div className="absolute -top-10 left-0 w-10 h-10 bg-[#0c0c1d] rounded-br-full pointer-events-none" />
-        <div className="absolute -top-10 right-0 w-10 h-10 bg-[#0c0c1d] rounded-bl-full pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
