@@ -19,6 +19,7 @@
     { "source": "/api", "destination": "/api/index.js" },
     { "source": "/api/", "destination": "/api/index.js" },
     { "source": "/api/:path*", "destination": "/api/index.js?path=:path*" },
+    { "source": "/delete-account", "destination": "/delete-account.html" },
     { "source": "/((?!api/).*)", "destination": "/" }
   ]
 }
