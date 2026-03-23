@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Account — Olfly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --base:        #0c0c1d;
+      --base-mid:    #12122a;
+      --card:        #3b1645;
+      --card-hover:  #461852;
+      --primary:     #ac41c3;
+      --grad-start:  #6d45d2;
+      --grad-end:    #db2faa;
+      --border:      rgba(255,255,255,0.07);
+      --border-card: rgba(172, 65, 195, 0.2);
+      --text:        #ffffff;
+      --text-muted:  rgba(255,255,255,0.6);
+      --text-dim:    rgba(255,255,255,0.35);
+      --destructive: #e05151;
+      --destructive-bg: rgba(224,81,81,0.1);
+      --destructive-border: rgba(224,81,81,0.25);
+      --safe-bg:     rgba(172,65,195,0.1);
+      --safe-border: rgba(172,65,195,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--base);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Ambient glow background ── */
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .bg-glow::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(109,69,210,0.18) 0%, transparent 65%);
+      animation: drift 20s ease-in-out infinite;
+    }
+    .bg-glow::after {
+      content: '';
+      position: absolute;
+      bottom: -150px; left: -150px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(219,47,170,0.12) 0%, transparent 65%);
+      animation: drift 26s ease-in-out infinite reverse;
+    }
+    @keyframes drift {
+      0%,100% { transform: translate(0,0); }
+      50%      { transform: translate(30px,-40px); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 80px);
+      background: rgba(12, 12, 29, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: linear-gradient(to right, var(--grad-start), var(--grad-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.02em;
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-back::before { content: '←'; font-size: 0.9rem; }
+
+    /* ── LAYOUT ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: clamp(40px, 7vw, 80px) clamp(20px, 5vw, 40px) 80px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.05s ease forwards;
+    }
+    .breadcrumb {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .grad-text {
+      background: linear-gradient(to right, var(--grad-start), var(--grad-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 36px);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.55s ease forwards;
+    }
+    .card:nth-child(1) { animation-delay: 0.15s; }
+    .card:nth-child(2) { animation-delay: 0.25s; }
+    .card:nth-child(3) { animation-delay: 0.35s; }
+    .card:nth-child(4) { animation-delay: 0.45s; }
+    .card:nth-child(5) { animation-delay: 0.55s; }
+
+    .card-label {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    .card-label .pip {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+    }
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .card p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .card p:last-child { margin-bottom: 0; }
+
+    /* ── STEPS ── */
+    .steps {
+      list-style: none;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 1px;
+    }
+    .steps li strong { color: var(--text); font-weight: 500; }
+    .path-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 2px 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'DM Sans', monospace;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .path-chip span { color: var(--text-dim); font-size: 0.7rem; }
+
+    /* ── DATA COLUMNS ── */
+    .data-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    @media (max-width: 480px) { .data-cols { grid-template-columns: 1fr; } }
+
+    .data-box {
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid;
+    }
+    .data-box.deleted {
+      background: var(--destructive-bg);
+      border-color: var(--destructive-border);
+    }
+    .data-box.kept {
+      background: var(--safe-bg);
+      border-color: var(--safe-border);
+    }
+    .data-box-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .data-box.deleted .data-box-title { color: var(--destructive); }
+    .data-box.kept .data-box-title { color: var(--primary); }
+    .data-box-title .icon { font-size: 0.9rem; }
+    .data-box ul {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 7px;
+    }
+    .data-box ul li {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .data-box ul li::before {
+      content: '—';
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── RETENTION CALLOUT ── */
+    .retention-callout {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: rgba(109,69,210,0.12);
+      border: 1px solid rgba(109,69,210,0.25);
+      border-radius: 10px;
+      font-size: 0.83rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .retention-callout strong {
+      color: #a98ef5;
+      font-weight: 600;
+    }
+
+    /* ── PROCESSING BADGE ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 14px;
+      padding: 7px 14px;
+      background: rgba(172,65,195,0.12);
+      border: 1px solid rgba(172,65,195,0.25);
+      border-radius: 40px;
+      font-size: 0.78rem;
+      color: #cf80e0;
+      font-weight: 500;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.7); }
+    }
+
+    /* ── EMAIL BLOCK ── */
+    .email-block {
+      display: flex; align-items: center; gap: 14px;
+      margin-top: 18px;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    .email-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .email-info { flex: 1; min-width: 180px; }
+    .email-info strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .email-info span {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .btn-email {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 20px;
+      background: linear-gradient(to right, var(--grad-start), var(--grad-end));
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .btn-email:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0 0;
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 28px 24px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--primary); }
+    .footer-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: linear-gradient(to right, var(--grad-start), var(--grad-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <nav>
+    <a href="https://olfly.app" class="nav-logo">olfly</a>
+    <a href="https://olfly.app" class="nav-back">Back to app</a>
+  </nav>
+
+  <div class="page">
+
+    <header class="header">
+      <div class="breadcrumb">Account · Data &amp; Privacy</div>
+      <h1>Delete your <span class="grad-text">Olfly</span> account</h1>
+      <p class="header-desc">We're sorry to see you go. To request account deletion, send us an email from the address linked to your Olfly account. We'll verify your identity and process the request within 30 days.</p>
+    </header>
+
+    <!-- Email deletion -->
+    <div class="card">
+      <div class="card-label"><span class="pip"></span>How to delete your account</div>
+      <h2>Send a deletion request by email</h2>
+      <p>Email us from the address associated with your Olfly account. This lets us verify your identity before permanently deleting your data.</p>
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <span>Use the button below to open a pre-filled email, or compose one manually to <strong>support@olfly.app</strong>.</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span>Send the email <strong>from the address you used to sign up</strong> for Olfly (Google or email/password).</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span>We'll confirm your request and <strong>permanently delete your account and data within 30 days</strong>.</span>
+        </li>
+      </ol>
+      <div class="email-block" style="margin-top:22px;">
+        <div class="email-icon">✉</div>
+        <div class="email-info">
+          <strong>support@olfly.app</strong>
+          <span>Subject: Account Deletion Request</span>
+        </div>
+        <a class="btn-email" href="mailto:support@olfly.app?subject=Account%20Deletion%20Request&body=Hi%20Olfly%2C%0A%0AI%27d%20like%20to%20request%20deletion%20of%20my%20account%20and%20all%20associated%20data.%0A%0ARegistered%20email%3A%20%5Byour%20email%20here%5D%0A%0AThank%20you.">
+          Send email ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- What gets deleted -->
+    <div class="card">
+      <div class="card-label"><span class="pip"></span>Your data</div>
+      <h2>What happens to your data</h2>
+      <p>When your account is deleted, here is exactly what is removed and what is temporarily retained.</p>
+
+      <div class="data-cols">
+        <div class="data-box deleted">
+          <div class="data-box-title"><span class="icon">🗑</span> Permanently deleted</div>
+          <ul>
+            <li>Your account profile and email</li>
+            <li>Login credentials and tokens</li>
+            <li>All training session history</li>
+            <li>Your personal smell diary</li>
+            <li>Perception logs and notes</li>
+            <li>Progress, streaks, and settings</li>
+            <li>Notification preferences</li>
+          </ul>
+        </div>
+        <div class="data-box kept">
+          <div class="data-box-title"><span class="icon">🔒</span> Temporarily kept</div>
+          <ul>
+            <li>Anonymized, non-identifiable usage data</li>
+            <li>Security and fraud prevention logs</li>
+            <li>Transactional records required by law</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="retention-callout">
+        <strong>Retention period:</strong> Anonymized usage data and security logs are retained for up to <strong>90 days</strong> after deletion for fraud prevention and legal compliance. This data cannot be linked back to you. After 90 days, everything is permanently purged from our systems.
+      </div>
+
+      <div class="badge">
+        <span class="badge-dot"></span>
+        All deletion requests are processed within 30 days
+      </div>
+    </div>
+
+    <!-- Partial deletion -->
+    <div class="card">
+      <div class="card-label"><span class="pip"></span>Keep your account</div>
+      <h2>Remove specific data without closing your account</h2>
+      <p>You don't have to delete your entire account to remove data. From within Olfly you can:</p>
+      <ol class="steps">
+        <li>
+          <span class="step-num">✓</span>
+          <span>Delete individual <strong>symptom log entries</strong> directly from the journal screen.</span>
+        </li>
+        <li>
+          <span class="step-num">✓</span>
+          <span>Remove <strong>custom scent collections</strong> you've created from the library.</span>
+        </li>
+        <li>
+          <span class="step-num">✓</span>
+          <span>Email <a href="mailto:support@olfly.app" style="color:#cf80e0;">support@olfly.app</a> to request removal of specific data only — without closing your account.</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Contact -->
+    <div class="card">
+      <div class="card-label"><span class="pip"></span>Questions</div>
+      <h2>Need help?</h2>
+      <p>If you have any questions about your account or how your data is handled, our team is happy to help. We typically respond within one business day.</p>
+      <p>You can also read our full <a href="https://olfly.app/privacy" style="color:#cf80e0; font-weight:500;">Privacy Policy</a> for complete details on how Olfly handles your information.</p>
+      <div class="divider">get in touch</div>
+      <div class="email-block" style="margin-top:14px;">
+        <div class="email-icon">💬</div>
+        <div class="email-info">
+          <strong>support@olfly.app</strong>
+          <span>We reply within one business day</span>
+        </div>
+        <a class="btn-email" href="mailto:support@olfly.app">
+          Contact us
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-logo">olfly</span>
+    <p>© 2025 Olfly &nbsp;·&nbsp; <a href="https://olfly.app/privacy">Privacy Policy</a> &nbsp;·&nbsp; <a href="mailto:support@olfly.app">support@olfly.app</a></p>
+  </footer>
+
+</body>
+</html>
