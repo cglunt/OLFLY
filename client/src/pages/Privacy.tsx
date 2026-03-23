@@ -84,7 +84,11 @@ export default function Privacy() {
             <h2 className="text-xl font-bold text-white">Your Rights & Choices</h2>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li><strong className="text-white">Access & Export:</strong> You can view and export your training data within the app.</li>
-              <li><strong className="text-white">Deletion:</strong> You can delete your local data or request account deletion by emailing privacy@olfly.app</li>
+              <li><strong className="text-white">Deletion:</strong> You can delete your local data or{" "}
+                <a href="/delete-account" className="text-purple-400 underline hover:text-purple-300">request full account deletion</a>
+                {" "}by visiting our{" "}
+                <a href="/delete-account" className="text-purple-400 underline hover:text-purple-300">Account Deletion page</a>
+                {" "}or emailing <a href="mailto:support@olfly.app" className="text-purple-400 underline hover:text-purple-300">support@olfly.app</a>.</li>
               <li><strong className="text-white">Cookies:</strong> You can manage cookie preferences on our website.</li>
             </ul>
           </section>
@@ -110,7 +114,8 @@ export default function Privacy() {
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white">Contact</h2>
             <p>
-              For any privacy questions, please contact us at privacy@olfly.app
+              For any privacy questions, please contact us at{" "}
+              <a href="mailto:support@olfly.app" className="text-purple-400 underline hover:text-purple-300">support@olfly.app</a>.
             </p>
           </section>
         </div>
