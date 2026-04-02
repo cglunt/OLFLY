@@ -104,6 +104,23 @@ export async function signInWithGoogle() {
       if (!idToken) throw new Error("No ID token from native Google Sign-In");
       const credential = GoogleAuthProvider.credential(idToken);
       await signInWithCredential(auth, credential);
+
+      // The web SDK sometimes doesn't populate photoURL/displayName from the
+      // native credential alone. Patch the profile from the native result if needed.
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const nativePhotoUrl = result.user?.photoUrl ?? null;
+        const nativeDisplayName = result.user?.displayName ?? null;
+        const needsUpdate =
+          (nativePhotoUrl && !currentUser.photoURL) ||
+          (nativeDisplayName && !currentUser.displayName);
+        if (needsUpdate) {
+          await updateProfile(currentUser, {
+            photoURL: nativePhotoUrl || currentUser.photoURL || undefined,
+            displayName: nativeDisplayName || currentUser.displayName || undefined,
+          });
+        }
+      }
     } else {
       await signInWithPopup(auth, googleProvider);
     }
