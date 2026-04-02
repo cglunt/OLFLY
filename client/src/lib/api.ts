@@ -13,6 +13,18 @@ import type {
 import { auth, waitForAuthReady } from "./firebase";
 import { debugAuthLog } from "./debugAuth";
 
+// In the native Capacitor app there is no local server, so relative /api/ paths
+// fail. VITE_API_BASE_URL points to the live production backend (https://olfly.app).
+// On web this is empty so relative paths continue to work as before.
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) ?? "";
+
+function resolveUrl(input: RequestInfo | URL): RequestInfo | URL {
+  if (typeof input === "string" && input.startsWith("/")) {
+    return `${API_BASE}${input}`;
+  }
+  return input;
+}
+
 type ApiAuthDebug = {
   didSetAuthHeader: boolean;
   lastUsersStatus?: number;
@@ -73,19 +85,20 @@ async function getAuthHeaders(): Promise<HeadersInit> {
 }
 
 async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
+  const resolved = resolveUrl(input);
   const headers = await getAuthHeaders();
   if (import.meta.env.DEV) {
     const authHeader = headers.Authorization ? "set" : "missing";
-    console.debug("[api] authFetch", { url: String(input), authHeader });
+    console.debug("[api] authFetch", { url: String(resolved), authHeader });
   }
   if (String(input).includes("/api/users")) {
     debugAuthLog("API:/api/users:request", {
       ts: Date.now(),
-      url: String(input),
+      url: String(resolved),
       didSetAuthHeader: authDebugState.didSetAuthHeader,
     });
   }
-  const response = await fetch(input, {
+  const response = await fetch(resolved, {
     ...init,
     headers: {
       ...headers,

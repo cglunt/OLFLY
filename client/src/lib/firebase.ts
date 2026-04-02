@@ -8,6 +8,8 @@ import {
   signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
+  signInWithCredential,
+  GoogleAuthProvider as GoogleAuthProviderType,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -16,6 +18,7 @@ import {
   User,
   Auth
 } from "firebase/auth";
+import { Capacitor } from "@capacitor/core";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -92,10 +95,15 @@ export async function signInWithGoogle() {
   }
 
   try {
-    if (isNativePlatform()) {
-      // On native the function triggers the redirect; the resolved user arrives
-      // via onAuthStateChanged after the app relaunches from the redirect.
-      await signInWithRedirect(auth, googleProvider);
+    if (Capacitor.isNativePlatform()) {
+      // On native Android/iOS use the @capacitor-firebase/authentication plugin
+      // which invokes the native Google Sign-In SDK — no WebView redirect needed.
+      const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      const idToken = result.credential?.idToken;
+      if (!idToken) throw new Error("No ID token from native Google Sign-In");
+      const credential = GoogleAuthProvider.credential(idToken);
+      await signInWithCredential(auth, credential);
     } else {
       await signInWithPopup(auth, googleProvider);
     }

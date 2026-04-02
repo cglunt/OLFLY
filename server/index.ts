@@ -9,6 +9,31 @@ const httpServer = createServer(app);
 const shouldDebug =
   process.env.DEBUG_AUTH === "true" || process.env.DEBUG_SERVER === "true";
 
+// Allow requests from the native Capacitor app (runs at https://localhost inside
+// the Android WebView) as well as the production web origin.
+const ALLOWED_ORIGINS = [
+  "https://olfly.app",
+  "https://localhost",
+  "capacitor://localhost",
+  "http://localhost:5000",
+  "http://localhost:3000",
+];
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    res.sendStatus(204);
+    return;
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
