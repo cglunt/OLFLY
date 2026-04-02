@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Capacitor } from "@capacitor/core";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Clinicians from "@/pages/Clinicians";
@@ -144,7 +145,22 @@ function AppRouter() {
 }
 
 function Router() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+
+  // When running as a native Capacitor app, the WebView always opens at "/".
+  // Redirect immediately to the app entry point so Landing.tsx never renders.
+  const isNative = Capacitor.isNativePlatform();
+  useEffect(() => {
+    if (isNative && location === "/") {
+      setLocation("/launch");
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Show a blank screen instead of Landing while the native redirect fires.
+  if (isNative && location === "/") {
+    return <div className="min-h-screen w-full bg-[#0c0c1d]" />;
+  }
+
   const isAppRoute = location.startsWith("/launch") && location !== "/launch/login";
   if (isAppRoute) {
     return <AppRouter />;
