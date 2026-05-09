@@ -58,15 +58,15 @@ export function setLastAuthError(error: string) {
 }
 
 // Helper function to get auth headers
-async function getAuthHeaders(): Promise<HeadersInit> {
+async function getAuthHeaders(): Promise<Record<string, string>> {
   await waitForAuthReady();
-  const user = auth.currentUser;
+  const user = auth?.currentUser;
   if (!user) {
     throw new Error("User not authenticated");
   }
 
   const token = await user.getIdToken();
-  const headers = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
