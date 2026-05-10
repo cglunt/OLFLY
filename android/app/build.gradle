@@ -16,10 +16,48 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+
+    // ─── Release signing ────────────────────────────────────────────────────
+    // To enable: create android/keystore.properties (gitignored) with:
+    //   storeFile=/absolute/path/to/olfly-upload.keystore
+    //   storePassword=...
+    //   keyAlias=olfly-upload
+    //   keyPassword=...
+    // Then uncomment the signingConfig line in buildTypes.release below.
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Minify is OFF by default to avoid breaking the WebView bridge or
+            // Firebase reflection on the first release build. Before flipping
+            // this to true, do a real-device smoke test of: launch, Google
+            // sign-in, training session, push notification receive.
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            // Allow debugging builds to be installable alongside release.
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            debuggable true
         }
     }
 }

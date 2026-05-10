@@ -80,25 +80,32 @@ All 6 agents are active on Marblism:
 
 ## Pending Launch Tasks (Punch List)
 
+### ✅ Resolved Since Last Session
+- **Capacitor setup** — Android + iOS platforms scaffolded. `capacitor.config.ts`, `android/`, `ios/` all in place. `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) wired with project `olfly-a7e63`, package/bundle `com.olfly.app`. `npx cap sync android` runs clean.
+- **Android security hardening (May 2026)** — `allowBackup=false`, `dataExtractionRules` + `networkSecurityConfig` (no cleartext) added; placeholder strings (`My App`, `com.getcapacitor.myapp`) replaced with real values; leftover `com.getcapacitor.myapp/MainActivity.java` deleted; ProGuard keep rules added for Capacitor + Firebase + WebView; release signingConfig scaffolding added (reads `android/keystore.properties`, gitignored).
+
 ### 🔴 Critical Blockers
-1. **Capacitor setup** — npm-based iOS/Android wrapper. Core blocker for app store submission. Not started.
-2. **Push notifications** — needs native testing with Capacitor on a real device
+1. **Android upload signing key** — generate an upload keystore (`keytool -genkeypair -v -keystore olfly-upload.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias olfly-upload`), store somewhere safe (NOT the repo), create `android/keystore.properties` with the four values, then `cd android && ./gradlew bundleRelease` produces a signed AAB.
+2. **SHA-1 fingerprint registered in Firebase** — for native Google Sign-In to work on Android. Get the SHA-1 with `keytool -list -v -keystore olfly-upload.keystore`, paste it into Firebase Console → Project Settings → General → Android app → "Add fingerprint", re-download `google-services.json` and replace `android/app/google-services.json`. (Currently `google-services.json` only has `client_type: 3` web OAuth clients — no Android `client_type: 1`.)
+3. **Push notifications** — needs native testing with Capacitor on a real device
+4. **Real-device smoke test of release build** — install the signed AAB on a real Android, verify: launch (no "My App" branding), Google sign-in, training session, push receive. Only flip `minifyEnabled true` in `android/app/build.gradle` after this passes.
 
 ### 🟡 Important Pre-Launch
-3. **App store screenshots** — Cynthia has some; more marketing versions in progress
-4. **Eucalyptus stock photo** — file path needs updating in `client/src/lib/data.ts`
-5. **feedback@olfly.app routing** — unclear if Cloudflare "Save" was completed. Needs confirmation.
-6. **Linda's system prompt** — check/fix `@olfly.com` → `@olfly.app`
+5. **App store screenshots** — Cynthia has some; more marketing versions in progress
+6. **Eucalyptus stock photo** — file path needs updating in `client/src/lib/data.ts`
+7. **feedback@olfly.app routing** — unclear if Cloudflare "Save" was completed. Needs confirmation.
+8. **Linda's system prompt** — check/fix `@olfly.com` → `@olfly.app`
 
 ### 🟢 Content / Marketing
-7. **Sonny's founder story posts** — LinkedIn + Facebook drafts ready, need Cynthia's approval to publish
-8. **Penny's blog post** — "My Journey Back to Scent" ready to publish, needs final tweaks
-9. **Stan geography decision** — US/Canada only (~7 leads) or stay global?
-10. **Thursday 12 PM Zoom with Sandra** — booked by Rachel (wellness educator, scent workshops). Confirm on calendar.
+9. **Sonny's founder story posts** — LinkedIn + Facebook drafts ready, need Cynthia's approval to publish
+10. **Penny's blog post** — "My Journey Back to Scent" ready to publish, needs final tweaks
+11. **Stan geography decision** — US/Canada only (~7 leads) or stay global?
+12. **Thursday 12 PM Zoom with Sandra** — booked by Rachel (wellness educator, scent workshops). Confirm on calendar.
 
 ### ⏳ Deferred (Post-Launch)
-11. **Gmail "Send mail as"** — olfly.app domain in Gmail send-from
-12. **Social proof / testimonials** — landing page section
+13. **Gmail "Send mail as"** — olfly.app domain in Gmail send-from
+14. **Social proof / testimonials** — landing page section
+15. **Playwright authed-flow tests** — current 62-test suite covers public web routes only; authed flows (onboarding, training, paywall, journal) need Firebase test creds + a sacrificial test user, then re-pickup `e2e/auth.spec.ts`
 
 ---
 

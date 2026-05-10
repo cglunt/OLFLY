@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+      Production: block all cleartext (http://) traffic.
+      The app is loaded from https://localhost via androidScheme=https,
+      and the API is served from https://olfly.app — neither needs cleartext.
+    -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

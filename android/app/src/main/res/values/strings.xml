@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">My App</string>
-    <string name="title_activity_main">My App</string>
-    <string name="package_name">com.getcapacitor.myapp</string>
-    <string name="custom_url_scheme">com.getcapacitor.myapp</string>
+    <string name="app_name">Olfly</string>
+    <string name="title_activity_main">Olfly</string>
+    <string name="package_name">com.olfly.app</string>
+    <string name="custom_url_scheme">com.olfly.app</string>
 </resources>
