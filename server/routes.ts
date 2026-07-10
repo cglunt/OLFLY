@@ -9,6 +9,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { requireAuth, requireOwnership } from "./middleware";
+import { timingSafeEqual } from "crypto";
 import webpush from "web-push";
 import cron from "node-cron";
 import { getFirebaseMessaging } from "./firebase-admin";
@@ -454,6 +455,102 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
       res.json({ ok: true });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ── RevenueCat webhook — keeps plusActive in sync with Google Play ───────────
+  //
+  // Setup:
+  //   1. In RevenueCat dashboard → Project → Integrations → Webhooks
+  //   2. Add endpoint: https://olfly.app/api/revenuecat/webhook
+  //   3. Set REVENUECAT_WEBHOOK_SECRET in your server .env to the shared secret
+  //      RevenueCat shows you after adding the webhook.
+  //
+  // RevenueCat sends events for: INITIAL_PURCHASE, RENEWAL, CANCELLATION,
+  // EXPIRATION, BILLING_ISSUE, TRANSFER, and others. Only EXPIRATION removes
+  // access: CANCELLATION just means auto-renew was turned off (access runs to
+  // period end) and BILLING_ISSUE starts a grace period.
+
+  app.post("/api/revenuecat/webhook", async (req, res) => {
+    try {
+      // Validate the shared secret header RevenueCat sends with every event.
+      // Fail closed: without the secret configured, anyone could forge events.
+      const webhookSecret = process.env.REVENUECAT_WEBHOOK_SECRET;
+      if (!webhookSecret) {
+        console.error("[RC webhook] REVENUECAT_WEBHOOK_SECRET not set — rejecting event");
+        return res.status(503).json({ message: "Webhook not configured" });
+      }
+      const received = Buffer.from(req.headers.authorization ?? "");
+      const expected = Buffer.from(webhookSecret);
+      if (received.length !== expected.length || !timingSafeEqual(received, expected)) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const event = (req.body as {
+        event?: {
+          type: string;
+          app_user_id?: string;             // Firebase UID (set in useSubscription)
+          entitlement_ids?: string[] | null; // null when product maps to no entitlement
+          transferred_to?: string[] | null;  // TRANSFER events only
+          transferred_from?: string[] | null;
+        };
+      })?.event;
+
+      if (!event?.type) {
+        return res.status(400).json({ message: "Missing event" });
+      }
+
+      // TRANSFER moves a subscription between app user ids and carries
+      // transferred_to/transferred_from instead of app_user_id.
+      if (event.type === "TRANSFER") {
+        for (const uid of event.transferred_to ?? []) {
+          await storage.updateUserSubscription(uid, {
+            plan: "plus",
+            plusActive: true,
+            currentPeriodEnd: null,
+          });
+        }
+        for (const uid of event.transferred_from ?? []) {
+          await storage.updateUserSubscription(uid, {
+            plan: "free",
+            plusActive: false,
+            currentPeriodEnd: null,
+          });
+        }
+        console.log(`[RC webhook] TRANSFER ${(event.transferred_from ?? []).join(",")} → ${(event.transferred_to ?? []).join(",")}`);
+        return res.status(200).json({ received: true });
+      }
+
+      const firebaseUid = event.app_user_id;
+      if (!firebaseUid) {
+        return res.status(400).json({ message: "Missing app_user_id" });
+      }
+
+      const ACTIVATE_EVENTS   = ["INITIAL_PURCHASE", "RENEWAL", "UNCANCELLATION"];
+      const DEACTIVATE_EVENTS = ["EXPIRATION"];
+
+      const hasPlus = (event.entitlement_ids ?? []).includes("plus");
+
+      if (ACTIVATE_EVENTS.includes(event.type) && hasPlus) {
+        await storage.updateUserSubscription(firebaseUid, {
+          plan: "plus",
+          plusActive: true,
+          currentPeriodEnd: null, // RevenueCat manages renewal; we just track active/inactive
+        });
+        console.log(`[RC webhook] ${event.type} → plusActive=true for ${firebaseUid}`);
+      } else if (DEACTIVATE_EVENTS.includes(event.type)) {
+        await storage.updateUserSubscription(firebaseUid, {
+          plan: "free",
+          plusActive: false,
+          currentPeriodEnd: null,
+        });
+        console.log(`[RC webhook] ${event.type} → plusActive=false for ${firebaseUid}`);
+      }
+
+      res.status(200).json({ received: true });
+    } catch (error: any) {
+      console.error("[RC webhook] error:", error);
+      res.status(500).json({ message: error.message });
     }
   });
 

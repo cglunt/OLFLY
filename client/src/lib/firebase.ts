@@ -240,7 +240,7 @@ export function waitForAuthReady(): Promise<User | null> {
 
   if (!authReadyPromise) {
     authReadyPromise = new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const unsubscribe = onAuthStateChanged(auth!, (user) => {
         unsubscribe();
         resolve(user);
       });

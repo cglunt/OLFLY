@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ALL_SCENTS, Scent } from "@/lib/data";
-import { Search, Check, X, Flame, Plus, Leaf, Trash2, RefreshCw, Info, AlertTriangle } from "lucide-react";
+import { Search, Check, X, Flame, Plus, Leaf, Trash2, RefreshCw, Info, AlertTriangle, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -20,6 +20,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useSubscription } from "@/hooks/useSubscription";
+import { UpgradePrompt } from "@/components/UpgradePrompt";
 
 const MAX_SCENTS = 4;
 const BASELINE_SCENT_IDS = ['rose', 'lemon', 'eucalyptus', 'clove'];
@@ -36,10 +38,12 @@ export default function Library() {
   const { user } = useCurrentUser();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { isPlus, isLoading: subLoading, purchaseMonthly, purchaseAnnual, restorePurchases } = useSubscription();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeCollectionId, setActiveCollectionId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
   const [isDeletingCollection, setIsDeletingCollection] = useState(false);
 
@@ -186,6 +190,23 @@ export default function Library() {
     );
   }
 
+  // Show full-screen upgrade prompt when user taps the locked "Plus" button.
+  // The !isPlus condition drops the paywall automatically once a purchase
+  // succeeds, and Back dismisses it in place instead of leaving the Library.
+  if (showUpgrade && !isPlus) {
+    return (
+      <UpgradePrompt
+        featureName="Custom Scent Library"
+        featureDescription="Build your own scent routines beyond the classic four-scent protocol."
+        onPurchaseMonthly={purchaseMonthly}
+        onPurchaseAnnual={purchaseAnnual}
+        onRestore={restorePurchases}
+        isLoading={subLoading}
+        onBack={() => setShowUpgrade(false)}
+      />
+    );
+  }
+
   return (
     <Layout>
       <div className="p-6 pb-32 space-y-6">
@@ -198,6 +219,8 @@ export default function Library() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-white">My Collections</h2>
+            {/* Plus gate: free users see a lock; Plus users get the real button */}
+            {isPlus ? (
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="ghost" aria-label="Create new collection" className="text-[#ac41c3] hover:text-white hover:bg-[#ac41c3]/20">
@@ -230,6 +253,16 @@ export default function Library() {
                 </div>
               </DialogContent>
             </Dialog>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowUpgrade(true)}
+                className="text-white/40 hover:text-[#ac41c3] hover:bg-[#ac41c3]/10"
+              >
+                <Lock size={14} className="mr-1" /> Plus
+              </Button>
+            )}
           </div>
 
           {/* Collection Pills */}

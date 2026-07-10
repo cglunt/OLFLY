@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles, Zap } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Switch } from "@/components/ui/switch";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateUser } from "@/lib/api";
@@ -25,6 +27,7 @@ export default function Settings() {
   const { user: firebaseUser, logOut } = useAuth();
   const { user } = useCurrentUser();
   const queryClient = useQueryClient();
+  const { isPlus, isLoading: subLoading, purchaseMonthly, purchaseAnnual, restorePurchases } = useSubscription();
   const { toast } = useToast();
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [morningTime, setMorningTime] = useState("09:00");
@@ -216,19 +219,40 @@ export default function Settings() {
                   <Sparkles size={18} className="text-[#ac41c3]" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-white font-medium">{user.plusActive ? "Olfly Plus" : "Free Plan"}</p>
-                  <p className="text-white/50 text-sm">{user.plusActive ? "Full access enabled" : "Core training included"}</p>
+                  <p className="text-white font-medium">{isPlus ? "Olfly Plus" : "Free Plan"}</p>
+                  <p className="text-white/50 text-sm">{isPlus ? "Full access enabled" : "Core training included"}</p>
                 </div>
-                {user.plusActive && (
+                {isPlus && (
                   <span className="text-xs bg-[#ac41c3]/20 text-[#ac41c3] px-2 py-1 rounded-full font-medium">Active</span>
                 )}
               </div>
 
-              {!user.plusActive && (
+              {isPlus ? (
+                <>
+                  <button
+                    onClick={() => window.open(
+                      Capacitor.getPlatform() === "ios"
+                        ? "https://apps.apple.com/account/subscriptions"
+                        : "https://play.google.com/store/account/subscriptions",
+                      "_blank"
+                    )}
+                    className="w-full text-white/50 hover:text-white/80 text-xs transition-colors py-1 text-center"
+                  >
+                    Manage subscription in {Capacitor.getPlatform() === "ios" ? "the App Store" : "Google Play"}
+                  </button>
+                  <button
+                    onClick={restorePurchases}
+                    disabled={subLoading}
+                    className="w-full text-white/30 hover:text-white/50 text-xs transition-colors py-1 text-center"
+                  >
+                    Restore purchases
+                  </button>
+                </>
+              ) : (
                 <>
                   <div className="space-y-2">
                     <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Free includes</p>
-                    {["Daily scent training sessions", "Baseline protocol (4 scents)", "Streak tracking", "Progress chart"].map(f => (
+                    {["Daily scent training sessions", "Classic four-scent protocol", "Streak tracking", "30-day progress view"].map(f => (
                       <div key={f} className="flex items-center gap-2 text-white/70 text-sm">
                         <Check size={14} className="text-green-400 shrink-0" />
                         {f}
@@ -237,16 +261,43 @@ export default function Settings() {
                   </div>
                   <div className="space-y-2">
                     <p className="text-white/60 text-xs font-semibold uppercase tracking-wider">Plus unlocks</p>
-                    {["Custom scent collections", "Advanced progress insights", "Symptom log history", "Priority support"].map(f => (
+                    {["Symptom journal", "Custom scent library", "Full history & recovery timeline", "Exportable reports"].map(f => (
                       <div key={f} className="flex items-center gap-2 text-white/50 text-sm">
                         <Sparkles size={14} className="text-[#ac41c3]/60 shrink-0" />
                         {f}
                       </div>
                     ))}
                   </div>
-                  <p className="text-white/40 text-xs text-center pt-1">
-                    Upgrade via the App Store or Google Play
-                  </p>
+
+                  {/* Pricing options */}
+                  <div className="space-y-2 pt-1">
+                    <button
+                      onClick={purchaseAnnual}
+                      disabled={subLoading}
+                      className="w-full p-3 rounded-xl bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white font-semibold flex items-center justify-between disabled:opacity-60"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Zap size={16} />
+                        Upgrade to Plus
+                      </span>
+                      <span className="text-sm font-bold">$49.99 / yr</span>
+                    </button>
+                    <button
+                      onClick={purchaseMonthly}
+                      disabled={subLoading}
+                      className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-medium flex items-center justify-between disabled:opacity-60"
+                    >
+                      <span className="text-sm">Monthly plan</span>
+                      <span className="text-sm font-bold text-white">$6.99 / mo</span>
+                    </button>
+                    <button
+                      onClick={restorePurchases}
+                      disabled={subLoading}
+                      className="w-full text-white/30 hover:text-white/50 text-xs transition-colors py-1 text-center"
+                    >
+                      Restore previous purchase
+                    </button>
+                  </div>
                 </>
               )}
             </div>

@@ -12,6 +12,8 @@ import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { createSymptomLog, getUserSymptomLogs, deleteSymptomLog } from "@/lib/api";
 import type { SymptomLog } from "@shared/schema";
+import { useSubscription } from "@/hooks/useSubscription";
+import { UpgradePrompt } from "@/components/UpgradePrompt";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -484,12 +486,15 @@ export default function Journal() {
   const { user: firebaseUser } = useAuth();
   const { user } = useCurrentUser(firebaseUser?.uid);
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   const [showForm, setShowForm] = useState(false);
+  const { isPlus, isLoading: subLoading, purchaseMonthly, purchaseAnnual, restorePurchases } = useSubscription();
 
   const { data: logs = [], isLoading } = useQuery<SymptomLog[]>({
     queryKey: ["symptom-logs", user?.id],
     queryFn: () => getUserSymptomLogs(user!.id, 50),
-    enabled: !!user?.id,
+    // Plus-gated page — don't fetch logs for users who will only see the paywall
+    enabled: !!user?.id && isPlus,
   });
 
   const deleteMutation = useMutation({
@@ -498,6 +503,32 @@ export default function Journal() {
   });
 
   if (!user) return null;
+
+  // ── Plus gate ─────────────────────────────────────────────────────────────
+  // Wait for the entitlement check before deciding, so Plus subscribers don't
+  // see the paywall flash while RevenueCat initialises
+  if (!isPlus && subLoading) {
+    return (
+      <Layout showBack backPath="/launch/progress">
+        <div className="flex justify-center py-24">
+          <div className="w-8 h-8 border-2 border-[#6d45d2] border-t-transparent rounded-full animate-spin" />
+        </div>
+      </Layout>
+    );
+  }
+  if (!isPlus) {
+    return (
+      <UpgradePrompt
+        featureName="Symptom Journal"
+        featureDescription="Track smell & taste daily. See how your senses change over time."
+        onPurchaseMonthly={purchaseMonthly}
+        onPurchaseAnnual={purchaseAnnual}
+        onRestore={restorePurchases}
+        isLoading={subLoading}
+        onBack={() => setLocation("/launch/progress")}
+      />
+    );
+  }
 
   return (
     <Layout showBack backPath="/launch/progress">

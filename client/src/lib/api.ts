@@ -60,6 +60,9 @@ export function setLastAuthError(error: string) {
 // Helper function to get auth headers
 async function getAuthHeaders(): Promise<HeadersInit> {
   await waitForAuthReady();
+  if (!auth) {
+    throw new Error("Firebase auth not initialized");
+  }
   const user = auth.currentUser;
   if (!user) {
     throw new Error("User not authenticated");
@@ -88,7 +91,7 @@ async function authFetch(input: RequestInfo | URL, init: RequestInit = {}) {
   const resolved = resolveUrl(input);
   const headers = await getAuthHeaders();
   if (import.meta.env.DEV) {
-    const authHeader = headers.Authorization ? "set" : "missing";
+    const authHeader = (headers as Record<string, string>).Authorization ? "set" : "missing";
     console.debug("[api] authFetch", { url: String(resolved), authHeader });
   }
   if (String(input).includes("/api/users")) {
