@@ -46,19 +46,32 @@ console.log("[Firebase] Config check:", {
   hasAppId: !!firebaseConfig.appId,
 });
 
+// setPersistence(browserLocalPersistence) hangs indefinitely in the iOS
+// WKWebView (capacitor:// scheme) and never settles, which blocked app boot.
+// getAuth() already applies its default persistence hierarchy, so the explicit
+// call is skipped on native platforms.
+function isNativeCapacitor(): boolean {
+  return (
+    typeof (window as any).Capacitor !== "undefined" &&
+    (window as any).Capacitor.isNativePlatform?.() === true
+  );
+}
+
 if (isConfigured) {
   try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    setPersistence(auth, browserLocalPersistence)
-      .then(() => {
-        if (import.meta.env.DEV) {
-          console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
-        }
-      })
-      .catch((error) => {
-        console.error("[Firebase] Persistence error:", error);
-      });
+    if (!isNativeCapacitor()) {
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+          if (import.meta.env.DEV) {
+            console.log("[AUTH_DEBUG] persistence=browserLocalPersistence set ok");
+          }
+        })
+        .catch((error) => {
+          console.error("[Firebase] Persistence error:", error);
+        });
+    }
     console.log("[Firebase] Initialized successfully");
   } catch (error) {
     console.error("[Firebase] Initialization error:", error);
@@ -161,6 +174,13 @@ export async function handleRedirectResult(): Promise<User | null> {
 export async function initAuthPersistence(): Promise<void> {
   if (!auth) {
     console.log("[Firebase] initAuthPersistence: auth not initialized");
+    return;
+  }
+
+  // See note above: setPersistence never settles inside the iOS WKWebView.
+  // getAuth() defaults already persist sessions, so skip the explicit call.
+  if (isNativeCapacitor()) {
+    (window as any).__dbglog?.("AUTH", "native platform - skipping setPersistence");
     return;
   }
 

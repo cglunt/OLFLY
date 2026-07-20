@@ -18,20 +18,23 @@ const AUTH_READY_TIMEOUT_MS = 6000;
 
 async function startApp() {
   try {
-    dbg("initAuthPersistence...");
-    await initAuthPersistence();
-    dbg("waitForAuthReady...");
-    // Never let a hung auth handshake keep the app on a blank screen.
+    // Never let a hung auth handshake keep the app on a blank screen: the
+    // timeout covers the ENTIRE auth init, not just waitForAuthReady.
     await Promise.race([
-      waitForAuthReady(),
+      (async () => {
+        dbg("initAuthPersistence...");
+        await initAuthPersistence();
+        dbg("waitForAuthReady...");
+        await waitForAuthReady();
+        dbg("auth ready");
+      })(),
       new Promise((resolve) =>
         setTimeout(() => {
-          dbg("waitForAuthReady TIMED OUT after " + AUTH_READY_TIMEOUT_MS + "ms - rendering anyway");
+          dbg("auth init TIMED OUT after " + AUTH_READY_TIMEOUT_MS + "ms - rendering anyway");
           resolve(null);
         }, AUTH_READY_TIMEOUT_MS)
       ),
     ]);
-    dbg("auth ready");
   } catch (error: any) {
     dbg("startApp error: " + (error?.message || String(error)));
     if (import.meta.env.DEV) {
