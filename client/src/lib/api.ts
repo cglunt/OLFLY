@@ -57,18 +57,32 @@ export function setLastAuthError(error: string) {
   };
 }
 
+// TEMP diagnostic logging for the iOS profile-load failure hunt
+const dbgApi = (msg: string) => (window as any).__dbglog?.("API", msg);
+
 // Helper function to get auth headers
 async function getAuthHeaders(): Promise<HeadersInit> {
+  dbgApi("getAuthHeaders: waitForAuthReady...");
   await waitForAuthReady();
+  dbgApi("getAuthHeaders: authReady, currentUser=" + (auth?.currentUser ? "yes" : "NULL"));
   if (!auth) {
+    dbgApi("THROW: Firebase auth not initialized");
     throw new Error("Firebase auth not initialized");
   }
   const user = auth.currentUser;
   if (!user) {
+    dbgApi("THROW: User not authenticated");
     throw new Error("User not authenticated");
   }
 
-  const token = await user.getIdToken();
+  let token: string;
+  try {
+    token = await user.getIdToken();
+    dbgApi("getIdToken ok, len=" + token.length);
+  } catch (e: any) {
+    dbgApi("getIdToken ERROR code=" + (e?.code || "?") + " msg=" + (e?.message || String(e)));
+    throw e;
+  }
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,

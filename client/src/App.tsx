@@ -59,6 +59,19 @@ function AppRouter() {
     }
   }, [authReady, firebaseUser, location, setLocation]);
 
+  // TEMP: surface the swallowed profile-load error in the debug overlay
+  useEffect(() => {
+    if (currentUserError) {
+      const e = currentUserError as any;
+      (window as any).__dbglog?.(
+        "PROFILE ERROR",
+        (e?.message || String(e)) +
+          " status=" + (e?.status ?? "?") +
+          "\n" + String(e?.stack || "").slice(0, 400)
+      );
+    }
+  }, [currentUserError]);
+
   useEffect(() => {
     if (!authReady || isLoading || !user || !firebaseUser) return;
 
