@@ -63,7 +63,11 @@ let cachedIsPlus: boolean | null = null;
 // TEMP diagnostic logging for the iOS purchase-spinner hunt
 const dbgRC = (msg: string) => (window as any).__dbglog?.("RC", msg);
 
-function configurePurchases(uid: string): Promise<PurchasesApi> {
+// NOTE: the promise resolves with the plugin WRAPPED in an object. Resolving
+// with the plugin proxy directly hangs forever on iOS: await checks .then on
+// the resolved value, Capacitor's proxy turns that into a native call named
+// "then", which rejects "not implemented on ios" and the promise never settles.
+function configurePurchases(uid: string): Promise<{ Purchases: PurchasesApi }> {
   if (!configurePromise || configuredUid !== uid) {
     configuredUid = uid;
     configurePromise = (async () => {
@@ -76,7 +80,7 @@ function configurePurchases(uid: string): Promise<PurchasesApi> {
         appUserID: uid, // link to Firebase UID so server webhook can sync
       });
       dbgRC("configured ok");
-      return Purchases;
+      return { Purchases };
     })();
     configurePromise.catch((e: any) => {
       dbgRC("configure ERROR code=" + (e?.code ?? "?") + " msg=" + (e?.message ?? String(e)));
@@ -134,7 +138,7 @@ export function useSubscription(): SubscriptionState {
       try {
         // Dynamic import (inside configurePurchases) so the web build never
         // tries to resolve native modules
-        const Purchases = await configurePurchases(firebaseUser.uid);
+        const { Purchases } = await configurePurchases(firebaseUser.uid);
         dbgRC("init: getCustomerInfo...");
         const { customerInfo } = await Purchases.getCustomerInfo();
         dbgRC("init: customerInfo ok, activeEntitlements=" +
@@ -165,7 +169,7 @@ export function useSubscription(): SubscriptionState {
       setIsLoading(true);
       // Waits for (or retries) SDK configuration, so a failed cold-start init
       // doesn't leave purchases running against an unconfigured SDK
-      const Purchases = await configurePurchases(firebaseUser.uid);
+      const { Purchases } = await configurePurchases(firebaseUser.uid);
 
       dbgRC("purchase(" + period + "): getOfferings...");
       const offeringsResult = await Purchases.getOfferings();
@@ -219,7 +223,7 @@ export function useSubscription(): SubscriptionState {
     }
     try {
       setIsLoading(true);
-      const Purchases = await configurePurchases(firebaseUser.uid);
+      const { Purchases } = await configurePurchases(firebaseUser.uid);
       const { customerInfo } = await Purchases.restorePurchases();
       const hasPlus = applyCustomerInfo(customerInfo);
       toast({
