@@ -23,6 +23,7 @@
         logs.push("[" + kind + "] " + msg);
         if (forceShow || document.getElementById("dbg-overlay")) paint();
       }
+      window.__dbglog = function (kind, msg) { add(kind, msg, true); };
       window.addEventListener("error", function (e) {
         add("JS ERROR", (e.message || "?") + " @ " + (e.filename || "?") + ":" + (e.lineno || "?"), true);
       });
