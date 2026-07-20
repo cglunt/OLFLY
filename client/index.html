@@ -4,6 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     
+    <!-- TEMP DIAGNOSTIC OVERLAY - remove before App Store submission -->
+    <script>
+    (function () {
+      var logs = [];
+      function paint() {
+        var el = document.getElementById("dbg-overlay");
+        if (!el) {
+          el = document.createElement("pre");
+          el.id = "dbg-overlay";
+          el.style.cssText = "position:fixed;top:0;left:0;right:0;max-height:75vh;overflow:auto;background:rgba(0,0,0,.88);color:#7CFC00;font-size:11px;line-height:1.4;padding:14px;z-index:2147483647;white-space:pre-wrap;margin:0;font-family:monospace";
+          el.addEventListener("click", function () { el.remove(); });
+          (document.body || document.documentElement).appendChild(el);
+        }
+        el.textContent = "OLFLY DEBUG (tap to close)\n\n" + logs.join("\n\n");
+      }
+      function add(kind, msg, forceShow) {
+        logs.push("[" + kind + "] " + msg);
+        if (forceShow || document.getElementById("dbg-overlay")) paint();
+      }
+      window.addEventListener("error", function (e) {
+        add("JS ERROR", (e.message || "?") + " @ " + (e.filename || "?") + ":" + (e.lineno || "?"), true);
+      });
+      window.addEventListener("unhandledrejection", function (e) {
+        var r = e.reason || {};
+        add("PROMISE", (r.message || String(r)) + (r.stack ? "\n" + String(r.stack).slice(0, 500) : ""), true);
+      });
+      var of = window.fetch;
+      window.fetch = function (input) {
+        var url = typeof input === "string" ? input : (input && input.url) || "?";
+        return of.apply(this, arguments).then(function (res) {
+          if (!res.ok) add("FETCH " + res.status, url, false);
+          return res;
+        }, function (err) {
+          add("FETCH FAIL", url + " -> " + (err && err.message), true);
+          throw err;
+        });
+      };
+      setTimeout(function () {
+        var root = document.getElementById("root");
+        add("WATCHDOG 8s", "href=" + location.href +
+          "\nroot children=" + (root ? root.childElementCount : "no root") +
+          "\nroot html=" + (root ? String(root.innerHTML).slice(0, 200) : "") +
+          "\nCapacitor=" + (typeof window.Capacitor !== "undefined" ? "yes" : "NO"), true);
+      }, 8000);
+    })();
+    </script>
+
     <title>Olfly | Smell Training App for Guided Daily Olfactory Exercises</title>
     <meta name="description" content="Train and restore your sense of smell with guided daily scent exercises, timers, and progress tracking. Start free with Olfly's research-backed smell training program." />
 
