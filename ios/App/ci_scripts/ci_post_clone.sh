@@ -16,7 +16,11 @@ npm -v
 
 cd "$CI_PRIMARY_REPOSITORY_PATH"
 
-cat > .env <<EOF
+# Vite's envDir is client/ (vite.config.ts root), so the env file must live
+# there. Also export as process env, which Vite gives highest priority.
+export VITE_API_BASE_URL=https://olfly.app
+
+cat > client/.env <<EOF
 VITE_API_BASE_URL=https://olfly.app
 VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY
 VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID
