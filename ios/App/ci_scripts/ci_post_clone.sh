@@ -3,11 +3,16 @@
 # Requires these environment variables set in the Xcode Cloud workflow
 # (Settings > Environment): VITE_FIREBASE_API_KEY, VITE_FIREBASE_PROJECT_ID,
 # VITE_FIREBASE_APP_ID, VITE_REVENUECAT_IOS_KEY
-set -e
+set -ex
 
-brew install node@20
-export PATH="$(brew --prefix node@20)/bin:$PATH"
+# No Package.resolved is committed for this project; let Xcode resolve
+# Swift package versions automatically instead of failing the build.
+defaults write com.apple.dt.Xcode IDEDisableAutomaticPackageResolution -bool NO
+defaults write com.apple.dt.Xcode IDEPackageOnlyUseVersionsFromResolvedFile -bool NO
+
+brew install node
 node -v
+npm -v
 
 cd "$CI_PRIMARY_REPOSITORY_PATH"
 
