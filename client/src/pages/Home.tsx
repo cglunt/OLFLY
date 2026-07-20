@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -206,6 +207,9 @@ export default function Home() {
       {/* ── CONTENT — framed below hero ── */}
       <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)]">
 
+        {/* Push reminders are not wired up for iOS in v1 — hide the card and
+            permission prompt there (see Settings for the matching gate). */}
+        {Capacitor.getPlatform() !== "ios" && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -240,13 +244,16 @@ export default function Home() {
             data-testid="switch-reminders"
           />
         </motion.div>
+        )}
 
+        {Capacitor.getPlatform() !== "ios" && (
         <ReminderPermissionDialog
           open={showPermissionDialog}
           onOpenChange={setShowPermissionDialog}
           onAllow={handleAllowPermission}
           onNotNow={handleNotNow}
         />
+        )}
 
         <motion.a
           href="https://amzn.to/4jqeXZo"

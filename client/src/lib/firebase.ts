@@ -188,7 +188,6 @@ export async function initAuthPersistence(): Promise<void> {
   // See note above: setPersistence never settles inside the iOS WKWebView.
   // getAuth() defaults already persist sessions, so skip the explicit call.
   if (isNativeCapacitor()) {
-    (window as any).__dbglog?.("AUTH", "native platform - skipping setPersistence");
     return;
   }
 
