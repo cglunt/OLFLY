@@ -2,6 +2,8 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 // Firebase configuration and authentication
 import {
   getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
   GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence,
@@ -60,7 +62,13 @@ function isNativeCapacitor(): boolean {
 if (isConfigured) {
   try {
     app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
+    // On native iOS/Android, getAuth()'s default web persistence/resolver
+    // probing hangs inside the WKWebView (capacitor:// scheme) and
+    // onAuthStateChanged never fires. initializeAuth with explicit
+    // indexedDB persistence is the documented Capacitor recipe.
+    auth = isNativeCapacitor()
+      ? initializeAuth(app, { persistence: indexedDBLocalPersistence })
+      : getAuth(app);
     if (!isNativeCapacitor()) {
       setPersistence(auth, browserLocalPersistence)
         .then(() => {

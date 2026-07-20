@@ -204,7 +204,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <CookieConsentBanner />
+        {!Capacitor.isNativePlatform() && <CookieConsentBanner />}
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
