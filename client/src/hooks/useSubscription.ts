@@ -60,19 +60,26 @@ let configuredUid: string | null = null;
 /** Last known entitlement, so remounts don't flash the paywall while re-checking */
 let cachedIsPlus: boolean | null = null;
 
+// TEMP diagnostic logging for the iOS purchase-spinner hunt
+const dbgRC = (msg: string) => (window as any).__dbglog?.("RC", msg);
+
 function configurePurchases(uid: string): Promise<PurchasesApi> {
   if (!configurePromise || configuredUid !== uid) {
     configuredUid = uid;
     configurePromise = (async () => {
+      dbgRC("importing purchases-capacitor...");
       const { Purchases, LOG_LEVEL } = await import('@revenuecat/purchases-capacitor');
+      dbgRC("imported; configuring...");
       await Purchases.setLogLevel({ level: LOG_LEVEL.ERROR });
       await Purchases.configure({
         apiKey: RC_API_KEY!,
         appUserID: uid, // link to Firebase UID so server webhook can sync
       });
+      dbgRC("configured ok");
       return Purchases;
     })();
-    configurePromise.catch(() => {
+    configurePromise.catch((e: any) => {
+      dbgRC("configure ERROR code=" + (e?.code ?? "?") + " msg=" + (e?.message ?? String(e)));
       configurePromise = null;
       configuredUid = null;
     });
@@ -128,9 +135,13 @@ export function useSubscription(): SubscriptionState {
         // Dynamic import (inside configurePurchases) so the web build never
         // tries to resolve native modules
         const Purchases = await configurePurchases(firebaseUser.uid);
+        dbgRC("init: getCustomerInfo...");
         const { customerInfo } = await Purchases.getCustomerInfo();
+        dbgRC("init: customerInfo ok, activeEntitlements=" +
+          Object.keys(customerInfo?.entitlements?.active ?? {}).join(",") || "none");
         if (!cancelled) applyCustomerInfo(customerInfo);
-      } catch (err) {
+      } catch (err: any) {
+        dbgRC("init ERROR code=" + (err?.code ?? "?") + " msg=" + (err?.message ?? String(err)));
         console.warn('[RevenueCat] init error:', err);
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -156,7 +167,11 @@ export function useSubscription(): SubscriptionState {
       // doesn't leave purchases running against an unconfigured SDK
       const Purchases = await configurePurchases(firebaseUser.uid);
 
+      dbgRC("purchase(" + period + "): getOfferings...");
       const offeringsResult = await Purchases.getOfferings();
+      dbgRC("purchase: current=" + (offeringsResult.current?.identifier ?? "NONE") +
+        " pkgs=" + ((offeringsResult.current?.availablePackages ?? [])
+          .map((p: any) => p.identifier + ">" + (p.product?.identifier ?? "?")).join(",") || "EMPTY"));
       const productId = RC_PRODUCTS[period];
       const rcPackageType = period === 'annual' ? 'ANNUAL' : 'MONTHLY';
       // Match by standard package type first (store-agnostic), then by product
@@ -169,13 +184,17 @@ export function useSubscription(): SubscriptionState {
       );
       if (!pkg) throw new Error(`No ${period} package found in RevenueCat offering`);
 
+      dbgRC("purchase: purchasing " + pkg.identifier + "...");
       const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+      dbgRC("purchase: completed");
       const hasPlus = applyCustomerInfo(customerInfo);
 
       if (hasPlus) {
         toast({ title: 'Welcome to Olfly Plus! 🎉', description: 'Full access is now unlocked.' });
       }
     } catch (err: any) {
+      dbgRC("purchase ERROR code=" + (err?.code ?? "?") + " cancelled=" + !!err?.userCancelled +
+        " msg=" + (err?.message ?? String(err)));
       // userCancelled is not an error — don't show a toast
       if (!err?.userCancelled) {
         toast({ title: 'Purchase failed', description: err?.message ?? 'Please try again.' });

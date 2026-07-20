@@ -135,6 +135,10 @@ export default function Settings() {
           </div>
         </div>
 
+        {/* Push reminders are not wired up for iOS in v1 (APNs/FCM token
+            mismatch) — hide the section there so reviewers and users don't
+            hit a toggle that cannot work. Android and web keep it. */}
+        {Capacitor.getPlatform() !== "ios" && (
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Reminders</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
@@ -209,6 +213,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
+        )}
 
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Subscription</h3>
