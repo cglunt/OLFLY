@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
@@ -103,13 +104,17 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
         return;
       }
 
-      // Permission already granted — re-subscribe (handles re-enables and key rotations)
-      await registerServiceWorker();
-      await subscribeToPushNotifications();
+      // Native uses on-device local notifications (scheduled by the effect
+      // below); only the web build needs a service worker + web-push subscribe.
+      if (!Capacitor.isNativePlatform()) {
+        await registerServiceWorker();
+        await subscribeToPushNotifications();
+      }
       updateRemindersMutation.mutate(true);
     } else {
-      // Unsubscribe from Web Push when reminders are turned off
-      await unsubscribeFromPushNotifications();
+      if (!Capacitor.isNativePlatform()) {
+        await unsubscribeFromPushNotifications();
+      }
       updateRemindersMutation.mutate(false);
     }
   };
@@ -120,10 +125,12 @@ export function useReminders({ user, queryKey }: UseRemindersOptions) {
     setShowPermissionDialog(false);
 
     if (permission === 'granted') {
-      // Register service worker and subscribe to Web Push so notifications
-      // arrive even when the app is closed.
-      await registerServiceWorker();
-      await subscribeToPushNotifications();
+      // Web needs a service worker + web-push subscription for background
+      // delivery; native schedules on-device local notifications (via effect).
+      if (!Capacitor.isNativePlatform()) {
+        await registerServiceWorker();
+        await subscribeToPushNotifications();
+      }
       updateRemindersMutation.mutate(true);
     } else {
       toast({

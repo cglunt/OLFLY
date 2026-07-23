@@ -135,10 +135,7 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Push reminders are not wired up for iOS in v1 (APNs/FCM token
-            mismatch) — hide the section there so reviewers and users don't
-            hit a toggle that cannot work. Android and web keep it. */}
-        {Capacitor.getPlatform() !== "ios" && (
+        {/* Daily reminders — on-device local notifications (all platforms) */}
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Reminders</h3>
           <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
@@ -213,22 +210,21 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        )}
 
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-white/50 uppercase tracking-wider">Subscription</h3>
-          <div className="bg-[#3b1645] rounded-2xl overflow-hidden">
+          <div className="bg-gradient-to-br from-[#db2faa] to-[#6d45d2] rounded-2xl overflow-hidden shadow-lg shadow-[#6d45d2]/30">
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#ac41c3]/20 flex items-center justify-center">
-                  <Sparkles size={18} className="text-[#ac41c3]" />
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Sparkles size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-white font-medium">{isPlus ? "Olfly Plus" : "Free Plan"}</p>
-                  <p className="text-white/50 text-sm">{isPlus ? "Full access enabled" : "Core training included"}</p>
+                  <p className="text-white font-semibold">{isPlus ? "Olfly Plus" : "Free Plan"}</p>
+                  <p className="text-white/80 text-sm">{isPlus ? "Full access enabled" : "Core training included"}</p>
                 </div>
                 {isPlus && (
-                  <span className="text-xs bg-[#ac41c3]/20 text-[#ac41c3] px-2 py-1 rounded-full font-medium">Active</span>
+                  <span className="text-xs bg-white/25 text-white px-2 py-1 rounded-full font-medium">Active</span>
                 )}
               </div>
 
@@ -241,14 +237,14 @@ export default function Settings() {
                         : "https://play.google.com/store/account/subscriptions",
                       "_blank"
                     )}
-                    className="w-full text-white/50 hover:text-white/80 text-xs transition-colors py-1 text-center"
+                    className="w-full text-white/80 hover:text-white text-xs transition-colors py-1 text-center"
                   >
                     Manage subscription in {Capacitor.getPlatform() === "ios" ? "the App Store" : "Google Play"}
                   </button>
                   <button
                     onClick={restorePurchases}
                     disabled={subLoading}
-                    className="w-full text-white/30 hover:text-white/50 text-xs transition-colors py-1 text-center"
+                    className="w-full text-white/60 hover:text-white/90 text-xs transition-colors py-1 text-center"
                   >
                     Restore purchases
                   </button>
@@ -279,7 +275,7 @@ export default function Settings() {
                     <button
                       onClick={purchaseAnnual}
                       disabled={subLoading}
-                      className="w-full p-3 rounded-xl bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white font-semibold flex items-center justify-between disabled:opacity-60"
+                      className="w-full p-3 rounded-xl bg-white text-[#6d45d2] font-semibold flex items-center justify-between shadow-md disabled:opacity-60"
                     >
                       <span className="flex items-center gap-2">
                         <Zap size={16} />

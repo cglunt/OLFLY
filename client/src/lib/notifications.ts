@@ -36,6 +36,26 @@ async function getCapacitorPush() {
   }
 }
 
+/**
+ * Dynamically imports @capacitor/local-notifications. On native iOS/Android
+ * these are scheduled by the OS and fire even when the app is closed — the
+ * right tool for time-based training reminders (no server/push token needed).
+ */
+async function getLocalNotifications() {
+  if (!isNativePlatform()) return null;
+  try {
+    const mod = await import(/* @vite-ignore */ '@capacitor/local-notifications');
+    return mod.LocalNotifications;
+  } catch {
+    console.warn('[Notifications] @capacitor/local-notifications not installed yet');
+    return null;
+  }
+}
+
+// Stable notification ids so re-scheduling replaces (not duplicates) reminders.
+const MORNING_NOTIF_ID = 1001;
+const EVENING_NOTIF_ID = 1002;
+
 const FCM_TOKEN_KEY = 'olfly_fcm_token';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -226,14 +246,14 @@ export function getNotificationPermission(): NotificationPermissionStatus {
 export async function requestNotificationPermission(): Promise<NotificationPermissionStatus> {
   if (!isNotificationSupported()) return 'unsupported';
 
-  // ── Native path ────────────────────────────────────────────────────────────
+  // ── Native path — use Local Notifications permission (fires on-device) ───────
   if (isNativePlatform()) {
-    const PushNotifications = await getCapacitorPush();
-    if (!PushNotifications) return 'unsupported';
+    const LocalNotifications = await getLocalNotifications();
+    if (!LocalNotifications) return 'unsupported';
     try {
-      const result = await PushNotifications.requestPermissions();
+      const result = await LocalNotifications.requestPermissions();
       const status: NotificationPermissionStatus =
-        result.receive === 'granted' ? 'granted' : 'denied';
+        result.display === 'granted' ? 'granted' : 'denied';
       localStorage.setItem(PERMISSION_KEY, status);
       return status;
     } catch (error) {
@@ -313,14 +333,46 @@ function getNextReminderTime(timeString: string): Date {
 
 export function scheduleReminders(morningTime: string, eveningTime: string): void {
   cancelReminders();
-  
+
   if (getNotificationPermission() !== 'granted') return;
-  
+
+  // ── Native path — OS-scheduled daily notifications (fire when app closed) ────
+  if (isNativePlatform()) {
+    const [mHour, mMinute] = morningTime.split(':').map(Number);
+    const [eHour, eMinute] = eveningTime.split(':').map(Number);
+    void (async () => {
+      const LocalNotifications = await getLocalNotifications();
+      if (!LocalNotifications) return;
+      try {
+        await LocalNotifications.schedule({
+          notifications: [
+            {
+              id: MORNING_NOTIF_ID,
+              title: 'Time for your smell training',
+              body: 'Your scents are waiting. A quick session helps rebuild your senses.',
+              schedule: { on: { hour: mHour, minute: mMinute }, repeats: true, allowWhileIdle: true },
+            },
+            {
+              id: EVENING_NOTIF_ID,
+              title: 'Quick reset',
+              body: 'A few minutes of smell training can help. Ready when you are.',
+              schedule: { on: { hour: eHour, minute: eMinute }, repeats: true, allowWhileIdle: true },
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('[Notifications] local schedule error:', error);
+      }
+    })();
+    return;
+  }
+
+  // ── Web path — in-page timers (only fire while the tab is open) ──────────────
   const morningDate = getNextReminderTime(morningTime);
   const eveningDate = getNextReminderTime(eveningTime);
-  
+
   const now = Date.now();
-  
+
   morningTimeout = setTimeout(() => {
     showNotification(
       'Time for your smell training',
@@ -328,7 +380,7 @@ export function scheduleReminders(morningTime: string, eveningTime: string): voi
     );
     scheduleReminders(morningTime, eveningTime);
   }, morningDate.getTime() - now);
-  
+
   eveningTimeout = setTimeout(() => {
     showNotification(
       'Quick reset',
@@ -339,6 +391,20 @@ export function scheduleReminders(morningTime: string, eveningTime: string): voi
 }
 
 export function cancelReminders(): void {
+  if (isNativePlatform()) {
+    void (async () => {
+      const LocalNotifications = await getLocalNotifications();
+      if (!LocalNotifications) return;
+      try {
+        await LocalNotifications.cancel({
+          notifications: [{ id: MORNING_NOTIF_ID }, { id: EVENING_NOTIF_ID }],
+        });
+      } catch (error) {
+        console.error('[Notifications] local cancel error:', error);
+      }
+    })();
+    return;
+  }
   if (morningTimeout) {
     clearTimeout(morningTimeout);
     morningTimeout = null;

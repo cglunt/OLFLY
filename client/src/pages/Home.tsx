@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Capacitor } from "@capacitor/core";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useLocation } from "wouter";
-import { Play, Zap, Activity, Bell, Clock, Package, User, Flame } from "lucide-react";
+import { Play, Bell, Clock, Package, User, Flame } from "lucide-react";
 import starterKitImg from "@assets/cynthiag11_product_photography_of_a_non-label_essential_oils_s_1767071916008.png";
 import { motion } from "framer-motion";
 import { useCurrentUser } from "@/lib/useCurrentUser";
@@ -60,8 +59,12 @@ export default function Home() {
   if (!user) {
     return (
       <Layout>
-        <div className="p-6 flex items-center justify-center min-h-[50vh]">
-          <p className="text-white/70">Loading...</p>
+        <div className="p-6 flex flex-col items-center justify-center min-h-[60vh] gap-4">
+          <div className="relative w-14 h-14" role="status" aria-label="Loading">
+            <div className="absolute inset-0 rounded-full border-4 border-[#6d45d2]/25" />
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#db2faa] animate-spin" />
+          </div>
+          <p className="text-white/50 text-sm">Preparing your training…</p>
         </div>
       </Layout>
     );
@@ -143,12 +146,25 @@ export default function Home() {
         >
           <div className="flex justify-between items-start mb-5">
             <div>
-              <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Daily Goal</span>
-              <h2 className="text-2xl font-bold text-white mt-0.5">Scent Training</h2>
-              <p className="text-white/70 text-sm mt-0.5">~2 Min Session</p>
+              <h2 className="text-2xl font-bold text-white mb-4">Scent Training</h2>
+              {/* Stats — number in a pink circle, single-line label, stacked */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-11 h-11 rounded-full bg-[#db2faa]/50 flex items-center justify-center shrink-0 shadow-md shadow-[#db2faa]/25">
+                    <span className="text-base font-bold text-white" data-testid="text-streak">{user.streak}</span>
+                  </div>
+                  <p className="text-sm text-white/80 font-medium whitespace-nowrap">Day Streak</p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-11 h-11 rounded-full bg-[#db2faa]/50 flex items-center justify-center shrink-0 shadow-md shadow-[#db2faa]/25">
+                    <span className="text-base font-bold text-white" data-testid="text-sessions">{completedSessions}</span>
+                  </div>
+                  <p className="text-sm text-white/80 font-medium whitespace-nowrap">Sessions</p>
+                </div>
+              </div>
             </div>
             {/* Progress ring */}
-            <div className="w-16 h-16 relative">
+            <div className="w-16 h-16 relative shrink-0">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
                 <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.2)" strokeWidth="4" fill="none" />
                 <circle
@@ -167,37 +183,26 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Stats row */}
-          <div className="flex gap-6 pb-5 border-b border-white/20 mb-5">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-white/20 rounded-full">
-                <Zap size={13} fill="currentColor" className="text-white" />
-              </div>
-              <div>
-                <p className="text-[10px] text-white/70 uppercase tracking-wide">Streak</p>
-                <p className="text-sm font-bold text-white" data-testid="text-streak">{user.streak} Days</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-white/20 rounded-full">
-                <Activity size={13} className="text-white" />
-              </div>
-              <div>
-                <p className="text-[10px] text-white/70 uppercase tracking-wide">Sessions</p>
-                <p className="text-sm font-bold text-white" data-testid="text-sessions">{completedSessions}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <Button
-              className="bg-white text-[#6d45d2] hover:bg-white/90 font-bold py-3 px-10 rounded-2xl shadow-lg text-base"
+          <div className="flex flex-col items-center gap-4 pt-1">
+            <button
+              onClick={() => setLocation("/launch/training")}
+              className="relative flex items-center justify-center w-24 h-24 group"
               aria-label="Start training session"
               data-testid="button-start-training"
             >
-              <Play size={18} className="mr-2" fill="currentColor" />
-              Start Training
-            </Button>
+              {/* Concentric outline rings fanning out behind the hero content */}
+              <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[22rem] h-[22rem] rounded-full border border-white/[0.07] animate-pulse" />
+              <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full border border-white/[0.10]" />
+              <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-white/[0.14]" />
+              <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-white/20" />
+              {/* Soft filled halo directly around the button */}
+              <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-white/10" />
+              {/* Solid gradient center with play glyph */}
+              <span className="relative flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-full bg-gradient-to-br from-[#8b5cf6] to-[#db2faa] shadow-xl shadow-[#db2faa]/50 ring-2 ring-white/40 transition-transform group-active:scale-95">
+                <Play size={26} className="text-white ml-1" fill="currentColor" />
+              </span>
+            </button>
+            <span className="text-white font-bold text-lg tracking-[0.2em] uppercase">Start</span>
           </div>
         </div>
         {/* Fade bottom of hero into panel colour — hides any corner crevice artefact */}
@@ -207,9 +212,7 @@ export default function Home() {
       {/* ── CONTENT — framed below hero ── */}
       <div className="px-6 pt-6 pb-4 space-y-4 bg-[#0c0c1d] rounded-t-[2.5rem] -mt-6 relative z-10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)]">
 
-        {/* Push reminders are not wired up for iOS in v1 — hide the card and
-            permission prompt there (see Settings for the matching gate). */}
-        {Capacitor.getPlatform() !== "ios" && (
+        {/* Daily reminders — scheduled as on-device local notifications */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -244,39 +247,13 @@ export default function Home() {
             data-testid="switch-reminders"
           />
         </motion.div>
-        )}
 
-        {Capacitor.getPlatform() !== "ios" && (
         <ReminderPermissionDialog
           open={showPermissionDialog}
           onOpenChange={setShowPermissionDialog}
           onAllow={handleAllowPermission}
           onNotNow={handleNotNow}
         />
-        )}
-
-        <motion.a
-          href="https://amzn.to/4jqeXZo"
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          whileTap={{ scale: 0.98 }}
-          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-[1.5rem] p-3 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
-          data-testid="button-starter-kit"
-        >
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <Package size={18} className="text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-white font-bold text-base">Get Starter Kit</p>
-            <p className="text-white/70 text-sm">Essential oils set</p>
-          </div>
-          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-            <img src={starterKitImg} alt="Starter Kit" className="w-full h-full object-cover" />
-          </div>
-        </motion.a>
 
         <div className="space-y-3">
           <h2 className="text-lg font-bold text-white">Top Routines</h2>
@@ -315,6 +292,29 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
+
+        <motion.a
+          href="https://amzn.to/4jqeXZo"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] rounded-[1.5rem] p-3 flex items-center gap-3 cursor-pointer shadow-md shadow-black/40 hover:opacity-90 transition-opacity"
+          data-testid="button-starter-kit"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <Package size={18} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="text-white font-bold text-base">Get Starter Kit</p>
+            <p className="text-white/70 text-sm">Essential oils set</p>
+          </div>
+          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+            <img src={starterKitImg} alt="Starter Kit" className="w-full h-full object-cover" />
+          </div>
+        </motion.a>
 
       </div>
     </Layout>

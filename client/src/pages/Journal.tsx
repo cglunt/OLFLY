@@ -533,24 +533,32 @@ export default function Journal() {
   return (
     <Layout showBack backPath="/launch/progress">
       <div className="px-5 pt-6 pb-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header — title on one line, entry count top-right */}
+        <div className="flex items-start justify-between mb-5">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <BookOpen size={18} className="text-[#db2faa]" />
-              <h1 className="text-xl font-bold">Symptom Journal</h1>
+              <BookOpen size={18} className="text-[#db2faa] shrink-0" />
+              <h1 className="text-xl font-bold whitespace-nowrap">Symptom Journal</h1>
             </div>
             <p className="text-white/40 text-sm">Track how your senses feel day to day</p>
           </div>
-          {!showForm && (
-            <button
-              onClick={() => setShowForm(true)}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6d45d2] to-[#db2faa] flex items-center justify-center shadow-lg shadow-[#6d45d2]/30 hover:opacity-90 transition-opacity"
-            >
-              <Plus size={20} className="text-white" />
-            </button>
+          {logs.length > 0 && (
+            <span className="text-xs text-white/40 uppercase tracking-wider whitespace-nowrap mt-1.5">
+              {logs.length} {logs.length === 1 ? "entry" : "entries"}
+            </span>
           )}
         </div>
+
+        {/* Wide New entry button, above the entries */}
+        {!showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full flex items-center justify-center gap-2 py-3.5 mb-5 rounded-2xl bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white text-base font-bold shadow-lg shadow-[#6d45d2]/30 hover:opacity-90 transition-opacity"
+            data-testid="button-new-entry"
+          >
+            <Plus size={20} /> New entry
+          </button>
+        )}
 
         {/* New entry form */}
         <AnimatePresence>
@@ -584,9 +592,6 @@ export default function Journal() {
           </motion.div>
         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-white/30 uppercase tracking-wider mb-3">
-              {logs.length} {logs.length === 1 ? "entry" : "entries"}
-            </p>
             <AnimatePresence>
               {logs.map((log) => (
                 <EntryCard

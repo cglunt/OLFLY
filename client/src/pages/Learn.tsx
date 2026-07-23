@@ -307,30 +307,27 @@ export default function Learn() {
         <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-[#db2faa]/25 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-32 h-32 rounded-full bg-[#4a2080]/50 blur-2xl pointer-events-none" />
 
-        {/* Header matching home screen hero style */}
-        <header className="flex justify-between items-end relative z-10">
+        {/* Header — title on one line, entry count top-right */}
+        <header className="flex justify-between items-start relative z-10">
           <div>
             <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-0.5">Daily Log</p>
-            <h1 className="text-2xl font-bold text-white">Symptom Journal</h1>
+            <h1 className="text-2xl font-bold text-white whitespace-nowrap">Symptom Journal</h1>
             <p className="text-white/70 text-sm">Track how your senses feel</p>
           </div>
-          <div className="flex items-center gap-2">
-            {logs.length > 0 && (
-              <div className="bg-white/20 px-3 py-1.5 rounded-xl text-xs font-medium text-white flex items-center gap-1.5 backdrop-blur-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                {logs.length} {logs.length === 1 ? "entry" : "entries"}
-              </div>
-            )}
-            {!showForm && (
-              <button onClick={() => setShowForm(true)}
-                className="flex items-center gap-1.5 text-xs font-bold text-[#6d45d2] bg-white px-4 py-2 rounded-full shadow-lg hover:bg-white/90 transition-opacity">
-                <Plus size={12} />New entry
-              </button>
-            )}
-          </div>
+          {logs.length > 0 && (
+            <span className="text-white/70 text-xs font-medium whitespace-nowrap mt-1">
+              {logs.length} {logs.length === 1 ? "entry" : "entries"}
+            </span>
+          )}
         </header>
 
-        <div className="relative z-10 space-y-2">
+        <div className="relative z-10 space-y-3 mt-4">
+          {!showForm && (
+            <button onClick={() => setShowForm(true)}
+              className="w-fit flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#4a2080] text-white text-base font-bold shadow-lg shadow-[#4a2080]/40 ring-1 ring-white/15 hover:bg-[#5a2a99] transition-colors">
+              <Plus size={20} />New entry
+            </button>
+          )}
           <AnimatePresence>
             {showForm && (
               <NewEntryForm
@@ -378,16 +375,16 @@ export default function Learn() {
         </header>
 
         <Card className="bg-gradient-to-r from-[#6d45d2] to-[#db2faa] text-white border-none shadow-md rounded-2xl">
-          <CardContent className="p-6 space-y-4">
-            <div className="h-12 w-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <Brain className="h-6 w-6 text-white" />
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm shrink-0">
+                <Brain className="h-5 w-5 text-white" />
+              </div>
+              <h2 className="text-xl font-bold">How it works</h2>
             </div>
-            <div>
-              <h2 className="text-xl font-bold mb-2">How it works</h2>
-              <p className="text-white/90 leading-relaxed text-sm">
-                Olfactory training uses neuroplasticity. By actively sniffing familiar scents and focusing on them, you stimulate the olfactory nerve to regenerate and forge new pathways to the brain.
-              </p>
-            </div>
+            <p className="text-white/90 leading-relaxed text-sm">
+              Olfactory training uses neuroplasticity. By actively sniffing familiar scents and focusing on them, you stimulate the olfactory nerve to regenerate and forge new pathways to the brain.
+            </p>
           </CardContent>
         </Card>
 

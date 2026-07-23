@@ -55,7 +55,7 @@ const RC_API_KEY = Capacitor.getPlatform() === 'ios' ? RC_IOS_KEY : RC_ANDROID_K
 
 type PurchasesApi = (typeof import('@revenuecat/purchases-capacitor'))['Purchases'];
 
-let configurePromise: Promise<PurchasesApi> | null = null;
+let configurePromise: Promise<{ Purchases: PurchasesApi }> | null = null;
 let configuredUid: string | null = null;
 /** Last known entitlement, so remounts don't flash the paywall while re-checking */
 let cachedIsPlus: boolean | null = null;
