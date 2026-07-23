@@ -203,30 +203,37 @@ input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
   color: white;
 }
 
-
-/* On-brand range sliders (symptom journal). The native thumb renders blue
-   by default on Windows/Chrome — override it with a white thumb + brand ring. */
+/* On-brand range sliders (symptom journal). Native thumb renders blue on
+   Windows/Chrome; force custom white thumb with a brand-magenta ring. The
+   element itself must have -webkit-appearance:none for thumb styling to apply. */
 input[type="range"].olfly-range {
-  height: 0.625rem; /* thicker track */
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  height: 0.625rem;
+  border-radius: 9999px;
 }
 input[type="range"].olfly-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 22px;
+  height: 22px;
   border-radius: 9999px;
-  background: #ffffff;
-  border: 3px solid #ac41c3;
+  background: #ffffff !important;
+  border: 3px solid #ac41c3 !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  margin-top: -1px;
+  margin-top: -6px;
 }
 input[type="range"].olfly-range::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 9999px;
-  background: #ffffff;
-  border: 3px solid #ac41c3;
+  background: #ffffff !important;
+  border: 3px solid #ac41c3 !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
+}
+input[type="range"].olfly-range::-moz-range-track {
+  height: 0.625rem;
+  border-radius: 9999px;
 }
