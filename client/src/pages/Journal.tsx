@@ -54,7 +54,7 @@ function SliderField({
         max={10}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+        className="olfly-range w-full rounded-full appearance-none cursor-pointer"
         style={{
           background: `linear-gradient(to right, ${color} ${value * 10}%, rgba(255,255,255,0.1) ${value * 10}%)`,
         }}
@@ -125,7 +125,7 @@ function formatDate(iso: string) {
 function ScoreBar({ value, color }: { value: number; color: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+      <div className="flex-1 h-2.5 bg-white/10 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${value * 10}%`, background: color }}

@@ -203,3 +203,30 @@ input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
   color: white;
 }
 
+
+/* On-brand range sliders (symptom journal). The native thumb renders blue
+   by default on Windows/Chrome — override it with a white thumb + brand ring. */
+input[type="range"].olfly-range {
+  height: 0.625rem; /* thicker track */
+}
+input[type="range"].olfly-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid #ac41c3;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  margin-top: -1px;
+}
+input[type="range"].olfly-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid #ac41c3;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
