@@ -60,6 +60,17 @@ let configuredUid: string | null = null;
 /** Last known entitlement, so remounts don't flash the paywall while re-checking */
 let cachedIsPlus: boolean | null = null;
 
+// Every mounted useSubscription registers here so the entitlement is a single
+// shared source of truth. Without this, each page ran its own one-shot
+// getCustomerInfo and they could disagree (e.g. Settings showing "Free" while
+// the Journal page stayed unlocked). Publishing to all subscribers makes the
+// latest check win everywhere at once.
+const plusSubscribers = new Set<(hasPlus: boolean) => void>();
+function publishPlus(hasPlus: boolean): void {
+  cachedIsPlus = hasPlus;
+  plusSubscribers.forEach((notify) => notify(hasPlus));
+}
+
 // NOTE: the promise resolves with the plugin WRAPPED in an object. Resolving
 // with the plugin proxy directly hangs forever on iOS: await checks .then on
 // the resolved value, Capacitor's proxy turns that into a native call named
@@ -116,9 +127,16 @@ export function useSubscription(): SubscriptionState {
 
   const applyCustomerInfo = useCallback((customerInfo: { entitlements: { active?: Record<string, unknown> } }) => {
     const hasPlus = PLUS_ENTITLEMENT in (customerInfo.entitlements.active ?? {});
-    cachedIsPlus = hasPlus;
-    setRcIsPlus(hasPlus);
+    // Publish to every mounted instance so all pages agree (not just this one)
+    publishPlus(hasPlus);
     return hasPlus;
+  }, []);
+
+  // Subscribe this instance to shared entitlement updates for its lifetime, so a
+  // check resolved by any other page immediately updates this one too.
+  useEffect(() => {
+    plusSubscribers.add(setRcIsPlus);
+    return () => { plusSubscribers.delete(setRcIsPlus); };
   }, []);
 
   // ── Initialise RevenueCat on native ──────────────────────────────────────
