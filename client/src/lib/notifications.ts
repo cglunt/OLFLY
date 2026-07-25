@@ -29,7 +29,8 @@ async function getCapacitorPush() {
   if (!isNativePlatform()) return null;
   try {
     const mod = await import('@capacitor/push-notifications');
-    return mod.PushNotifications;
+    // Wrap the plugin proxy in a plain object — see getLocalNotifications below.
+    return { PushNotifications: mod.PushNotifications };
   } catch {
     console.warn('[Notifications] @capacitor/push-notifications not installed yet');
     return null;
@@ -45,7 +46,12 @@ async function getLocalNotifications() {
   if (!isNativePlatform()) return null;
   try {
     const mod = await import('@capacitor/local-notifications');
-    return mod.LocalNotifications;
+    // CRITICAL: wrap the plugin proxy in a plain object. Returning the Capacitor
+    // proxy directly from an async fn hangs forever on iOS — awaiting it probes
+    // `.then` on the resolved value, and the proxy turns that into a native
+    // "then" call that is "not implemented" and never settles. This is the same
+    // issue configurePurchases() works around in useSubscription.ts.
+    return { LocalNotifications: mod.LocalNotifications };
   } catch {
     console.warn('[Notifications] @capacitor/local-notifications not installed yet');
     return null;
@@ -94,8 +100,9 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 export async function subscribeToPushNotifications(): Promise<boolean> {
   // ── Native path ────────────────────────────────────────────────────────────
   if (isNativePlatform()) {
-    const PushNotifications = await getCapacitorPush();
-    if (!PushNotifications) return false;
+    const cp = await getCapacitorPush();
+    if (!cp) return false;
+    const { PushNotifications } = cp;
 
     return new Promise((resolve) => {
       // Remove any stale listeners before adding new ones
@@ -248,8 +255,9 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 
   // ── Native path — use Local Notifications permission (fires on-device) ───────
   if (isNativePlatform()) {
-    const LocalNotifications = await getLocalNotifications();
-    if (!LocalNotifications) return 'unsupported';
+    const ln = await getLocalNotifications();
+    if (!ln) return 'unsupported';
+    const { LocalNotifications } = ln;
     try {
       const result = await LocalNotifications.requestPermissions();
       const status: NotificationPermissionStatus =
@@ -341,8 +349,9 @@ export function scheduleReminders(morningTime: string, eveningTime: string): voi
     const [mHour, mMinute] = morningTime.split(':').map(Number);
     const [eHour, eMinute] = eveningTime.split(':').map(Number);
     void (async () => {
-      const LocalNotifications = await getLocalNotifications();
-      if (!LocalNotifications) return;
+      const ln = await getLocalNotifications();
+      if (!ln) return;
+      const { LocalNotifications } = ln;
       try {
         await LocalNotifications.schedule({
           notifications: [
@@ -393,8 +402,9 @@ export function scheduleReminders(morningTime: string, eveningTime: string): voi
 export function cancelReminders(): void {
   if (isNativePlatform()) {
     void (async () => {
-      const LocalNotifications = await getLocalNotifications();
-      if (!LocalNotifications) return;
+      const ln = await getLocalNotifications();
+      if (!ln) return;
+      const { LocalNotifications } = ln;
       try {
         await LocalNotifications.cancel({
           notifications: [{ id: MORNING_NOTIF_ID }, { id: EVENING_NOTIF_ID }],
