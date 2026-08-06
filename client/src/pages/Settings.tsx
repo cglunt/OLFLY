@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { ReminderPermissionDialog } from "@/components/ReminderPermissionDialog";
 import { useReminders } from "@/hooks/useReminders";
 import { isNotificationSupported, cancelReminders } from "@/lib/notifications";
+import { revokeAppleTokenBestEffort } from "@/lib/firebase";
 
 export default function Settings() {
   const [, setLocation] = useLocation();
@@ -95,6 +96,9 @@ export default function Settings() {
     if (!user) return;
     setIsDeleting(true);
     try {
+      // Apple requires revoking the Sign in with Apple grant on account
+      // deletion; best-effort and never blocks the deletion itself.
+      await revokeAppleTokenBestEffort();
       await deleteAccount(user.id);
       await logOut();
       localStorage.removeItem("olfly_user_id");

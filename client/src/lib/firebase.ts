@@ -13,6 +13,7 @@ import {
   getRedirectResult,
   signInWithCredential,
   GoogleAuthProvider as GoogleAuthProviderType,
+  revokeAccessToken,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -192,6 +193,41 @@ export async function signInWithApple() {
   } catch (error) {
     console.error("Error signing in with Apple:", error);
     throw error;
+  }
+}
+
+/**
+ * Best-effort revocation of the Apple sign-in grant, expected by App Store
+ * Guideline 5.1.1(v) when deleting an account that used Sign in with Apple.
+ * Apple authorization codes are single-use and expire in minutes, so the
+ * only way to revoke later is to re-prompt the Apple sheet for a fresh code
+ * and hand it to Firebase (requires the Apple key/team/key-ID configured on
+ * the Apple provider in the Firebase console). Deletion must never be
+ * blocked by this, so every failure — including the user dismissing the
+ * sheet — is swallowed.
+ */
+export async function revokeAppleTokenBestEffort(): Promise<void> {
+  if (!auth?.currentUser) return;
+  const usedApple = auth.currentUser.providerData.some(
+    (p) => p.providerId === "apple.com"
+  );
+  if (!usedApple) return;
+
+  try {
+    let authorizationCode: string | undefined;
+    if (Capacitor.isNativePlatform()) {
+      const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
+      const result = await FirebaseAuthentication.signInWithApple();
+      authorizationCode = result.credential?.authorizationCode ?? undefined;
+    } else {
+      const result = await signInWithPopup(auth, new OAuthProvider("apple.com"));
+      authorizationCode = OAuthProvider.credentialFromResult(result)?.accessToken;
+    }
+    if (authorizationCode) {
+      await revokeAccessToken(auth, authorizationCode);
+    }
+  } catch (error) {
+    console.warn("[Firebase] Apple token revocation skipped:", error);
   }
 }
 

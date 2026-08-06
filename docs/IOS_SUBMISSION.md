@@ -1,7 +1,94 @@
 # Olfly — App Store Submission Prep
 
-Status as of 2026-07-10. The codebase is iOS-ready; what remains is store/console
-setup (doable from any browser) and the build/upload steps that require a Mac.
+Status as of 2026-08-05. **Version 1.3.4 (23) was rejected on first review** —
+see the resubmission checklist below. Everything code-side is fixed on branch
+`claude/review-feedback-resolution-5af286`; what remains is console setup and
+the resubmission itself.
+
+---
+
+## RESUBMISSION CHECKLIST (rejection of 1.3.4 (23), Aug 5 2026)
+
+Rejected under four guidelines. Code fixes are done; each item lists what's left.
+
+### 1. Guideline 4.8 — Sign in with Apple  ✅ code done
+- Code: Apple sign-in button on iOS login (native sheet via
+  `@capacitor-firebase/authentication`), entitlement + `CODE_SIGN_ENTITLEMENTS`
+  wired in the Xcode project, `apple.com` added to plugin providers.
+- [ ] **Apple Developer portal** (developer.apple.com → Identifiers →
+  `com.olfly.app`): enable the **Sign In with Apple** capability. Signing
+  fails without this.
+- [ ] **Firebase console** → Authentication → Sign-in method → add **Apple**
+  provider (bundle id `com.olfly.app`). For deletion-time token revocation,
+  also fill in Team ID, a Sign in with Apple key ID and its `.p8` contents
+  (create the key at developer.apple.com → Keys → enable "Sign in with Apple").
+
+### 2. Guideline 2.1(b) — IAP products not submitted
+- [ ] App Store Connect → Monetization → Subscriptions: for
+  `olfly_plus_monthly` ($6.99/mo) and `olfly_plus_annual` ($49.99/yr), complete
+  localized display name + description, price, and upload a **review
+  screenshot** of the paywall (screenshot the Settings subscription card or
+  UpgradePrompt on any iPhone; min 640×920 px).
+- [ ] On the new version page, attach both subscriptions under
+  **In-App Purchases and Subscriptions** so they're submitted WITH the binary.
+
+### 3. Guideline 2.1 — Demo account with expired subscription
+- [ ] Create a demo account in the app (email/password):
+  e.g. `appreview@olfly.app` + a strong password you record.
+- [ ] To make its subscription **expired** (not just free): install the
+  TestFlight build, sign into the demo account, buy the monthly plan with a
+  **sandbox tester** (App Store Connect → Users and Access → Sandbox). Sandbox
+  months last ~5 minutes and stop renewing after 6 cycles (~30 min), after
+  which the account shows a genuinely expired subscription.
+- [ ] Put the credentials in App Store Connect → app version → **App Review
+  Information** → Sign-In Information.
+
+### 4. Guideline 5.1.1(v) — Account deletion  ✅ code done
+- Code: Settings → Delete Account → confirmation dialog →
+  `DELETE /api/users/:id` (removes all DB data by cascade + the Firebase Auth
+  user via Admin SDK). Apple-token revocation is attempted best-effort when
+  the account used Sign in with Apple.
+- [ ] After the new build is on TestFlight: **screen-record on a physical
+  iPhone**: create an account (or sign in with the demo account) → Settings →
+  Delete Account → confirm → land back on the welcome screen. Upload the
+  video anywhere linkable (or attach in the reply) and reference it in the
+  Notes field of App Review Information.
+
+### Review notes — paste into App Review Information → Notes
+
+```
+This resubmission addresses all four issues from the Aug 5 review:
+
+- 4.8: Sign in with Apple is now offered on the login screen alongside
+  Google and email/password (shown first, equal prominence).
+- 2.1(b): Both auto-renewable subscriptions (olfly_plus_monthly,
+  olfly_plus_annual) are attached to this version and submitted for review.
+- 2.1: Demo account credentials with an expired subscription are provided
+  in Sign-In Information.
+- 5.1.1(v): In-app account deletion is available at Settings → Delete
+  Account. It permanently deletes the account (Firebase Auth) and all user
+  data, with a single confirmation step. A screen recording of the full
+  flow on a physical device is linked below.
+
+Screen recording of account deletion: [LINK]
+
+Subscriptions are processed by StoreKit via RevenueCat. The symptom journal
+is wellness tracking, not medical advice.
+```
+
+### Build & submit
+- [ ] Merge the fix branch to `main` and let **Xcode Cloud** build/upload the
+  new binary (bump handled by CI; version stays 1.3.4).
+- [ ] `npx cap sync ios` runs in CI (`ci_post_clone.sh`) — no manual step.
+- [ ] In App Store Connect, select the new build on the version page,
+  attach the two subscriptions, fill in review info, **Resubmit to App
+  Review**, and reply to the rejection message summarizing the fixes
+  (same content as the notes above).
+
+---
+
+Original prep document (2026-07-10) follows; store/console setup from Part A
+is assumed done except where the checklist above says otherwise.
 
 ---
 
