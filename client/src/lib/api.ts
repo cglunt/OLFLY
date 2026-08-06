@@ -173,6 +173,11 @@ export async function updateUser(
   return res.json();
 }
 
+export async function deleteAccount(userId: string): Promise<void> {
+  const res = await authFetch(`/api/users/${userId}`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete account");
+}
+
 // User Scents API (legacy)
 export async function getUserScents(userId: string): Promise<UserScent[]> {
   const res = await authFetch(`/api/users/${userId}/scents`);

@@ -5,6 +5,7 @@ import {
   initializeAuth,
   indexedDBLocalPersistence,
   GoogleAuthProvider,
+  OAuthProvider,
   setPersistence,
   browserLocalPersistence,
   signInWithPopup,
@@ -147,6 +148,49 @@ export async function signInWithGoogle() {
     }
   } catch (error) {
     console.error("Error signing in with Google:", error);
+    throw error;
+  }
+}
+
+/**
+ * Sign in with Apple.
+ * - Web: uses signInWithPopup with the apple.com OAuth provider.
+ * - Native iOS: uses the @capacitor-firebase/authentication plugin, which
+ *   invokes the native AuthenticationServices sheet. The returned identity
+ *   token + nonce are exchanged for a Firebase credential.
+ */
+export async function signInWithApple() {
+  if (!auth) {
+    throw new Error("Firebase not configured");
+  }
+
+  try {
+    if (Capacitor.isNativePlatform()) {
+      const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
+      const result = await FirebaseAuthentication.signInWithApple();
+      const idToken = result.credential?.idToken;
+      if (!idToken) throw new Error("No ID token from native Apple Sign-In");
+      const credential = new OAuthProvider("apple.com").credential({
+        idToken,
+        rawNonce: result.credential?.nonce,
+      });
+      await signInWithCredential(auth, credential);
+
+      // Apple only shares the user's name on the FIRST authorization, and the
+      // web SDK doesn't populate it from the credential — persist it now.
+      const currentUser = auth.currentUser;
+      const nativeDisplayName = result.user?.displayName ?? null;
+      if (currentUser && nativeDisplayName && !currentUser.displayName) {
+        await updateProfile(currentUser, { displayName: nativeDisplayName });
+      }
+    } else {
+      const provider = new OAuthProvider("apple.com");
+      provider.addScope("email");
+      provider.addScope("name");
+      await signInWithPopup(auth, provider);
+    }
+  } catch (error) {
+    console.error("Error signing in with Apple:", error);
     throw error;
   }
 }

@@ -7,7 +7,8 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined>;
-  
+  deleteUser(id: string): Promise<void>;
+
   // User scents operations (legacy - keeping for backwards compatibility)
   getUserScents(userId: string): Promise<UserScent[]>;
   addUserScent(userScent: InsertUserScent): Promise<UserScent>;
@@ -75,6 +76,12 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user || undefined;
+  }
+
+  // Deleting the user row cascades to scents, collections, sessions,
+  // symptom logs, push subscriptions, and FCM tokens (onDelete: 'cascade')
+  async deleteUser(id: string): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
   }
 
   // User scents operations (legacy)

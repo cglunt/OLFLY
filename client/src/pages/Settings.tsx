@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import Layout from "@/components/Layout";
-import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles, Zap } from "lucide-react";
+import { ChevronRight, User, Bell, Shield, FileText, HelpCircle, LogOut, RotateCcw, Clock, AlertCircle, CheckCircle, Check, Volume2, Sparkles, Zap, Trash2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import { useAuth } from "@/lib/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Switch } from "@/components/ui/switch";
 import { useQueryClient } from "@tanstack/react-query";
-import { updateUser } from "@/lib/api";
+import { updateUser, deleteAccount } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -30,6 +30,8 @@ export default function Settings() {
   const { isPlus, isLoading: subLoading, purchaseMonthly, purchaseAnnual, restorePurchases } = useSubscription();
   const { toast } = useToast();
   const [showReminderDialog, setShowReminderDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [morningTime, setMorningTime] = useState("09:00");
   const [eveningTime, setEveningTime] = useState("20:00");
 
@@ -86,6 +88,31 @@ export default function Settings() {
       setLocation("/");
     } catch (error) {
       console.error("Sign out error:", error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    setIsDeleting(true);
+    try {
+      await deleteAccount(user.id);
+      await logOut();
+      localStorage.removeItem("olfly_user_id");
+      cancelReminders();
+      queryClient.clear();
+      setLocation("/");
+      toast({
+        title: "Account deleted",
+        description: "Your account and all data have been permanently deleted.",
+      });
+    } catch (error) {
+      console.error("Account deletion error:", error);
+      setIsDeleting(false);
+      toast({
+        title: "Couldn't delete account",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -412,14 +439,22 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="pt-4">
-          <button 
+        <div className="pt-4 space-y-3">
+          <button
             onClick={handleSignOut}
             className="w-full p-4 bg-[#3b1645] rounded-2xl flex items-center justify-center gap-3 text-red-400 hover:bg-[#4a1c57] transition-colors"
             data-testid="button-sign-out"
           >
             <LogOut size={18} />
             <span className="font-medium">Sign Out</span>
+          </button>
+          <button
+            onClick={() => setShowDeleteDialog(true)}
+            className="w-full p-4 bg-transparent border border-red-500/30 rounded-2xl flex items-center justify-center gap-3 text-red-400/80 hover:bg-red-500/10 transition-colors"
+            data-testid="button-delete-account"
+          >
+            <Trash2 size={18} />
+            <span className="font-medium">Delete Account</span>
           </button>
         </div>
 
@@ -466,6 +501,46 @@ export default function Settings() {
             >
               {updateTimesMutation.isPending ? "Saving..." : "Save Times"}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showDeleteDialog} onOpenChange={(open) => { if (!isDeleting) setShowDeleteDialog(open); }}>
+        <DialogContent className="bg-[#1a1a2e] border-white/10 text-white max-w-sm mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl">Delete your account?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-white/70 text-sm">
+              This permanently deletes your account and all of your data — training
+              sessions, streaks, symptom journal, and custom scent collections.
+              This cannot be undone.
+            </p>
+            {isPlus && (
+              <p className="text-amber-300/90 text-sm">
+                Deleting your account does not cancel an active subscription.
+                Cancel it first in your {Capacitor.getPlatform() === "ios" ? "App Store" : "Google Play"} subscription settings.
+              </p>
+            )}
+            <div className="space-y-2 pt-2">
+              <Button
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3"
+                data-testid="button-confirm-delete-account"
+              >
+                {isDeleting ? "Deleting..." : "Permanently Delete Account"}
+              </Button>
+              <Button
+                onClick={() => setShowDeleteDialog(false)}
+                disabled={isDeleting}
+                variant="outline"
+                className="w-full border-white/20 bg-transparent text-white hover:bg-white/10 font-medium py-3"
+                data-testid="button-cancel-delete-account"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

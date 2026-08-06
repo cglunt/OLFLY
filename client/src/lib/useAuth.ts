@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { onAuthChange, signInWithGoogle, signInWithEmail, signUpWithEmail, logOut,
+import { onAuthChange, signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail, logOut,
         isFirebaseConfigured, User, initAuthPersistence, handleRedirectResult } from "./firebase";
 import { debugAuthLog } from "./debugAuth";
 
@@ -93,6 +93,7 @@ export function useAuth() {
     authReady,
     error,
     signInWithGoogle,
+    signInWithApple,
     signInWithEmail,
     signUpWithEmail,
     logOut,

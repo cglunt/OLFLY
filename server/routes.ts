@@ -12,7 +12,7 @@ import { requireAuth, requireOwnership } from "./middleware";
 import { timingSafeEqual } from "crypto";
 import webpush from "web-push";
 import cron from "node-cron";
-import { getFirebaseMessaging } from "./firebase-admin";
+import { getFirebaseAuth, getFirebaseMessaging } from "./firebase-admin";
 import { sendMail } from "./email";
 
 // ── VAPID setup ──────────────────────────────────────────────────────────────
@@ -184,6 +184,33 @@ res.status(400).json({ message: error?.message ?? "Failed to create user" });
       res.json(user);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Permanently delete the user's account: all database rows (child tables
+  // cascade from users) plus the Firebase Auth user. Required by App Store
+  // Guideline 5.1.1(v).
+  app.delete("/api/users/:id", requireAuth, requireOwnership(), async (req, res) => {
+    try {
+      const uid = req.user!.uid;
+      // DB rows go first — if the Firebase deletion below fails, the client's
+      // token is still valid and the whole request can simply be retried.
+      await storage.deleteUser(uid);
+      // Admin-side deletion doesn't require the recent re-authentication that
+      // client-side deleteUser() does. ID tokens stay valid up to an hour
+      // after deletion, so a duplicate request may find the user already gone.
+      try {
+        await getFirebaseAuth().deleteUser(uid);
+      } catch (err: any) {
+        if (err?.code !== "auth/user-not-found") throw err;
+      }
+      res.status(204).end();
+    } catch (error: any) {
+      console.error("[users] delete failed", {
+        message: error?.message,
+        code: error?.code,
+      });
+      res.status(500).json({ message: error?.message ?? "Failed to delete account" });
     }
   });
 
