@@ -168,7 +168,13 @@ export async function signInWithApple() {
   try {
     if (Capacitor.isNativePlatform()) {
       const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
-      const result = await FirebaseAuthentication.signInWithApple();
+      // Apple credentials are single-use: with the plugin's default
+      // skipNativeAuth=false the native layer exchanges the token first and
+      // the signInWithCredential below then fails with auth/invalid-credential
+      // (Google tokens survive the double exchange; Apple's do not).
+      const result = await FirebaseAuthentication.signInWithApple({
+        skipNativeAuth: true,
+      });
       const idToken = result.credential?.idToken;
       if (!idToken) throw new Error("No ID token from native Apple Sign-In");
       const credential = new OAuthProvider("apple.com").credential({
@@ -217,7 +223,11 @@ export async function revokeAppleTokenBestEffort(): Promise<void> {
     let authorizationCode: string | undefined;
     if (Capacitor.isNativePlatform()) {
       const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
-      const result = await FirebaseAuthentication.signInWithApple();
+      // Only the fresh authorizationCode is needed here — skip the native
+      // sign-in so the single-use Apple credential isn't consumed by it.
+      const result = await FirebaseAuthentication.signInWithApple({
+        skipNativeAuth: true,
+      });
       authorizationCode = result.credential?.authorizationCode ?? undefined;
     } else {
       const result = await signInWithPopup(auth, new OAuthProvider("apple.com"));
