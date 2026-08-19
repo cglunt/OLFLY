@@ -7,6 +7,30 @@ the resubmission itself.
 
 ---
 
+## SECOND REJECTION (1.3.4 (29), Aug 19 2026) — Guideline 2.1(a)
+
+Reviewer (iPad Air 11" M3, iPadOS 26.6): "app displayed error message when we
+tried to create an account with Sign in with Apple."
+
+Root cause: `capacitor.config.ts` sets `skipNativeAuth: false`, so
+`FirebaseAuthentication.signInWithApple()` exchanged the Apple credential on
+the native layer, and the subsequent web-layer `signInWithCredential` failed
+with `auth/invalid-credential` — Apple credentials are single-use (Google's
+survive the double exchange, which is why Google sign-in worked). The Firebase
+Apple provider itself IS enabled (verified via the identitytoolkit
+`signInWithIdp` probe: apple.com returns a token-parse error, not
+`OPERATION_NOT_ALLOWED`).
+
+Fix: pass `{ skipNativeAuth: true }` to both `signInWithApple()` calls in
+`client/src/lib/firebase.ts` (sign-in + deletion-time revocation), per the
+plugin's own Firebase-JS-SDK guide.
+
+Resubmit: merge → Xcode Cloud build → **test Apple sign-in on a physical
+device via TestFlight before resubmitting** → select new build in ASC →
+Resubmit, and reply to the Aug 19 message noting the fix.
+
+---
+
 ## RESUBMISSION CHECKLIST (rejection of 1.3.4 (23), Aug 5 2026)
 
 Rejected under four guidelines. Code fixes are done; each item lists what's left.
