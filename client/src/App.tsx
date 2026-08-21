@@ -147,14 +147,16 @@ function AppRouter() {
 function Router() {
   const [location, setLocation] = useLocation();
 
-  // When running as a native Capacitor app, the WebView always opens at "/".
-  // Redirect immediately to the app entry point so Landing.tsx never renders.
+  // When running as a native Capacitor app, the WebView always opens at "/",
+  // and other flows (sign-out, deletion) may land back on it. "/" renders a
+  // blank shell on native, so bounce to the app entry point EVERY time the
+  // location becomes "/" — not just on first mount, or the shell sticks.
   const isNative = Capacitor.isNativePlatform();
   useEffect(() => {
     if (isNative && location === "/") {
       setLocation("/launch");
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isNative, location, setLocation]);
 
   // Show a blank screen instead of Landing while the native redirect fires.
   if (isNative && location === "/") {

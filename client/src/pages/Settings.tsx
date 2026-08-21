@@ -86,7 +86,9 @@ export default function Settings() {
       localStorage.removeItem("olfly_user_id");
       cancelReminders();
       queryClient.clear();
-      setLocation("/");
+      // "/" is the web landing page; on native it renders a blank shell, so
+      // go straight back to the login screen there.
+      setLocation(Capacitor.isNativePlatform() ? "/launch/login" : "/");
     } catch (error) {
       console.error("Sign out error:", error);
     }
@@ -104,7 +106,7 @@ export default function Settings() {
       localStorage.removeItem("olfly_user_id");
       cancelReminders();
       queryClient.clear();
-      setLocation("/");
+      setLocation(Capacitor.isNativePlatform() ? "/launch/login" : "/");
       toast({
         title: "Account deleted",
         description: "Your account and all data have been permanently deleted.",
