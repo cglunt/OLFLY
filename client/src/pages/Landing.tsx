@@ -326,9 +326,9 @@ export default function Landing() {
                   className="h-14"
                 />
               </a>
-              <a 
-                href="https://apps.apple.com" 
-                target="_blank" 
+              <a
+                href="https://apps.apple.com/app/id6789730576"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="transition-transform hover:scale-105"
                 data-testid="link-app-store"
